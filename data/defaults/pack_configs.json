@@ -1,39 +1,39 @@
 {
   "packs": [
     {
-      "name": "Pack1",
+      "name": "StandardPackT1",
       "card_types_table": {"31": 3, "40": 4, "50": 5}
     },
     {
-      "name": "Pack2",
+      "name": "StandardPackT2",
       "card_types_table": {"31": 3, "40": 4, "50": 5}
     },
     {
-      "name": "Pack3",
+      "name": "StandardPackT3",
       "card_types_table": {"31": 3, "40": 4, "50": 5}
     },
     {
-      "name": "Pack4",
+      "name": "StandardPackT4",
       "card_types_table": {"31": 3, "40": 4, "50": 5}
     },
     {
-      "name": "Pack5",
+      "name": "StandardPackT5",
       "card_types_table": {"31": 3, "40": 4, "50": 5}
     },
     {
-      "name": "Pack6",
+      "name": "EndOfChapterPack",
       "card_types_table": {"31": 3, "40": 4, "50": 5}
     },
     {
-      "name": "Pack7",
+      "name": "PetPack",
       "card_types_table": {"31": 3, "40": 4, "50": 5}
     },
     {
-      "name": "Pack8",
+      "name": "HeroPack",
       "card_types_table": {"31": 3, "40": 4, "50": 5}
     },
     {
-      "name": "Pack9",
+      "name": "GearPack",
       "card_types_table": {"31": 3, "40": 4, "50": 5}
     }
   ]
