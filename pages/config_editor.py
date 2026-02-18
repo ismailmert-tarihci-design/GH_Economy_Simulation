@@ -1,85 +1,116 @@
-"""
-Configuration editor page for the Bluestar Economy Simulator.
-
-Provides editable tables organized into 4 tabs:
-- Pack Configuration: Pack averages and card type tables
-- Upgrade Tables: Duplicate costs, coin costs, and bluestar rewards per category
-- Card Economy: Duplicate ranges and coin per duplicate settings
-- Progression & Schedule: Progression mapping and unique unlock schedule
-"""
-
 import pandas as pd
 import streamlit as st
 
-from simulation.config_loader import load_defaults
-from simulation.models import CardCategory, CardTypesRange, SimConfig
+from simulation.config_loader import (
+    load_defaults,
+    list_profiles,
+    load_profile,
+    save_profile,
+    delete_profile,
+)
+from simulation.models import CardCategory, CardTypesRange, SimConfig, UserProfile
 
 
 def render_config_editor(config: SimConfig) -> None:
     st.title("⚙️ Configuration Editor")
-    st.markdown(
-        "Edit simulation parameters using validated tables. Changes update immediately."
-    )
+    st.markdown("Edit simulation parameters. Changes update immediately.")
 
-    tab1, tab2, tab3, tab4 = st.tabs(
+    col_coins, col_stars = st.columns(2)
+    with col_coins:
+        config.initial_coins = st.number_input(
+            "Initial Coins",
+            min_value=0,
+            value=config.initial_coins,
+            step=100,
+            key="init_coins",
+        )
+    with col_stars:
+        config.initial_bluestars = st.number_input(
+            "Initial Bluestars",
+            min_value=0,
+            value=config.initial_bluestars,
+            step=10,
+            key="init_stars",
+        )
+
+    tab1, tab2, tab3, tab4, tab5 = st.tabs(
         [
             "📦 Pack Configuration",
             "⬆️ Upgrade Tables",
             "💰 Card Economy",
             "📈 Progression & Schedule",
+            "👤 Profiles",
         ]
     )
 
     with tab1:
         _render_pack_config(config)
-
     with tab2:
         _render_upgrade_tables(config)
-
     with tab3:
         _render_card_economy(config)
-
     with tab4:
         _render_progression_schedule(config)
+    with tab5:
+        _render_profiles(config)
 
 
 def _render_pack_config(config: SimConfig) -> None:
-    st.subheader("Pack Averages")
-    st.caption("20-day average pack opening rates for each pack type")
-
-    pack_avg_df = pd.DataFrame(
-        [
-            {"Pack Name": pack_name, "20-Day Average": avg}
-            for pack_name, avg in config.pack_averages.items()
-        ]
+    st.subheader("Daily Pack Schedule")
+    st.caption(
+        "Pack counts per day. Schedule loops when simulation exceeds its length."
     )
 
-    edited_avg = st.data_editor(
-        pack_avg_df,
+    pack_names = [p.name for p in config.packs]
+    current_len = len(config.daily_pack_schedule) if config.daily_pack_schedule else 1
+
+    schedule_len = st.number_input(
+        "Schedule Length (days)",
+        min_value=1,
+        max_value=28,
+        value=min(current_len, 28),
+        step=1,
+        key="sched_len",
+    )
+    while len(config.daily_pack_schedule) < schedule_len:
+        config.daily_pack_schedule.append({name: 0.0 for name in pack_names})
+    if len(config.daily_pack_schedule) > schedule_len:
+        config.daily_pack_schedule = config.daily_pack_schedule[:schedule_len]
+
+    rows = []
+    for i, day_counts in enumerate(config.daily_pack_schedule):
+        row = {"Day": i + 1}
+        for name in pack_names:
+            row[name] = float(day_counts.get(name, 0.0))
+        rows.append(row)
+
+    schedule_df = pd.DataFrame(rows)
+    edited_sched = st.data_editor(
+        schedule_df,
         column_config={
-            "Pack Name": st.column_config.TextColumn("Pack Name"),
-            "20-Day Average": st.column_config.NumberColumn(
-                "20-Day Average",
-                min_value=0.0,
-                max_value=50.0,
-                step=0.1,
-                format="%.1f",
-                required=True,
-            ),
+            "Day": st.column_config.NumberColumn("Day", disabled=True, format="%d"),
+            **{
+                name: st.column_config.NumberColumn(
+                    name, min_value=0.0, max_value=50.0, step=0.5, format="%.1f"
+                )
+                for name in pack_names
+            },
         },
         hide_index=True,
         width="stretch",
-        key="pack_averages_editor",
+        height=min(400, 35 + schedule_len * 35),
+        key="daily_schedule_editor",
     )
-
-    config.pack_averages = {row._1: row._2 for row in edited_avg.itertuples()}
+    config.daily_pack_schedule = [
+        {name: float(row[name]) for name in pack_names}
+        for _, row in edited_sched.iterrows()
+    ]
 
     st.divider()
     st.subheader("Card Types Tables by Pack")
     st.caption("Mapping of total unlocked cards to types yielded for each pack")
 
-    pack_tabs = st.tabs([pack.name for pack in config.packs])
-
+    pack_tabs = st.tabs(pack_names)
     for pack, pack_tab in zip(config.packs, pack_tabs):
         with pack_tab:
             card_types_df = pd.DataFrame(
@@ -94,7 +125,6 @@ def _render_pack_config(config: SimConfig) -> None:
                     )
                 ]
             )
-
             edited_types = st.data_editor(
                 card_types_df,
                 column_config={
@@ -125,7 +155,6 @@ def _render_pack_config(config: SimConfig) -> None:
                 num_rows="dynamic",
                 key=f"card_types_{pack.name}",
             )
-
             pack.card_types_table = {
                 int(row._1): CardTypesRange(min=int(row._2), max=int(row._3))
                 for row in edited_types.itertuples()
@@ -133,7 +162,7 @@ def _render_pack_config(config: SimConfig) -> None:
 
     if st.button("🔄 Restore Pack Defaults", key="restore_pack"):
         defaults = load_defaults()
-        config.pack_averages = defaults.pack_averages
+        config.daily_pack_schedule = defaults.daily_pack_schedule
         for i, pack in enumerate(config.packs):
             pack.card_types_table = defaults.packs[i].card_types_table
         st.rerun()
@@ -357,3 +386,40 @@ def _render_progression_schedule(config: SimConfig) -> None:
         config.progression_mapping = defaults.progression_mapping
         config.unique_unlock_schedule = defaults.unique_unlock_schedule
         st.rerun()
+
+
+def _render_profiles(config: SimConfig) -> None:
+    st.subheader("User Profiles")
+    st.caption("Save and load pack schedule + unlock schedule presets.")
+
+    profiles = list_profiles()
+    if profiles:
+        selected = st.selectbox("Select Profile", profiles, key="profile_select")
+        col_load, col_del = st.columns(2)
+        with col_load:
+            if st.button("📂 Load Profile", key="load_profile"):
+                profile = load_profile(selected)
+                config.daily_pack_schedule = profile.daily_pack_schedule
+                config.unique_unlock_schedule = profile.unique_unlock_schedule
+                st.rerun()
+        with col_del:
+            if st.button("🗑️ Delete Profile", key="del_profile"):
+                delete_profile(selected)
+                st.rerun()
+    else:
+        st.info("No saved profiles yet.")
+
+    st.divider()
+    new_name = st.text_input("Profile Name", key="new_profile_name")
+    if st.button("💾 Save Profile", key="save_profile"):
+        if new_name.strip():
+            profile = UserProfile(
+                name=new_name.strip(),
+                daily_pack_schedule=config.daily_pack_schedule,
+                unique_unlock_schedule=config.unique_unlock_schedule,
+            )
+            save_profile(profile)
+            st.success(f"Saved profile '{new_name.strip()}'")
+            st.rerun()
+        else:
+            st.warning("Enter a profile name.")
