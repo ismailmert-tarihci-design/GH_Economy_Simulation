@@ -1,0 +1,5 @@
+# Development dependencies
+pytest>=7.0.0
+
+# Include all production dependencies
+-r requirements.txt
