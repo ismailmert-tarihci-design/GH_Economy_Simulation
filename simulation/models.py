@@ -107,6 +107,14 @@ class ProgressionMapping(BaseModel):
     unique_levels: List[int]
 
 
+class UserProfile(BaseModel):
+    """Reusable profile storing daily pack schedule and unique unlock schedule."""
+
+    name: str
+    daily_pack_schedule: List[Dict[str, float]]
+    unique_unlock_schedule: Dict[int, int]
+
+
 class SimConfig(BaseModel):
     """Main simulation configuration."""
 
@@ -116,8 +124,10 @@ class SimConfig(BaseModel):
     coin_per_duplicate: Dict[CardCategory, CoinPerDuplicate]
     progression_mapping: ProgressionMapping
     unique_unlock_schedule: Dict[int, int]
-    pack_averages: Dict[str, float]
+    daily_pack_schedule: List[Dict[str, float]]
     num_days: int
+    initial_coins: int = Field(default=0)
+    initial_bluestars: int = Field(default=0)
     mc_runs: Optional[int] = None
     base_shared_rate: float = Field(
         default=0.70, description="Base rate for shared cards"
