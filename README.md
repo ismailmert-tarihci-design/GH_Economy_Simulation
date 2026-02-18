@@ -1,65 +1,73 @@
 # Bluestar Economy Simulator
 
-A comprehensive economic simulation system for modeling and analyzing the Bluestar economy. Built with Streamlit for interactive visualization and analysis.
+A game economy simulation tool for analyzing card drop algorithms, dual-resource progression, and economic balancing. Built with Streamlit for interactive modeling and Plotly for real-time visualization.
 
 ## Features
 
-- Interactive economic simulation dashboard
-- Real-time economy visualization with Plotly
-- Configurable economic parameters
-- Statistical analysis and reporting
+- **Card Drop Algorithm**: Simulate drop rates and card acquisition patterns
+- **Dual-Resource Progression**: Model currency and card progression systems
+- **Configurable Tables**: Edit drop rates, progression curves, and simulation parameters in the browser
+- **URL Sharing**: Encode/decode configuration as shareable links for team collaboration
+- **Two Simulation Modes**: Deterministic (single outcome) and Monte Carlo (probability distribution)
+- **Analytics Dashboard**: 4 interactive charts showing progression, distribution, and economic trends
 
-## Setup
+## Quick Start
 
-### Prerequisites
-
-- Python 3.10 or higher
-- pip (Python package manager)
-
-### Installation
-
-1. Clone the repository:
-```bash
-git clone <repository-url>
-cd coin_sim
-```
-
-2. Install dependencies:
+1. Install dependencies:
 ```bash
 pip install -r requirements.txt
 ```
 
-### Running the Application
-
-Start the Streamlit app:
+2. Run the app:
 ```bash
 streamlit run app.py
 ```
 
-The application will be available at `http://localhost:8501`
+Visit `http://localhost:8501` in your browser.
 
-### Running Tests
+## Configuration Guide
 
-Execute the test suite:
+The **Config Editor** page lets you customize:
+- Drop rate tables (probability per tier)
+- Progression curves (level vs resource cost)
+- Simulation parameters (player count, duration)
+
+Changes are reflected immediately in previews.
+
+## URL Sharing
+
+Share configurations with colleagues using encoded URLs. The app compresses your config (JSON → gzip → base64url) to ~2-3KB for easy sharing.
+
+## Simulation Modes
+
+- **Deterministic**: Single simulation run with fixed seed (reproducible results)
+- **Monte Carlo**: 1000 runs with probability distribution (realistic variance analysis)
+
+## Dashboard
+
+Four charts analyze simulation results:
+1. **Progression Over Time**: Average player level by day
+2. **Resource Distribution**: Player earnings distribution by tier
+3. **Drop Rate Analysis**: Actual vs expected card drop rates
+4. **Economic Health**: Overall system resource flows
+
+## Deployment (Streamlit Cloud)
+
+1. Push repository to GitHub
+2. Visit https://share.streamlit.io
+3. Connect your GitHub account and repo
+4. Set entry point: `app.py`
+5. Deploy
+
+## Development
+
+Run tests:
 ```bash
+pip install -r requirements-dev.txt
 pytest tests/
 ```
 
-## Project Structure
-
-- `app.py` - Main Streamlit application entry point
-- `simulation/` - Core simulation logic and models
-- `pages/` - Multi-page Streamlit pages
-- `data/defaults/` - Default configuration and data files
-- `tests/` - Unit and integration tests
-- `.streamlit/` - Streamlit configuration
-
-## Configuration
-
-Streamlit settings are configured in `.streamlit/config.toml`. Key settings include:
-- Server port: 8501
-- Headless mode enabled for deployment
-- Custom theme configuration
+176 unit and integration tests validate card drop logic, progression curves, and simulation accuracy.
 
 ## License
 
