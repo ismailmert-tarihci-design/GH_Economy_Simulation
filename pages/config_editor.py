@@ -86,8 +86,8 @@ def _render_pack_config(config: SimConfig) -> None:
                 [
                     {
                         "Unlocked Card Count": int(k),
-                        "Min Card Types": v.min,
-                        "Max Card Types": v.max,
+                        "Min Card Types": int(v.min),
+                        "Max Card Types": int(v.max),
                     }
                     for k, v in sorted(
                         pack.card_types_table.items(), key=lambda x: int(x[0])

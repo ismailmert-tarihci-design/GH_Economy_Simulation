@@ -93,11 +93,12 @@ class TestCardTypesLookup:
         assert result.min == 3
         assert result.max == 3
 
-    def test_below_minimum_raises(self):
-        """Should raise ValueError if total_unlocked below minimum key."""
+    def test_below_minimum_falls_back(self):
+        """Should return lowest tier's range when total_unlocked is below all keys."""
         table = {10: CardTypesRange(min=1, max=1), 20: CardTypesRange(min=2, max=2)}
-        with pytest.raises(ValueError, match="below minimum table key"):
-            _get_card_types_for_count(table, 5)
+        result = _get_card_types_for_count(table, 5)
+        assert result.min == 1
+        assert result.max == 1
 
     def test_min_max_range(self):
         """Should return correct min/max range from table."""

@@ -31,18 +31,14 @@ def _get_card_types_for_count(
     Look up card types range for a given total unlocked count using floor matching.
 
     Returns the CardTypesRange (min/max) for the highest threshold ≤ total_unlocked.
-
-    Raises:
-        ValueError: If total_unlocked is less than minimum table key
+    If total_unlocked is below all thresholds, returns the range for the lowest threshold.
     """
     matching_keys = [k for k in card_types_table.keys() if int(k) <= total_unlocked]
     if not matching_keys:
-        raise ValueError(
-            f"total_unlocked ({total_unlocked}) is below minimum table key "
-            f"({min(card_types_table.keys())})"
-        )
-
-    best_key = max(matching_keys)
+        # Below all thresholds — fall back to the lowest tier
+        best_key = min(card_types_table.keys())
+    else:
+        best_key = max(matching_keys)
     return card_types_table[best_key]
 
 
