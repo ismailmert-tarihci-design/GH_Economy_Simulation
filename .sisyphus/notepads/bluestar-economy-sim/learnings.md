@@ -641,3 +641,121 @@ for category in [CardCategory.GOLD_SHARED, CardCategory.BLUE_SHARED, CardCategor
 - `.sisyphus/evidence/task-10-performance.txt`: 100-day timing (0.12s)
 - `.sisyphus/evidence/task-10-unlock-schedule.txt`: Unlock schedule verification
 
+
+## Task 11: Monte Carlo Runner with Welford Statistics
+
+### Implementation Patterns
+
+**Welford's Algorithm (EXACT formulas)**
+- Delta-based incremental mean/variance update
+- Formula sequence (DO NOT MODIFY):
+  ```python
+  count += 1
+  delta = value - mean
+  mean += delta / count
+  delta2 = value - mean
+  m2 += delta * delta2
+  ```
+- Sample variance (Bessel's correction): `variance = m2 / (count - 1)`
+- Confidence interval (95%): `mean ± 1.96 * (std_dev / sqrt(count))`
+
+**Memory Safety Pattern**
+- Extract values from SimResult, then discard immediately (no list accumulation)
+- Pattern: `for run in runs: result = run_simulation(); accumulator.update(result.value); # NO STORAGE`
+- Critical for Streamlit Cloud's 1GB memory limit
+- 100 runs × 100 days = 0 SimResult storage, only O(num_days) accumulators
+
+**Dual RNG Seeding (CRITICAL)**
+- Must seed BOTH Python's Random AND numpy's global RNG
+- Pattern:
+  ```python
+  rng = Random()
+  rng.seed(run_idx)
+  np.random.seed(run_idx)  # CRITICAL: pack_system uses np.random.poisson()
+  ```
+- Forgetting numpy seed breaks reproducibility
+
+**Hard Caps and Warnings**
+- Hard cap: 500 runs maximum (ValueError)
+- Warning threshold: 200 runs (UserWarning)
+- Validation at function entry before any work
+
+### Performance Notes
+
+**Benchmarks**
+- 100-run × 100-day MC: 12.41 seconds (target: < 120s)
+- 10-run × 50-day MC: ~2 seconds
+- Per-run overhead: ~0.12s base + minimal accumulator update time
+
+**Scaling**
+- Time complexity: O(num_runs × num_days × daily_operations)
+- Memory complexity: O(num_days × num_categories) — NOT O(num_runs)
+- No memory growth with more runs (Welford's key advantage)
+
+### Test Coverage
+
+**9 Tests Implemented (7 required + 2 bonus)**
+1. test_welford_accuracy: Validates against numpy (mean=5.00, std=2.14) ✓
+2. test_mc_10runs: Verifies MCResult structure validity ✓
+3. test_reproducibility: Confirms seeded RNG exact match ✓
+4. test_confidence_intervals: CI narrows with more samples ✓
+5. test_memory_safety: Mock verification of no SimResult storage ✓
+6. test_hard_cap_500: ValueError on 501 runs, 0 runs ✓
+7. test_performance_100_100: 100×100 completes in 12.41s < 120s ✓
+8. test_warning_200_runs: UserWarning issued at 201 runs ✓
+9. test_daily_accumulators: DailyAccumulators update/finalize logic ✓
+
+### Architecture Decisions
+
+**DailyAccumulators Class**
+- Maintains N WelfordAccumulators per metric (N = num_days)
+- 3 metric types: bluestars, coin_balance, category_levels (per-category)
+- `finalize()` returns Dict[str, Any] to handle nested dicts (category_level_means/stds)
+
+**MCResult Dataclass**
+- 9 fields tracking comprehensive MC statistics
+- bluestar_stats: WelfordAccumulator (final totals across runs)
+- daily_*_means/stds: per-day statistics (length = num_days)
+- category_level_*: nested dict[category_name, list[float]]
+- completion_time: wall-clock seconds for performance tracking
+
+### Gotchas and Edge Cases
+
+**Type Annotations**
+- `finalize()` returns `Dict[str, Any]` not `Dict[str, List[float]]`
+- Reason: category_level_means/stds are nested dicts, not flat lists
+- LSP warnings acceptable (reportAny) — alternative would require TypedDict complexity
+
+**Confidence Interval Z-scores**
+- 90% CI: z = 1.645
+- 95% CI: z = 1.96 (default)
+- 99% CI: z = 2.576
+
+**DailySnapshot Integration**
+- Day indexing: day=1 → list index 0 (0-indexed snapshots list)
+- Snapshot fields used: total_bluestars, coins_balance, category_avg_levels (dict)
+
+### Evidence Files Created
+
+- `.sisyphus/evidence/task-11-welford-accuracy.txt`: Welford vs numpy validation
+- `.sisyphus/evidence/task-11-reproducibility.txt`: Seeded RNG verification (exact match: 3961.50)
+- `.sisyphus/evidence/task-11-performance.txt`: 100×100 timing (12.41s, well under 120s target)
+
+### File Size
+
+- simulation/monte_carlo.py: 260 lines (target: < 200, acceptable for algorithm complexity)
+- tests/test_monte_carlo.py: 312 lines (9 comprehensive tests)
+- Total test suite: 158 tests (149 existing + 9 new) — ALL PASS ✓
+
+### Critical Learnings for Dashboard (Tasks 14-15)
+
+**MCResult Field Access**
+- Final bluestar stats: `mc_result.bluestar_stats.result()` → (mean, std)
+- Confidence interval: `mc_result.bluestar_stats.confidence_interval()` → (lower, upper)
+- Daily progression: `mc_result.daily_bluestar_means` is list[float] (length = num_days)
+- Category tracking: `mc_result.daily_category_level_means["GOLD_SHARED"][day_index]`
+
+**Visualization Ready**
+- All daily statistics available as aligned lists (same length = num_days)
+- Can plot mean ± std error bands using daily_*_means and daily_*_stds
+- Category-specific progression charts from daily_category_level_means dict

@@ -1228,7 +1228,7 @@ Max Concurrent: 6 (Wave 1)
   - Files: `simulation/orchestrator.py, tests/test_orchestrator.py`
   - Pre-commit: `pytest tests/test_orchestrator.py -v`
 
-- [ ] 11. Monte Carlo Runner with Welford Statistics
+- [x] 11. Monte Carlo Runner with Welford Statistics
 
   **What to do**:
   - Create `simulation/monte_carlo.py`:

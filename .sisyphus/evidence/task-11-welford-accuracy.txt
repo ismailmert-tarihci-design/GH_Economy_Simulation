@@ -1,0 +1,5 @@
+=== WELFORD ACCURACY TEST ===
+Input: [2, 4, 4, 4, 5, 5, 7, 9]
+Welford: mean=5.00, std=2.14
+Numpy: mean=5.00, std=2.14 (ddof=1)
+Match: ✓ (within 0.01)

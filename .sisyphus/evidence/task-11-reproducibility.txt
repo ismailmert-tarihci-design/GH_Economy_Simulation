@@ -1,0 +1,4 @@
+=== REPRODUCIBILITY TEST ===
+Run 1: bluestar_mean=3961.50
+Run 2: bluestar_mean=3961.50
+Exact match: ✓
