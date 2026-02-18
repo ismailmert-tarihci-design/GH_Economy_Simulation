@@ -61,7 +61,7 @@ def base_config():
         coin_per_duplicate={},
         progression_mapping=progression_mapping,
         unique_unlock_schedule={},
-        pack_averages={},
+        daily_pack_schedule=[],
         num_days=100,
         max_shared_level=100,
         max_unique_level=10,

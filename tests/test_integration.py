@@ -72,8 +72,9 @@ def test_mc_simulation_10x10(simple_config, seeded_rng):
     """Test Monte Carlo simulation produces valid statistics."""
     config = simple_config
     config.num_days = 30
-    for pack_name in config.pack_averages.keys():
-        config.pack_averages[pack_name] = 5.0
+    for day_entry in config.daily_pack_schedule:
+        for pack_name in list(day_entry.keys()):
+            day_entry[pack_name] = 5.0
 
     result = run_monte_carlo(config, num_runs=10)
 
@@ -96,8 +97,9 @@ def test_edge_case_zero_packs(default_config):
     config = default_config
     config.num_days = 10
 
-    for pack_name in config.pack_averages.keys():
-        config.pack_averages[pack_name] = 0.0
+    for day_entry in config.daily_pack_schedule:
+        for pack_name in list(day_entry.keys()):
+            day_entry[pack_name] = 0.0
 
     result = run_simulation(config)
 
@@ -214,8 +216,9 @@ def test_drop_algorithm_statistical_consistency(simple_config):
     """Test drop algorithm maintains consistent results over many MC runs."""
     config = simple_config
     config.num_days = 50
-    for pack_name in config.pack_averages.keys():
-        config.pack_averages[pack_name] = 5.0
+    for day_entry in config.daily_pack_schedule:
+        for pack_name in list(day_entry.keys()):
+            day_entry[pack_name] = 5.0
 
     result = run_monte_carlo(config, num_runs=100)
 

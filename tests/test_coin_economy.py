@@ -70,7 +70,7 @@ def sim_config():
             unique_levels=[1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
         ),
         unique_unlock_schedule={},
-        pack_averages={},
+        daily_pack_schedule=[],
         num_days=30,
         base_shared_rate=0.70,
         base_unique_rate=0.30,
