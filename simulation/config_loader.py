@@ -17,6 +17,7 @@ from simulation.models import (
     DuplicateRange,
     CoinPerDuplicate,
     ProgressionMapping,
+    UserProfile,
     CardCategory,
 )
 
@@ -86,9 +87,9 @@ def load_defaults() -> SimConfig:
     # Convert string keys to integers
     unique_unlock_schedule = {int(k): v for k, v in schedule_data.items()}
 
-    # Load pack averages
-    with open(defaults_dir / "pack_averages.json") as f:
-        averages_data = json.load(f)
+    # Load daily pack schedule
+    with open(defaults_dir / "daily_pack_schedule.json") as f:
+        schedule_data = json.load(f)
 
     # Create SimConfig
     config = SimConfig(
@@ -98,8 +99,43 @@ def load_defaults() -> SimConfig:
         coin_per_duplicate=coin_per_duplicate,
         progression_mapping=progression_mapping,
         unique_unlock_schedule=unique_unlock_schedule,
-        pack_averages=averages_data,
-        num_days=100,  # Default simulation duration
+        daily_pack_schedule=schedule_data,
+        num_days=100,
     )
 
     return config
+
+
+def _get_profiles_dir() -> Path:
+    current_dir = Path(__file__).parent.parent
+    return current_dir / "data" / "profiles"
+
+
+def list_profiles() -> list[str]:
+    profiles_dir = _get_profiles_dir()
+    if not profiles_dir.exists():
+        return []
+    return sorted(p.stem for p in profiles_dir.glob("*.json"))
+
+
+def load_profile(name: str) -> UserProfile:
+    profiles_dir = _get_profiles_dir()
+    path = profiles_dir / f"{name}.json"
+    with open(path) as f:
+        data = json.load(f)
+    return UserProfile.model_validate(data)
+
+
+def save_profile(profile: UserProfile) -> None:
+    profiles_dir = _get_profiles_dir()
+    profiles_dir.mkdir(parents=True, exist_ok=True)
+    path = profiles_dir / f"{profile.name}.json"
+    with open(path, "w") as f:
+        f.write(profile.model_dump_json(indent=2))
+
+
+def delete_profile(name: str) -> None:
+    profiles_dir = _get_profiles_dir()
+    path = profiles_dir / f"{name}.json"
+    if path.exists():
+        path.unlink()

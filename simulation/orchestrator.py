@@ -103,8 +103,8 @@ def create_initial_state(
     game_state = GameState(
         day=0,
         cards=cards,
-        coins=0,
-        total_bluestars=0,
+        coins=config.initial_coins,
+        total_bluestars=config.initial_bluestars,
         streak_state=StreakState(
             streak_shared=0,
             streak_unique=0,
@@ -113,7 +113,7 @@ def create_initial_state(
         ),
     )
 
-    coin_ledger = CoinLedger(balance=0)
+    coin_ledger = CoinLedger(balance=config.initial_coins)
 
     streak_state = StreakState(
         streak_shared=0,
@@ -123,6 +123,15 @@ def create_initial_state(
     )
 
     return game_state, coin_ledger, streak_state
+
+
+def _get_day_pack_counts(config: SimConfig, day: int) -> dict[str, float]:
+    schedule = config.daily_pack_schedule
+    if not schedule:
+        return {}
+    # day is 1-indexed; schedule is 0-indexed; loop using modulo
+    index = (day - 1) % len(schedule)
+    return schedule[index]
 
 
 def run_simulation(config: SimConfig, rng: Optional[Random] = None) -> SimResult:
@@ -169,7 +178,8 @@ def run_simulation(config: SimConfig, rng: Optional[Random] = None) -> SimResult
                 )
 
         # Step b: Process packs
-        card_pulls = process_packs_for_day(game_state, config, rng)
+        day_pack_counts = _get_day_pack_counts(config, day)
+        card_pulls = process_packs_for_day(game_state, config, rng, day_pack_counts)
 
         # Step c: For each CardPull (SEQUENTIAL - ORDER MATTERS)
         for card_pull in card_pulls:

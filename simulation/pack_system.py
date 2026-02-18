@@ -46,6 +46,7 @@ def process_packs_for_day(
     game_state: GameState,
     config: SimConfig,
     rng: Optional[Random] = None,
+    day_pack_counts: Optional[dict[str, float]] = None,
 ) -> list[CardPull]:
     """
     Process pack openings for a single day.
@@ -57,8 +58,10 @@ def process_packs_for_day(
 
     Args:
         game_state: Current game state (contains current card collection)
-        config: Simulation configuration with pack_averages and pack definitions
+        config: Simulation configuration with pack definitions
         rng: Random instance for MC mode (None = deterministic)
+        day_pack_counts: Pack counts for this day. Falls back to
+            day 0 of daily_pack_schedule if not provided.
 
     Returns:
         List of CardPull objects for the day
@@ -66,11 +69,15 @@ def process_packs_for_day(
     pulls: list[CardPull] = []
     total_unlocked = len(game_state.cards)
 
+    if day_pack_counts is None:
+        day_pack_counts = (
+            config.daily_pack_schedule[0] if config.daily_pack_schedule else {}
+        )
+
     for pack_config in config.packs:
         pack_name = pack_config.name
 
-        # Get average packs for this type
-        daily_avg = config.pack_averages.get(pack_name, 0.0)
+        daily_avg = day_pack_counts.get(pack_name, 0.0)
 
         # Determine number of packs to open
         if rng is None:
