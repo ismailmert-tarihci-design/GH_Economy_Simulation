@@ -52,5 +52,6 @@ elif page == "▶️ Simulation":
     render_simulation_controls(st.session_state.config)
 
 elif page == "📊 Dashboard":
-    st.title("📊 Dashboard")
-    st.info("Dashboard page coming soon! (Tasks 14-15)")
+    from pages.dashboard import render_dashboard
+
+    render_dashboard()

@@ -1587,7 +1587,7 @@ Max Concurrent: 6 (Wave 1)
   - Files: `pages/simulation_controls.py, simulation/url_config.py, tests/test_url_config.py`
   - Pre-commit: `pytest tests/test_url_config.py -v`
 
-- [ ] 14. Dashboard — Bluestar Curve + Card Progression Charts
+- [x] 14. Dashboard — Bluestar Curve + Card Progression Charts
 
   **What to do**:
   - Create `pages/dashboard.py` (imported into app.py):
