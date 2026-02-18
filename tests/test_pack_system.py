@@ -31,7 +31,7 @@ from simulation.pack_system import (
 
 
 def _make_test_config(
-    pack_averages: dict[str, float], packs: list[PackConfig]
+    daily_pack_schedule: list[dict[str, float]], packs: list[PackConfig]
 ) -> SimConfig:
     """Create minimal SimConfig for testing."""
     return SimConfig(
@@ -41,7 +41,7 @@ def _make_test_config(
         coin_per_duplicate={},
         progression_mapping=ProgressionMapping(shared_levels=[], unique_levels=[]),
         unique_unlock_schedule={},
-        pack_averages=pack_averages,
+        daily_pack_schedule=daily_pack_schedule,
         num_days=1,
     )
 
@@ -122,7 +122,7 @@ class TestProcessPacksZero:
         )
 
         config = _make_test_config(
-            pack_averages={"basic": 0.0, "premium": 0.0},
+            daily_pack_schedule=[{"basic": 0.0, "premium": 0.0}],
             packs=[
                 PackConfig(
                     name="basic", card_types_table={0: CardTypesRange(min=1, max=1)}
@@ -147,7 +147,7 @@ class TestProcessPacksZero:
         )
 
         config = _make_test_config(
-            pack_averages={"basic": 0.0},
+            daily_pack_schedule=[{"basic": 0.0}],
             packs=[
                 PackConfig(
                     name="basic", card_types_table={0: CardTypesRange(min=1, max=1)}
@@ -175,7 +175,7 @@ class TestProcessPacksDeterministic:
         )
 
         config = _make_test_config(
-            pack_averages={"basic": 2.5},
+            daily_pack_schedule=[{"basic": 2.5}],
             packs=[
                 PackConfig(
                     name="basic", card_types_table={0: CardTypesRange(min=1, max=1)}
@@ -197,7 +197,7 @@ class TestProcessPacksDeterministic:
         )
 
         config = _make_test_config(
-            pack_averages={"basic": 2.4},
+            daily_pack_schedule=[{"basic": 2.4}],
             packs=[
                 PackConfig(
                     name="basic", card_types_table={0: CardTypesRange(min=1, max=1)}
@@ -219,7 +219,7 @@ class TestProcessPacksDeterministic:
         )
 
         config = _make_test_config(
-            pack_averages={"basic": 2.6},
+            daily_pack_schedule=[{"basic": 2.6}],
             packs=[
                 PackConfig(
                     name="basic", card_types_table={0: CardTypesRange(min=1, max=1)}
@@ -245,7 +245,7 @@ class TestProcessPacksMultipleTypes:
         )
 
         config = _make_test_config(
-            pack_averages={"basic": 2.0, "premium": 1.0},
+            daily_pack_schedule=[{"basic": 2.0, "premium": 1.0}],
             packs=[
                 PackConfig(
                     name="basic", card_types_table={0: CardTypesRange(min=1, max=1)}
@@ -272,7 +272,7 @@ class TestProcessPacksMultipleTypes:
         )
 
         config = _make_test_config(
-            pack_averages={"basic": 1.0},
+            daily_pack_schedule=[{"basic": 1.0}],
             packs=[
                 PackConfig(
                     name="basic",
@@ -299,7 +299,7 @@ class TestProcessPacksMultipleTypes:
         )
 
         config = _make_test_config(
-            pack_averages={"basic": 1.0},
+            daily_pack_schedule=[{"basic": 1.0}],
             packs=[
                 PackConfig(
                     name="basic",
@@ -330,7 +330,7 @@ class TestProcessPacksMC:
         )
 
         config = _make_test_config(
-            pack_averages={"basic": 3.0},
+            daily_pack_schedule=[{"basic": 3.0}],
             packs=[
                 PackConfig(
                     name="basic", card_types_table={0: CardTypesRange(min=1, max=1)}
@@ -355,7 +355,7 @@ class TestProcessPacksMC:
         )
 
         config = _make_test_config(
-            pack_averages={"basic": 2.5},
+            daily_pack_schedule=[{"basic": 2.5}],
             packs=[
                 PackConfig(
                     name="basic", card_types_table={0: CardTypesRange(min=1, max=1)}

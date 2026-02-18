@@ -110,13 +110,13 @@ class TestConfigLoader:
         assert 30 in schedule
         assert schedule[30] == 27
 
-    def test_pack_averages_has_nine_entries(self):
-        """Pack averages should have 9 entries."""
+    def test_daily_pack_schedule_has_entries(self):
+        """Daily pack schedule should have entries with 9 pack names."""
         config = load_defaults()
-        pack_avg = config.pack_averages
+        schedule = config.daily_pack_schedule
 
-        assert len(pack_avg) == 9
-        pack_names = set(pack_avg.keys())
+        assert len(schedule) > 0
+        pack_names = set(schedule[0].keys())
         expected_names = {
             "StandardPackT1",
             "StandardPackT2",
@@ -140,7 +140,7 @@ class TestConfigLoader:
         assert config.coin_per_duplicate is not None
         assert config.progression_mapping is not None
         assert config.unique_unlock_schedule is not None
-        assert config.pack_averages is not None
+        assert config.daily_pack_schedule is not None
         assert config.num_days > 0
 
     def test_pack_card_types_table_structure(self):

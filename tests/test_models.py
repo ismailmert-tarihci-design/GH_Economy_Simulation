@@ -321,7 +321,7 @@ class TestSimConfig:
             coin_per_duplicate={},
             progression_mapping=pm,
             unique_unlock_schedule={},
-            pack_averages={},
+            daily_pack_schedule=[],
             num_days=30,
         )
         assert config.base_shared_rate == 0.70
@@ -343,7 +343,7 @@ class TestSimConfig:
             coin_per_duplicate={},
             progression_mapping=pm,
             unique_unlock_schedule={1: 5},
-            pack_averages={"test": 1.5},
+            daily_pack_schedule=[{"test": 1.5}],
             num_days=60,
             mc_runs=1000,
             base_shared_rate=0.60,
@@ -374,7 +374,7 @@ class TestSimConfig:
             coin_per_duplicate={},
             progression_mapping=pm,
             unique_unlock_schedule={},
-            pack_averages={},
+            daily_pack_schedule=[],
             num_days=45,
             mc_runs=500,
         )
@@ -515,7 +515,7 @@ class TestIntegration:
             coin_per_duplicate={},
             progression_mapping=pm,
             unique_unlock_schedule={1: 1, 2: 2},
-            pack_averages={"basic": 0.5, "premium": 0.8},
+            daily_pack_schedule=[{"basic": 0.5, "premium": 0.8}],
             num_days=30,
             mc_runs=100,
         )

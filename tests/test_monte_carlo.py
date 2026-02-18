@@ -122,7 +122,7 @@ def full_config():
         },
         progression_mapping=progression_mapping,
         unique_unlock_schedule={1: 8, 30: 1, 60: 1},
-        pack_averages={"basic_pack": 3.5, "premium_pack": 2.0},
+        daily_pack_schedule=[{"basic_pack": 3.5, "premium_pack": 2.0}],
         num_days=100,
     )
 
@@ -240,7 +240,7 @@ def test_hard_cap_500():
         coin_per_duplicate={},
         progression_mapping=ProgressionMapping(shared_levels=[1], unique_levels=[1]),
         unique_unlock_schedule={},
-        pack_averages={},
+        daily_pack_schedule=[],
         num_days=1,
     )
 

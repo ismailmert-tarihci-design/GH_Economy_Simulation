@@ -113,7 +113,7 @@ def full_config():
         },
         progression_mapping=progression_mapping,
         unique_unlock_schedule={1: 8, 5: 2},
-        pack_averages={"basic_pack": 2.0, "premium_pack": 1.5},
+        daily_pack_schedule=[{"basic_pack": 2.0, "premium_pack": 1.5}],
         num_days=1,
         max_shared_level=100,
         max_unique_level=10,
@@ -160,7 +160,7 @@ def test_duplicates_accumulate(full_config):
 def test_upgrades_fire(full_config):
     """Test: upgrades fire when threshold crossed on day 3."""
     full_config.num_days = 5
-    full_config.pack_averages = {"basic_pack": 5.0, "premium_pack": 5.0}
+    full_config.daily_pack_schedule = [{"basic_pack": 5.0, "premium_pack": 5.0}]
 
     result = run_simulation(full_config, rng=None)
 
@@ -193,7 +193,7 @@ def test_unlock_schedule(full_config):
 def test_bluestar_accounting(full_config):
     """Test: total_bluestars = sum of all upgrade rewards across all days."""
     full_config.num_days = 10
-    full_config.pack_averages = {"basic_pack": 5.0, "premium_pack": 5.0}
+    full_config.daily_pack_schedule = [{"basic_pack": 5.0, "premium_pack": 5.0}]
 
     result = run_simulation(full_config, rng=None)
 

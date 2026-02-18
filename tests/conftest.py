@@ -23,8 +23,9 @@ def simple_config() -> SimConfig:
     config = load_defaults()
     config.num_days = 10
 
-    for pack_name in config.pack_averages.keys():
-        config.pack_averages[pack_name] = 3.0
+    for day_entry in config.daily_pack_schedule:
+        for pack_name in list(day_entry.keys()):
+            day_entry[pack_name] = 3.0
 
     for category in [CardCategory.GOLD_SHARED, CardCategory.BLUE_SHARED]:
         max_level = config.max_shared_level
