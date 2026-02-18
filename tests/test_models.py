@@ -10,6 +10,7 @@ import pytest
 from simulation.models import (
     Card,
     CardCategory,
+    CardTypesRange,
     CoinPerDuplicate,
     DuplicateRange,
     GameState,
@@ -183,16 +184,24 @@ class TestPackConfig:
         """Test basic PackConfig creation."""
         pack = PackConfig(
             name="Standard Pack",
-            card_types_table={1: 5, 2: 3, 3: 2},
+            card_types_table={
+                1: CardTypesRange(min=5, max=5),
+                2: CardTypesRange(min=3, max=3),
+                3: CardTypesRange(min=2, max=2),
+            },
         )
         assert pack.name == "Standard Pack"
-        assert pack.card_types_table == {1: 5, 2: 3, 3: 2}
+        assert pack.card_types_table[1].min == 5
+        assert pack.card_types_table[1].max == 5
 
     def test_pack_config_json_serialization(self):
         """Test PackConfig JSON round-trip serialization."""
         pack = PackConfig(
             name="Premium Pack",
-            card_types_table={1: 10, 2: 5},
+            card_types_table={
+                1: CardTypesRange(min=10, max=10),
+                2: CardTypesRange(min=5, max=5),
+            },
         )
         json_str = pack.model_dump_json()
         deserialized = PackConfig.model_validate_json(json_str)
@@ -323,7 +332,9 @@ class TestSimConfig:
 
     def test_sim_config_with_custom_values(self):
         """Test SimConfig with custom values."""
-        pack = PackConfig(name="Test Pack", card_types_table={1: 5})
+        pack = PackConfig(
+            name="Test Pack", card_types_table={1: CardTypesRange(min=5, max=5)}
+        )
         pm = ProgressionMapping(shared_levels=[1], unique_levels=[1])
         config = SimConfig(
             packs=[pack],
@@ -346,7 +357,9 @@ class TestSimConfig:
 
     def test_sim_config_json_serialization(self):
         """Test SimConfig JSON round-trip serialization."""
-        pack = PackConfig(name="Pack1", card_types_table={1: 3})
+        pack = PackConfig(
+            name="Pack1", card_types_table={1: CardTypesRange(min=3, max=3)}
+        )
         table = UpgradeTable(
             category=CardCategory.GOLD_SHARED,
             duplicate_costs=[0, 5],
@@ -462,8 +475,20 @@ class TestIntegration:
     def test_full_sim_config_serialization(self):
         """Test serialization of complete SimConfig."""
         packs = [
-            PackConfig(name="Basic", card_types_table={1: 5, 2: 3}),
-            PackConfig(name="Premium", card_types_table={2: 5, 3: 5}),
+            PackConfig(
+                name="Basic",
+                card_types_table={
+                    1: CardTypesRange(min=5, max=5),
+                    2: CardTypesRange(min=3, max=3),
+                },
+            ),
+            PackConfig(
+                name="Premium",
+                card_types_table={
+                    2: CardTypesRange(min=5, max=5),
+                    3: CardTypesRange(min=5, max=5),
+                },
+            ),
         ]
         upgrade_tables = {
             CardCategory.GOLD_SHARED: UpgradeTable(

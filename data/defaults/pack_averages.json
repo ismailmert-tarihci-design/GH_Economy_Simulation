@@ -1,11 +1,11 @@
 {
-  "Pack1": 1.0,
-  "Pack2": 1.0,
-  "Pack3": 1.0,
-  "Pack4": 1.0,
-  "Pack5": 1.0,
-  "Pack6": 1.0,
-  "Pack7": 1.0,
-  "Pack8": 1.0,
-  "Pack9": 1.0
+  "StandardPackT1": 1.0,
+  "StandardPackT2": 1.0,
+  "StandardPackT3": 1.0,
+  "StandardPackT4": 1.0,
+  "StandardPackT5": 1.0,
+  "PetPack": 1.0,
+  "GearPack": 1.0,
+  "HeroPack": 1.0,
+  "EndOfChapterPack": 1.0
 }

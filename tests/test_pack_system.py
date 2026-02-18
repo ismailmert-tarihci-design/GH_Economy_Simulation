@@ -16,6 +16,7 @@ import numpy as np
 
 from simulation.models import (
     CardCategory,
+    CardTypesRange,
     GameState,
     PackConfig,
     ProgressionMapping,
@@ -50,30 +51,60 @@ class TestCardTypesLookup:
 
     def test_exact_key_match(self):
         """Exact key in table should return corresponding value."""
-        table = {0: 1, 10: 2, 20: 3}
-        assert _get_card_types_for_count(table, 10) == 2
+        table = {
+            0: CardTypesRange(min=1, max=1),
+            10: CardTypesRange(min=2, max=2),
+            20: CardTypesRange(min=3, max=3),
+        }
+        result = _get_card_types_for_count(table, 10)
+        assert result.min == 2
+        assert result.max == 2
 
     def test_floor_lookup(self):
         """Should use floor key when exact match missing."""
-        table = {0: 1, 10: 2, 20: 3}
-        # 15 is between 10 and 20, should use 10
-        assert _get_card_types_for_count(table, 15) == 2
+        table = {
+            0: CardTypesRange(min=1, max=1),
+            10: CardTypesRange(min=2, max=2),
+            20: CardTypesRange(min=3, max=3),
+        }
+        result = _get_card_types_for_count(table, 15)
+        assert result.min == 2
+        assert result.max == 2
 
     def test_minimum_key(self):
         """Should use minimum key when total_unlocked < 10."""
-        table = {0: 1, 10: 2, 20: 3}
-        assert _get_card_types_for_count(table, 5) == 1
+        table = {
+            0: CardTypesRange(min=1, max=1),
+            10: CardTypesRange(min=2, max=2),
+            20: CardTypesRange(min=3, max=3),
+        }
+        result = _get_card_types_for_count(table, 5)
+        assert result.min == 1
+        assert result.max == 1
 
     def test_maximum_key(self):
         """Should use highest key when total_unlocked exceeds it."""
-        table = {0: 1, 10: 2, 20: 3}
-        assert _get_card_types_for_count(table, 100) == 3
+        table = {
+            0: CardTypesRange(min=1, max=1),
+            10: CardTypesRange(min=2, max=2),
+            20: CardTypesRange(min=3, max=3),
+        }
+        result = _get_card_types_for_count(table, 100)
+        assert result.min == 3
+        assert result.max == 3
 
     def test_below_minimum_raises(self):
         """Should raise ValueError if total_unlocked below minimum key."""
-        table = {10: 1, 20: 2}
+        table = {10: CardTypesRange(min=1, max=1), 20: CardTypesRange(min=2, max=2)}
         with pytest.raises(ValueError, match="below minimum table key"):
             _get_card_types_for_count(table, 5)
+
+    def test_min_max_range(self):
+        """Should return correct min/max range from table."""
+        table = {0: CardTypesRange(min=1, max=3), 10: CardTypesRange(min=2, max=5)}
+        result = _get_card_types_for_count(table, 15)
+        assert result.min == 2
+        assert result.max == 5
 
 
 class TestProcessPacksZero:
@@ -92,8 +123,12 @@ class TestProcessPacksZero:
         config = _make_test_config(
             pack_averages={"basic": 0.0, "premium": 0.0},
             packs=[
-                PackConfig(name="basic", card_types_table={0: 1}),
-                PackConfig(name="premium", card_types_table={0: 2}),
+                PackConfig(
+                    name="basic", card_types_table={0: CardTypesRange(min=1, max=1)}
+                ),
+                PackConfig(
+                    name="premium", card_types_table={0: CardTypesRange(min=2, max=2)}
+                ),
             ],
         )
 
@@ -112,7 +147,11 @@ class TestProcessPacksZero:
 
         config = _make_test_config(
             pack_averages={"basic": 0.0},
-            packs=[PackConfig(name="basic", card_types_table={0: 1})],
+            packs=[
+                PackConfig(
+                    name="basic", card_types_table={0: CardTypesRange(min=1, max=1)}
+                )
+            ],
         )
 
         np.random.seed(42)
@@ -136,7 +175,11 @@ class TestProcessPacksDeterministic:
 
         config = _make_test_config(
             pack_averages={"basic": 2.5},
-            packs=[PackConfig(name="basic", card_types_table={0: 1})],
+            packs=[
+                PackConfig(
+                    name="basic", card_types_table={0: CardTypesRange(min=1, max=1)}
+                )
+            ],
         )
 
         pulls = process_packs_for_day(game_state, config, rng=None)
@@ -154,7 +197,11 @@ class TestProcessPacksDeterministic:
 
         config = _make_test_config(
             pack_averages={"basic": 2.4},
-            packs=[PackConfig(name="basic", card_types_table={0: 1})],
+            packs=[
+                PackConfig(
+                    name="basic", card_types_table={0: CardTypesRange(min=1, max=1)}
+                )
+            ],
         )
 
         pulls = process_packs_for_day(game_state, config, rng=None)
@@ -172,7 +219,11 @@ class TestProcessPacksDeterministic:
 
         config = _make_test_config(
             pack_averages={"basic": 2.6},
-            packs=[PackConfig(name="basic", card_types_table={0: 1})],
+            packs=[
+                PackConfig(
+                    name="basic", card_types_table={0: CardTypesRange(min=1, max=1)}
+                )
+            ],
         )
 
         pulls = process_packs_for_day(game_state, config, rng=None)
@@ -195,8 +246,12 @@ class TestProcessPacksMultipleTypes:
         config = _make_test_config(
             pack_averages={"basic": 2.0, "premium": 1.0},
             packs=[
-                PackConfig(name="basic", card_types_table={0: 1}),
-                PackConfig(name="premium", card_types_table={0: 2}),
+                PackConfig(
+                    name="basic", card_types_table={0: CardTypesRange(min=1, max=1)}
+                ),
+                PackConfig(
+                    name="premium", card_types_table={0: CardTypesRange(min=2, max=2)}
+                ),
             ],
         )
 
@@ -217,7 +272,16 @@ class TestProcessPacksMultipleTypes:
 
         config = _make_test_config(
             pack_averages={"basic": 1.0},
-            packs=[PackConfig(name="basic", card_types_table={0: 1, 10: 2, 20: 3})],
+            packs=[
+                PackConfig(
+                    name="basic",
+                    card_types_table={
+                        0: CardTypesRange(min=1, max=1),
+                        10: CardTypesRange(min=2, max=2),
+                        20: CardTypesRange(min=3, max=3),
+                    },
+                )
+            ],
         )
 
         pulls = process_packs_for_day(game_state, config, rng=None)
@@ -235,7 +299,16 @@ class TestProcessPacksMultipleTypes:
 
         config = _make_test_config(
             pack_averages={"basic": 1.0},
-            packs=[PackConfig(name="basic", card_types_table={0: 1, 10: 2, 20: 3})],
+            packs=[
+                PackConfig(
+                    name="basic",
+                    card_types_table={
+                        0: CardTypesRange(min=1, max=1),
+                        10: CardTypesRange(min=2, max=2),
+                        20: CardTypesRange(min=3, max=3),
+                    },
+                )
+            ],
         )
 
         pulls = process_packs_for_day(game_state, config, rng=None)
@@ -257,7 +330,11 @@ class TestProcessPacksMC:
 
         config = _make_test_config(
             pack_averages={"basic": 3.0},
-            packs=[PackConfig(name="basic", card_types_table={0: 1})],
+            packs=[
+                PackConfig(
+                    name="basic", card_types_table={0: CardTypesRange(min=1, max=1)}
+                )
+            ],
         )
 
         np.random.seed(42)
@@ -278,7 +355,11 @@ class TestProcessPacksMC:
 
         config = _make_test_config(
             pack_averages={"basic": 2.5},
-            packs=[PackConfig(name="basic", card_types_table={0: 1})],
+            packs=[
+                PackConfig(
+                    name="basic", card_types_table={0: CardTypesRange(min=1, max=1)}
+                )
+            ],
         )
 
         rng1 = Random(123)

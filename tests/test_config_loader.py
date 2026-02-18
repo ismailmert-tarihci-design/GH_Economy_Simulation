@@ -26,15 +26,15 @@ class TestConfigLoader:
         assert len(config.packs) == 9
         pack_names = [p.name for p in config.packs]
         assert pack_names == [
-            "Pack1",
-            "Pack2",
-            "Pack3",
-            "Pack4",
-            "Pack5",
-            "Pack6",
-            "Pack7",
-            "Pack8",
-            "Pack9",
+            "StandardPackT1",
+            "StandardPackT2",
+            "StandardPackT3",
+            "StandardPackT4",
+            "StandardPackT5",
+            "PetPack",
+            "GearPack",
+            "HeroPack",
+            "EndOfChapterPack",
         ]
 
     def test_load_defaults_has_three_upgrade_tables(self):
@@ -103,11 +103,12 @@ class TestConfigLoader:
         schedule = config.unique_unlock_schedule
 
         assert isinstance(schedule, dict)
+        assert 0 in schedule
+        assert schedule[0] == 8
         assert 1 in schedule
-        assert schedule[1] == 8
-        assert schedule[30] == 1
-        assert schedule[60] == 1
-        assert schedule[90] == 1
+        assert schedule[1] == 15
+        assert 30 in schedule
+        assert schedule[30] == 27
 
     def test_pack_averages_has_nine_entries(self):
         """Pack averages should have 9 entries."""
@@ -116,7 +117,17 @@ class TestConfigLoader:
 
         assert len(pack_avg) == 9
         pack_names = set(pack_avg.keys())
-        expected_names = {f"Pack{i}" for i in range(1, 10)}
+        expected_names = {
+            "StandardPackT1",
+            "StandardPackT2",
+            "StandardPackT3",
+            "StandardPackT4",
+            "StandardPackT5",
+            "PetPack",
+            "GearPack",
+            "HeroPack",
+            "EndOfChapterPack",
+        }
         assert pack_names == expected_names
 
     def test_all_required_fields_populated(self):
@@ -133,14 +144,14 @@ class TestConfigLoader:
         assert config.num_days > 0
 
     def test_pack_card_types_table_structure(self):
-        """Each pack should have card_types_table with expected structure."""
+        """Each pack should have card_types_table with min/max structure."""
         config = load_defaults()
 
         for pack in config.packs:
             assert isinstance(pack.card_types_table, dict)
-            assert 31 in pack.card_types_table
-            assert 40 in pack.card_types_table
-            assert 50 in pack.card_types_table
-            assert pack.card_types_table[31] == 3
-            assert pack.card_types_table[40] == 4
-            assert pack.card_types_table[50] == 5
+            assert 36 in pack.card_types_table
+            entry = pack.card_types_table[36]
+            assert hasattr(entry, "min")
+            assert hasattr(entry, "max")
+            assert entry.min >= 1
+            assert entry.max >= entry.min

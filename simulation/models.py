@@ -62,11 +62,18 @@ class GameState(BaseModel):
     daily_log: List[Any] = Field(default_factory=list)
 
 
+class CardTypesRange(BaseModel):
+    """Min/max range for card types yielded at a given unlock threshold."""
+
+    min: int
+    max: int
+
+
 class PackConfig(BaseModel):
     """Configuration for a card pack."""
 
     name: str
-    card_types_table: Dict[int, int]
+    card_types_table: Dict[int, CardTypesRange]
 
 
 class UpgradeTable(BaseModel):

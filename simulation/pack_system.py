@@ -13,7 +13,7 @@ from typing import Optional
 
 import numpy as np
 
-from simulation.models import GameState, SimConfig
+from simulation.models import CardTypesRange, GameState, SimConfig
 
 
 @dataclass
@@ -25,17 +25,12 @@ class CardPull:
 
 
 def _get_card_types_for_count(
-    card_types_table: dict[int, int], total_unlocked: int
-) -> int:
+    card_types_table: dict[int, CardTypesRange], total_unlocked: int
+) -> CardTypesRange:
     """
-    Look up card types for a given total unlocked count using floor matching.
+    Look up card types range for a given total unlocked count using floor matching.
 
-    Args:
-        card_types_table: Dict mapping threshold → card_types count
-        total_unlocked: Total number of unlocked cards
-
-    Returns:
-        Card types count for the highest threshold ≤ total_unlocked
+    Returns the CardTypesRange (min/max) for the highest threshold ≤ total_unlocked.
 
     Raises:
         ValueError: If total_unlocked is less than minimum table key
@@ -92,11 +87,17 @@ def process_packs_for_day(
 
         # Generate pulls for each pack
         for pack_index in range(num_packs):
-            # Look up card types for current unlocked count
-            card_types = _get_card_types_for_count(
+            # Look up card types range for current unlocked count
+            card_types_range = _get_card_types_for_count(
                 pack_config.card_types_table,
                 total_unlocked,
             )
+
+            # Deterministic: round midpoint; MC: random int in [min, max]
+            if rng is None:
+                card_types = round((card_types_range.min + card_types_range.max) / 2)
+            else:
+                card_types = rng.randint(card_types_range.min, card_types_range.max)
 
             # Create CardPull for each card type
             for card_index in range(card_types):

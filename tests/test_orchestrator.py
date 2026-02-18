@@ -10,6 +10,7 @@ import pytest
 
 from simulation.models import (
     CardCategory,
+    CardTypesRange,
     CoinPerDuplicate,
     DuplicateRange,
     PackConfig,
@@ -25,11 +26,19 @@ def full_config():
     """Create complete simulation configuration for orchestrator tests."""
     pack_config_1 = PackConfig(
         name="basic_pack",
-        card_types_table={0: 2, 10: 3, 25: 4},
+        card_types_table={
+            0: CardTypesRange(min=2, max=2),
+            10: CardTypesRange(min=3, max=3),
+            25: CardTypesRange(min=4, max=4),
+        },
     )
     pack_config_2 = PackConfig(
         name="premium_pack",
-        card_types_table={0: 3, 10: 4, 25: 5},
+        card_types_table={
+            0: CardTypesRange(min=3, max=3),
+            10: CardTypesRange(min=4, max=4),
+            25: CardTypesRange(min=5, max=5),
+        },
     )
 
     gold_upgrade_table = UpgradeTable(

@@ -12,7 +12,7 @@ import pandas as pd
 import streamlit as st
 
 from simulation.config_loader import load_defaults
-from simulation.models import CardCategory, SimConfig
+from simulation.models import CardCategory, CardTypesRange, SimConfig
 
 
 def render_config_editor(config: SimConfig) -> None:
@@ -84,7 +84,11 @@ def _render_pack_config(config: SimConfig) -> None:
         with pack_tab:
             card_types_df = pd.DataFrame(
                 [
-                    {"Total Unlocked": int(k), "Types Yielded": v}
+                    {
+                        "Unlocked Card Count": int(k),
+                        "Min Card Types": v.min,
+                        "Max Card Types": v.max,
+                    }
                     for k, v in sorted(
                         pack.card_types_table.items(), key=lambda x: int(x[0])
                     )
@@ -94,15 +98,26 @@ def _render_pack_config(config: SimConfig) -> None:
             edited_types = st.data_editor(
                 card_types_df,
                 column_config={
-                    "Total Unlocked": st.column_config.NumberColumn(
-                        "Total Unlocked",
+                    "Unlocked Card Count": st.column_config.NumberColumn(
+                        "Unlocked Card Count",
                         min_value=0,
                         step=1,
                         format="%d",
                         required=True,
                     ),
-                    "Types Yielded": st.column_config.NumberColumn(
-                        "Types Yielded", min_value=0, step=1, format="%d", required=True
+                    "Min Card Types": st.column_config.NumberColumn(
+                        "Min Card Types",
+                        min_value=0,
+                        step=1,
+                        format="%d",
+                        required=True,
+                    ),
+                    "Max Card Types": st.column_config.NumberColumn(
+                        "Max Card Types",
+                        min_value=0,
+                        step=1,
+                        format="%d",
+                        required=True,
                     ),
                 },
                 hide_index=True,
@@ -112,7 +127,8 @@ def _render_pack_config(config: SimConfig) -> None:
             )
 
             pack.card_types_table = {
-                str(row._1): row._2 for row in edited_types.itertuples()
+                int(row._1): CardTypesRange(min=int(row._2), max=int(row._3))
+                for row in edited_types.itertuples()
             }
 
     if st.button("🔄 Restore Pack Defaults", key="restore_pack"):
