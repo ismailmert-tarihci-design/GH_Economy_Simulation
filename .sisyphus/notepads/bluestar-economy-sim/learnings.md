@@ -759,3 +759,98 @@ for category in [CardCategory.GOLD_SHARED, CardCategory.BLUE_SHARED, CardCategor
 - All daily statistics available as aligned lists (same length = num_days)
 - Can plot mean ± std error bands using daily_*_means and daily_*_stds
 - Category-specific progression charts from daily_category_level_means dict
+
+## Task 12: Streamlit Config Editor UI
+
+### Implementation Patterns
+
+**Streamlit Architecture**:
+- Use `st.set_page_config()` as the FIRST Streamlit command (before any imports that might call st functions)
+- Initialize session state with `if "key" not in st.session_state:` pattern to prevent reinitializing on reruns
+- Manual sidebar navigation with `st.sidebar.radio()` instead of automatic pages/ routing for better control
+- Route pages by importing render functions conditionally based on radio selection
+
+**st.data_editor Configuration**:
+- Always use `column_config` dict with `st.column_config.NumberColumn` for numeric validation
+- Key parameters: `min_value`, `max_value`, `step`, `format`, `required`
+- Format strings: `"%d"` for integers, `"%.1f"` for 1 decimal float, `"%.3f"` for 3 decimals
+- Set `disabled=True` for read-only columns (like Level or ID columns)
+- Use `hide_index=True` for cleaner display (removes pandas DataFrame index column)
+- Use `use_container_width=True` for responsive layout that fills available space
+- Add `height=400` for long tables to prevent excessive scrolling
+
+**st.tabs vs st.expander**:
+- ALWAYS use `st.tabs()` for organizing sections, NEVER `st.expander()`
+- Reason: st.expander renders all collapsed content which hurts performance
+- Pattern: `tab1, tab2 = st.tabs(["Tab 1", "Tab 2"])` then `with tab1:` for content
+- Can nest tabs: main 4 tabs, then sub-tabs for 9 packs within Pack Configuration tab
+
+**Data Conversions for st.data_editor**:
+- Dict to DataFrame: `pd.DataFrame([{"col1": k, "col2": v} for k, v in dict.items()])`
+- DataFrame back to Dict: `{row.col1: row.col2 for row in df.itertuples()}`
+- Itertuples access: `row._1` for column 1 (0-indexed after the Index), `row._2` for column 2
+- For sorted dict display: `sorted(dict.items(), key=lambda x: int(x[0]))`
+
+**Session State Mutation Pattern**:
+```python
+edited_df = st.data_editor(df, column_config={...}, key="unique_key")
+# Update session_state immediately after editing
+st.session_state.config.some_field = edited_df["column"].tolist()
+```
+
+**Restore Defaults Pattern**:
+```python
+if st.button("🔄 Restore Defaults", key="restore_unique_key"):
+    defaults = load_defaults()
+    config.field = defaults.field
+    st.rerun()  # Force UI refresh to show restored values
+```
+
+### Gotchas Discovered
+
+**st.data_editor itertuples indexing**:
+- First column is `row._1`, NOT `row.column_name` or `row[0]`
+- Index column is row.Index, then actual data starts at `row._1`
+- Alternative: use `row.column_name` (e.g., `row["Pack Name"]`) but must match DataFrame column name exactly
+
+**Unique keys required**:
+- Every `st.data_editor()` MUST have unique `key` parameter
+- Failing to provide keys causes Streamlit to lose track of widget state across reruns
+- Use descriptive keys: `f"card_types_{pack.name}"` for pack-specific editors
+
+**Pydantic model mutation**:
+- Can directly mutate nested Pydantic model fields (e.g., `config.pack_averages[key] = value`)
+- Changes persist in `st.session_state.config` across reruns
+- No need to reassign entire config object back to session_state
+
+**Number format and integer vs float**:
+- Using `step=1` with integer min/max forces integer-only input
+- Using `step=0.1` allows float input
+- Format `"%d"` shows integers without decimals, `"%.1f"` shows 1 decimal place
+
+**st.rerun() triggers full script re-execution**:
+- Necessary after restoring defaults to show updated values in data_editor
+- Alternative: use Streamlit's automatic rerun on widget interaction (but not sufficient for programmatic updates)
+
+**macOS doesn't have timeout command**:
+- `timeout 15 <command>` fails on macOS (zsh: command not found)
+- Use background process with sleep instead: `command &`, `sleep 12`, then `kill $!`
+
+### Evidence Files Created
+
+1. `.sisyphus/evidence/task-12-editor-launch.txt` — HTTP 200 verification (app launches successfully)
+2. `.sisyphus/evidence/task-12-no-expander.txt` — No st.expander usage (all tabs, no expanders)
+3. `.sisyphus/evidence/task-12-roundtrip.txt` — Config serialization test (JSON round-trip OK)
+
+### Performance Notes
+
+- App startup time: ~12 seconds on macOS to HTTP 200 response
+- Nested tabs render efficiently (4 main tabs + 9 pack sub-tabs = no performance issues)
+- st.data_editor with 99 rows (Gold/Blue upgrade tables) renders instantly with `height=400`
+
+### Integration Points
+
+- `app.py` imports `pages.config_editor.render_config_editor()` conditionally based on sidebar navigation
+- Config stored in `st.session_state.config` (initialized once on first run)
+- Sidebar shows 3 pages: Configuration (Task 12), Simulation (Task 13), Dashboard (Tasks 14-15)
+- All edits to config tables update `st.session_state.config` immediately for use by simulation engine

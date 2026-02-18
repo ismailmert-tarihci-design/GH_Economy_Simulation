@@ -1351,7 +1351,7 @@ Max Concurrent: 6 (Wave 1)
   - Files: `simulation/monte_carlo.py, tests/test_monte_carlo.py`
   - Pre-commit: `pytest tests/test_monte_carlo.py -v`
 
-- [ ] 12. Streamlit Config Editor UI — Pack & Upgrade Tables
+- [x] 12. Streamlit Config Editor UI — Pack & Upgrade Tables
 
   **What to do**:
   - Update `app.py` to be the main entry point with sidebar navigation:
