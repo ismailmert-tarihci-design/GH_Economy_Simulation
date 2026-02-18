@@ -135,6 +135,19 @@ class SimConfig(BaseModel):
     base_unique_rate: float = Field(
         default=0.30, description="Base rate for unique cards"
     )
+    streak_decay_shared: float = Field(
+        default=0.6, description="Streak decay rate for shared card drops"
+    )
+    streak_decay_unique: float = Field(
+        default=0.3, description="Streak decay rate for unique card drops"
+    )
+    gap_base: float = Field(
+        default=1.5, description="Exponential base for progression gap balancing"
+    )
+    unique_candidate_pool: int = Field(
+        default=10,
+        description="Top-N lowest-level unique cards considered for selection",
+    )
     max_shared_level: int = Field(
         default=100, description="Maximum level for shared cards"
     )
