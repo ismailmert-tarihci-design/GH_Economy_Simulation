@@ -1,0 +1,47 @@
+TASK 16: INTEGRATION TESTS - COMPLETION SUMMARY
+================================================
+
+DELIVERABLES:
+✅ tests/test_integration.py - 297 lines, 13 integration tests
+✅ tests/conftest.py - 52 lines, 3 shared fixtures
+✅ pytest.ini - Updated with slow marker registration
+
+TEST COVERAGE:
+✅ Full deterministic simulation (1 day)
+✅ Full deterministic simulation (100 days) with monotonicity checks
+✅ MC simulation (10 runs × 30 days) with variance validation
+✅ Edge case: 0 packs per day → no progression
+✅ Edge case: single day simulation
+✅ Edge case: max days (730 deterministic) stress test
+✅ Edge case: all cards already maxed
+✅ Coin conservation law verification
+✅ URL config round-trip produces identical results
+✅ Drop algorithm statistical consistency (50-day MC, 100 runs)
+✅ Progression consistency checks
+✅ Deterministic reproducibility verification
+✅ Unique unlock schedule integration test
+
+VERIFICATION:
+✅ All 176 tests pass (163 existing + 13 new)
+✅ Full suite runtime: 35.81s
+✅ Integration tests runtime: 15.82s
+✅ No test exceeds 60s (730-day stress test: ~0.5s)
+✅ LSP diagnostics clean on conftest.py
+✅ Evidence files created:
+   - task-16-full-suite.txt (176 tests, all PASSED)
+   - task-16-zero-packs.txt (edge case verified)
+
+KEY DISCOVERIES:
+- Default config has 5%-15% duplicate ranges (not 80%-120%)
+- This produces ~0 duplicates per pull: round(1 * 0.1) = 0
+- Created simple_config fixture with boosted ranges for test progression
+- Coins only earned from duplicates (not first pull)
+- All integration tests exercise FULL pipeline: config → run_simulation → assertions
+
+FIXTURES CREATED:
+- default_config: Loads from defaults (realistic economy)
+- simple_config: Boosted progression (3 packs/day, 80%-120% ranges)
+- seeded_rng: Random(42) for reproducible MC tests
+
+NOTEPAD UPDATED:
+✅ Appended comprehensive findings to learnings.md

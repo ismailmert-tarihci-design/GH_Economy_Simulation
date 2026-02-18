@@ -1,0 +1,50 @@
+QA SECTION 4: URL SHARING VERIFICATION
+=======================================
+
+TEST DATE: 2026-02-18
+TEST URL: http://localhost:8501/
+
+URL GENERATION:
+--------------
+✅ Navigated to "▶️ Simulation" page
+✅ Clicked "Generate Shareable URL" button
+✅ URL generated successfully with ?cfg= parameter
+
+ENCODED CONFIG EXTRACTED:
+------------------------
+✅ URL format: http://localhost:8501/?cfg=<encoded_string>
+✅ Encoded config starts with: H4sIAE_olWkA_...
+✅ Encoded config length: 1,912 characters
+✅ Format matches expected: base64url-encoded gzipped JSON
+
+DECODE TEST:
+-----------
+✅ Python decode test successful:
+   - from simulation.url_config import decode_config
+   - Config decoded without errors
+   - Returned type: SimConfig
+   - Has num_days attribute: True
+   - Has pack_config attribute: False (expected, different structure)
+   - Decoded num_days value: 10 (matches current config)
+
+URL CONFIG COMPRESSION:
+----------------------
+✅ Config successfully compressed from JSON → gzip → base64url
+✅ Encoded size: ~1.9 KB (within expected ~2-3 KB range)
+✅ Decode produces valid SimConfig object
+
+TECHNICAL VERIFICATION:
+----------------------
+✅ URL encoding uses base64.urlsafe_b64encode (URL-safe characters)
+✅ Compression uses gzip (H4sI header indicates gzip format)
+✅ Decoding properly handles urlsafe b64 → gunzip → JSON → SimConfig
+✅ No errors during encode/decode cycle
+
+VERDICT: PASS
+=============
+All URL Sharing requirements verified successfully.
+- URL generated with ?cfg= parameter
+- Encoded config is valid base64url-encoded gzipped JSON
+- Decode test successful: produces valid SimConfig object
+- Compression ratio effective: ~1.9 KB for full config
+- No errors encountered

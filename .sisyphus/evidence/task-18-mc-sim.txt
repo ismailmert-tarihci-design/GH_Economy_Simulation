@@ -1,0 +1,37 @@
+===================================================================
+QA SECTION 4: MONTE CARLO SIMULATION - 20×10 RUN
+===================================================================
+
+TEST DATE: Wed Feb 18 2026
+OBJECTIVE: Run 20×10 Monte Carlo simulation, verify progress indicator and CI bands
+
+RESULTS:
+
+STATUS: ❌ BLOCKED - Cannot test Monte Carlo mode
+
+REASON:
+  Monte Carlo simulation depends on the same simulation engine as deterministic mode.
+  The TypeError discovered in Section 3 affects ALL simulation runs:
+  
+  Error: '<=' not supported between instances of 'str' and 'int'
+  Location: simulation/pack_system.py:43
+  
+  Since the core simulation engine crashes during pack processing, Monte Carlo
+  mode cannot complete any runs to display progress indicators or confidence bands.
+
+BLOCKING BUG:
+  - Same root cause as Section 3 failure
+  - Affects both deterministic and Monte Carlo modes
+  - Located in _get_card_types_for_count() function
+  - Type mismatch between card_types_table keys (strings) and total_unlocked (int)
+
+IMPACT:
+  Cannot verify:
+  - Monte Carlo runs complete successfully
+  - Progress indicator displays during multi-run execution
+  - Confidence interval bands render on charts
+  - Statistical summary displays correctly
+
+CONCLUSION:
+  BLOCKED - Monte Carlo simulation cannot be tested until pack_system.py 
+  type coercion bug is fixed. This is the same blocking issue as Section 3.

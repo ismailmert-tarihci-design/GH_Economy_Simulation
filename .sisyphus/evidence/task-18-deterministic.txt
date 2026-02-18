@@ -1,0 +1,53 @@
+QA SECTION 2: DETERMINISTIC SIMULATION VERIFICATION
+===================================================
+
+TEST DATE: 2026-02-18
+TEST URL: http://localhost:8501/
+
+SIMULATION SETUP:
+----------------
+✅ Navigated to "▶️ Simulation" page successfully
+✅ Set Number of Days: 10
+✅ Set Simulation Mode: Deterministic
+✅ Clicked "▶️ Run Simulation" button
+
+SIMULATION EXECUTION:
+--------------------
+✅ Simulation ran without errors
+✅ No JavaScript errors in console
+✅ Simulation completed successfully
+
+DASHBOARD VERIFICATION:
+----------------------
+✅ Navigated to "📊 Dashboard" page
+✅ Found 4 Plotly charts rendered:
+   - Chart 1: 15,051 bytes HTML (has <path> elements - contains data)
+   - Chart 2: 22,539 bytes HTML (has <path> elements - contains data)
+   - Chart 3: 23,302 bytes HTML (has <path> elements - contains data)
+   - Chart 4: 18,342 bytes HTML (has <path> elements - contains data)
+
+✅ Chart titles contain expected keywords:
+   - "Bluestar" (appears 2x)
+   - "Card" (appears 2x)
+   - "Coin" (appears 5x)
+   - "Pack" (appears 1x)
+   
+EXPECTED CHARTS:
+---------------
+Based on requirements, the 4 charts should be:
+1. Bluestar Accumulation Over Time
+2. Card Progression (Category Average Levels)
+3. Coin Flow (Income/Spending)
+4. Pack ROI Analysis
+
+SCREENSHOT EVIDENCE:
+-------------------
+Saved to: .sisyphus/evidence/task-18-deterministic-charts.png
+
+VERDICT: PASS
+=============
+All Deterministic Simulation requirements verified successfully.
+- 10-day simulation ran without errors
+- All 4 charts render on Dashboard
+- All charts contain actual data (not empty)
+- No errors encountered during execution or rendering

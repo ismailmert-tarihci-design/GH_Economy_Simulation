@@ -1,0 +1,6 @@
+Zero Packs Edge Case Test
+==================================================
+Pack averages: {'basic': 0.0, 'premium': 0.0}
+Expected pulls: 0
+Actual pulls: 0
+Test Result: PASS

@@ -1,0 +1,117 @@
+QA SECTION 7: GUARDRAIL VERIFICATION
+=====================================
+
+TEST DATE: 2026-02-18
+
+GUARDRAIL 1: ZERO STREAMLIT IMPORTS IN ENGINE
+---------------------------------------------
+Test Command:
+  grep -r "import streamlit" simulation/
+
+Result:
+✅ PASS: No matches found (exit code: 1)
+✅ simulation/ package is completely Streamlit-free
+✅ Clean separation of concerns maintained
+
+Files checked:
+- simulation/__init__.py
+- simulation/models.py
+- simulation/orchestrator.py
+- simulation/monte_carlo.py
+- simulation/drop_algorithm.py
+- simulation/upgrade_engine.py
+- simulation/pack_system.py
+- simulation/coin_economy.py
+- simulation/progression.py
+- simulation/config_loader.py
+- simulation/url_config.py
+
+GUARDRAIL 2: ZERO ST.EXPANDER USAGE
+-----------------------------------
+Test Command:
+  grep -rn "st\.expander" pages/ app.py
+
+Result:
+✅ PASS: No matches found (exit code: 1)
+✅ All UI uses st.tabs instead of st.expander
+✅ Requirement adhered to: tabs-only navigation
+
+Files checked:
+- app.py
+- pages/config_editor.py
+- pages/simulation_controls.py
+- pages/dashboard.py
+
+GUARDRAIL 3: FILE SIZE CHECK (MAX 300 LINES)
+--------------------------------------------
+Test Command:
+  wc -l simulation/*.py pages/*.py app.py | sort -rn
+
+Results:
+❌ FAIL: 2 files exceed 300 lines
+
+VIOLATIONS FOUND:
+----------------
+1. simulation/drop_algorithm.py: 400 lines (33% over limit)
+2. pages/config_editor.py: 343 lines (14% over limit)
+
+Files within limit:
+✅ simulation/monte_carlo.py: 260 lines
+✅ simulation/orchestrator.py: 243 lines
+✅ pages/dashboard.py: 243 lines
+✅ simulation/upgrade_engine.py: 202 lines
+✅ simulation/coin_economy.py: 151 lines
+✅ pages/simulation_controls.py: 143 lines
+✅ simulation/models.py: 136 lines
+✅ simulation/progression.py: 134 lines
+✅ simulation/pack_system.py: 108 lines
+✅ simulation/config_loader.py: 105 lines
+✅ app.py: 57 lines
+✅ simulation/url_config.py: 53 lines
+✅ simulation/__init__.py: 1 line
+
+Total lines: 2,579
+
+GUARDRAIL 4: NO COMPARISON MODE
+--------------------------------
+✅ VERIFIED: No comparison mode implemented
+✅ Single simulation results only
+
+GUARDRAIL 5: NO DATA EXPORT
+---------------------------
+✅ VERIFIED: No CSV/Excel export features
+✅ URL sharing is the only export mechanism
+
+GUARDRAIL 6: NO AUTH/DATABASE
+-----------------------------
+✅ VERIFIED: No authentication system
+✅ VERIFIED: No database or ORM usage
+✅ Session state only
+
+GUARDRAIL 7: NO PER-CARD CHARTS
+-------------------------------
+✅ VERIFIED: Only category-level aggregation in charts
+✅ No individual card tracking in visualizations
+
+GUARDRAIL 8: NO ANIMATION/REPLAY
+--------------------------------
+✅ VERIFIED: No day-by-day replay features
+✅ Static chart rendering only
+
+OVERALL VERDICT: PARTIAL FAIL
+==============================
+✅ Guardrail 1: PASS (Zero Streamlit in engine)
+✅ Guardrail 2: PASS (Zero st.expander usage)
+❌ Guardrail 3: FAIL (2 files exceed 300 lines)
+✅ Guardrail 4: PASS (No comparison mode)
+✅ Guardrail 5: PASS (No data export)
+✅ Guardrail 6: PASS (No auth/database)
+✅ Guardrail 7: PASS (No per-card charts)
+✅ Guardrail 8: PASS (No animation)
+
+CRITICAL ISSUES:
+---------------
+- simulation/drop_algorithm.py: 400 lines (100 lines over limit)
+- pages/config_editor.py: 343 lines (43 lines over limit)
+
+These files should be refactored to comply with the 300-line limit.

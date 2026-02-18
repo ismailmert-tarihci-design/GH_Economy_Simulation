@@ -1,0 +1,81 @@
+TASK 2: PYDANTIC V2 MODELS & SERIALIZATION TESTS
+================================================
+
+VERIFICATION: pytest tests/test_models.py -v
+
+============================= test session starts ==============================
+platform darwin -- Python 3.13.0, pytest-8.3.2, pluggy-1.6.0 -- /usr/local/bin/python3
+cachedir: .pytest_cache
+rootdir: /Users/mertt7/Documents/GitHub/coin_sim
+collecting ... collected 29 items
+
+tests/test_models.py::TestCardCategory::test_card_category_values PASSED [  3%]
+tests/test_models.py::TestCard::test_card_defaults PASSED                [  6%]
+tests/test_models.py::TestCard::test_card_with_explicit_values PASSED    [ 10%]
+tests/test_models.py::TestCard::test_card_json_serialization PASSED      [ 13%]
+tests/test_models.py::TestCard::test_card_json_contains_all_fields PASSED [ 17%]
+tests/test_models.py::TestStreakState::test_streak_state_basic PASSED    [ 20%]
+tests/test_models.py::TestStreakState::test_streak_state_with_dicts PASSED [ 24%]
+tests/test_models.py::TestStreakState::test_streak_state_json_serialization PASSED [ 27%]
+tests/test_models.py::TestGameState::test_game_state_basic PASSED        [ 31%]
+tests/test_models.py::TestGameState::test_game_state_with_cards PASSED   [ 34%]
+tests/test_models.py::TestGameState::test_game_state_json_serialization PASSED [ 37%]
+tests/test_models.py::TestPackConfig::test_pack_config_basic PASSED      [ 41%]
+tests/test_models.py::TestPackConfig::test_pack_config_json_serialization PASSED [ 44%]
+tests/test_models.py::TestUpgradeTable::test_upgrade_table_basic PASSED  [ 48%]
+tests/test_models.py::TestUpgradeTable::test_upgrade_table_json_serialization PASSED [ 51%]
+tests/test_models.py::TestDuplicateRange::test_duplicate_range_basic PASSED [ 55%]
+tests/test_models.py::TestDuplicateRange::test_duplicate_range_json_serialization PASSED [ 58%]
+tests/test_models.py::TestCoinPerDuplicate::test_coin_per_duplicate_basic PASSED [ 62%]
+tests/test_models.py::TestCoinPerDuplicate::test_coin_per_duplicate_json_serialization PASSED [ 65%]
+tests/test_models.py::TestProgressionMapping::test_progression_mapping_basic PASSED [ 68%]
+tests/test_models.py::TestProgressionMapping::test_progression_mapping_json_serialization PASSED [ 72%]
+tests/test_models.py::TestSimConfig::test_sim_config_defaults PASSED     [ 75%]
+tests/test_models.py::TestSimConfig::test_sim_config_with_custom_values PASSED [ 79%]
+tests/test_models.py::TestSimConfig::test_sim_config_json_serialization PASSED [ 82%]
+tests/test_models.py::TestSimResult::test_sim_result_basic PASSED        [ 86%]
+tests/test_models.py::TestSimResult::test_sim_result_with_data PASSED    [ 89%]
+tests/test_models.py::TestSimResult::test_sim_result_json_serialization PASSED [ 93%]
+tests/test_models.py::TestIntegration::test_complex_game_state_serialization PASSED [ 96%]
+tests/test_models.py::TestIntegration::test_full_sim_config_serialization PASSED [100%]
+
+============================== 29 passed in 0.13s ==============================
+
+MODELS IMPLEMENTED:
+===================
+
+✓ CardCategory enum (GOLD_SHARED, BLUE_SHARED, UNIQUE)
+✓ Card (id, name, category, level=1, duplicates=0)
+✓ StreakState (streak_shared, streak_unique, dicts)
+✓ GameState (day, cards, coins, total_bluestars, streak_state, unlock_schedule, daily_log)
+✓ PackConfig (name, card_types_table)
+✓ UpgradeTable (category, duplicate_costs, coin_costs, bluestar_rewards)
+✓ DuplicateRange (category, min_pct, max_pct)
+✓ CoinPerDuplicate (category, coins_per_dupe)
+✓ ProgressionMapping (shared_levels, unique_levels)
+✓ SimConfig (full config with defaults: base_shared_rate=0.70, base_unique_rate=0.30)
+✓ SimResult (daily_snapshots, total_bluestars, total_coins_earned/spent, total_upgrades)
+
+TESTS COVERAGE:
+===============
+- CardCategory enum values verification
+- Card model defaults (level=1, duplicates=0)
+- Card with explicit values
+- Card JSON round-trip serialization
+- Card JSON field completeness
+- StreakState basic and with dicts
+- StreakState JSON serialization
+- GameState basic, with cards, and JSON serialization
+- PackConfig basic and JSON serialization
+- UpgradeTable basic and JSON serialization
+- DuplicateRange basic and JSON serialization
+- CoinPerDuplicate basic and JSON serialization
+- ProgressionMapping basic and JSON serialization
+- SimConfig defaults verification
+- SimConfig custom values
+- SimConfig JSON serialization
+- SimResult basic, with data, and JSON serialization
+- Complex nested GameState serialization
+- Full SimConfig serialization integration test
+
+ALL TESTS PASS: 29/29 ✓

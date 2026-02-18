@@ -1,0 +1,42 @@
+GATING VERIFICATION TEST RESULTS
+================================
+
+Test Suite: tests/test_progression.py::TestCanUpgradeUnique
+
+Objective: Verify that unique card upgrades are correctly gated based on average shared level.
+
+Tests Executed:
+1. test_can_upgrade_when_below_gate
+   - Card level: 2, Gate: 3
+   - Expected: Can upgrade = True
+   - Result: PASSED ✓
+
+2. test_cannot_upgrade_at_gate
+   - Card level: 3, Gate: 3
+   - Expected: Can upgrade = False
+   - Result: PASSED ✓
+
+3. test_cannot_upgrade_above_gate
+   - Card level: 4, Gate: 3
+   - Expected: Can upgrade = False (safety check)
+   - Result: PASSED ✓
+
+4. test_gate_increases_with_shared_progress
+   - Card level: 3, shared_level 10 → gate 3: Can upgrade = False
+   - Card level: 3, shared_level 20 → gate 4: Can upgrade = True
+   - Expected: Gate increases with shared progression
+   - Result: PASSED ✓
+
+5. test_raises_error_for_non_unique_card
+   - Input: GOLD_SHARED card
+   - Expected: ValueError with message "can_upgrade_unique only works with UNIQUE"
+   - Result: PASSED ✓
+
+Summary: 5/5 tests passed
+
+Key Findings:
+- Floor lookup correctly maps shared_level to max unique level
+- Boundary condition: shared_level=10 → unique max=3
+- Between-boundary: shared_level=12 still maps to unique max=3 (floor lookup works)
+- Dynamic gating: As shared progression increases, unique upgrade gate increases
+- Type safety: Function correctly rejects non-UNIQUE cards

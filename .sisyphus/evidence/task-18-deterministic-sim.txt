@@ -1,0 +1,69 @@
+===================================================================
+QA SECTION 3: DETERMINISTIC SIMULATION - 10-DAY RUN
+===================================================================
+
+TEST DATE: Wed Feb 18 2026
+OBJECTIVE: Run 10-day deterministic simulation and verify all 4 charts render
+
+TEST EXECUTION:
+1. Navigated to Simulation Controls page via sidebar radio button
+2. Changed "Number of Days" from 100 to 10
+3. Selected "Deterministic" simulation mode (default)
+4. Clicked "▶️ Run Simulation" button
+
+RESULTS:
+
+STATUS: ❌ FAILURE - Simulation crashed with TypeError
+
+ERROR DETAILS:
+  Exception Type: TypeError
+  Message: '<=' not supported between instances of 'str' and 'int'
+  
+  Error Location: 
+    File: /Users/mertt7/Documents/GitHub/coin_sim/simulation/pack_system.py
+    Function: _get_card_types_for_count (line 43)
+    Context: matching_keys = [k for k in card_types_table.keys() if k <= total_unlocked]
+
+STACK TRACE:
+  1. app.py:52 - render_simulation_controls(st.session_state.config)
+  2. pages/simulation_controls.py:77 - _run_cached_simulation(config_hash, config)
+  3. streamlit caching layer - _get_or_create_cached_value()
+  4. pages/simulation_controls.py:127 - run_simulation(_config, rng=None)
+  5. simulation/orchestrator.py:172 - process_packs_for_day(game_state, config, rng)
+  6. simulation/pack_system.py:95 - _get_card_types_for_count(pack_config.card_types_table, total_unlocked)
+  7. simulation/pack_system.py:43 - [k for k in card_types_table.keys() if k <= total_unlocked]
+
+ROOT CAUSE ANALYSIS:
+  The error occurs when comparing card_types_table keys (likely strings from 
+  data_editor) with integer value total_unlocked. This suggests:
+  
+  1. Data type mismatch in pack configuration tables
+  2. Keys from st.data_editor may be serialized as strings
+  3. Missing type coercion when processing pack config
+
+IMPACT:
+  - Deterministic simulation CANNOT run
+  - Chart rendering CANNOT be verified (simulation must complete first)
+  - This is a CRITICAL bug blocking primary functionality
+
+EVIDENCE:
+  Screenshot: .sisyphus/evidence/deterministic-sim-error.png
+  - Red alert box visible with full traceback
+  - Simulation did not complete
+  - No charts rendered
+
+RELATED COMPONENTS:
+  - simulation/pack_system.py:43 (_get_card_types_for_count)
+  - Config data from data_editor tables (Pack Configuration tab)
+  - Type validation in config loader
+
+RECOMMENDATION:
+  This is a BLOCKING bug that must be fixed before QA can proceed.
+  The simulation cannot run in ANY mode (deterministic or Monte Carlo).
+  
+  Suggested fix: Add type coercion in _get_card_types_for_count():
+    matching_keys = [k for k in card_types_table.keys() if int(k) <= total_unlocked]
+
+CONCLUSION:
+  FAIL - Deterministic simulation crashes with TypeError.
+  Cannot verify chart rendering until simulation bug is fixed.

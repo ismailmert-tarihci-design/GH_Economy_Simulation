@@ -1,0 +1,46 @@
+PROGRESSION SCORE NORMALIZATION TEST RESULTS
+=============================================
+
+Test Suite: tests/test_progression.py::TestComputeProgressionScore
+
+Objective: Verify progression scores normalize correctly to [0, 1] range.
+
+Tests Executed:
+1. test_shared_card_50_level_equals_0_5
+   - Card: GOLD_SHARED, level=50
+   - Formula: level / 100
+   - Expected: 50/100 = 0.5
+   - Result: PASSED ✓
+
+2. test_unique_card_5_level_equals_0_5
+   - Card: UNIQUE, level=5
+   - Formula: level / 10
+   - Expected: 5/10 = 0.5
+   - Result: PASSED ✓
+
+3. test_shared_card_100_level_equals_1_0
+   - Card: GOLD_SHARED, level=100 (max)
+   - Formula: min(level / 100, 1.0)
+   - Expected: 100/100 = 1.0
+   - Result: PASSED ✓
+
+4. test_unique_card_10_level_equals_1_0
+   - Card: UNIQUE, level=10 (max)
+   - Formula: min(level / 10, 1.0)
+   - Expected: 10/10 = 1.0
+   - Result: PASSED ✓
+
+5. test_shared_card_0_level_equals_0
+   - Card: GOLD_SHARED, level=0 (min)
+   - Formula: level / 100
+   - Expected: 0/100 = 0.0
+   - Result: PASSED ✓
+
+Summary: 5/5 tests passed
+
+Key Findings:
+- Shared cards (GOLD_SHARED, BLUE_SHARED) normalize to [0, 1] with divisor 100
+- Unique cards normalize to [0, 1] with divisor 10
+- All normalization formulas maintain boundaries correctly
+- Min() clamping prevents edge cases from exceeding 1.0
+- Asymmetric normalization reflects different max levels (100 vs 10)

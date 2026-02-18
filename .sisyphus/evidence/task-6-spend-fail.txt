@@ -1,0 +1,27 @@
+TASK 6 - COIN ECONOMY: SPEND FAILURE EVIDENCE
+==============================================
+
+TEST: CoinLedger.spend() - Insufficient Balance
+SETUP:
+  - Initial balance: 50 coins
+  - Spend attempt: 100 coins
+  
+EXPECTED BEHAVIOR:
+  - Return: False
+  - Balance after: 50 (UNCHANGED)
+  - Transactions recorded: 0 (NO TRANSACTION)
+
+ACTUAL RESULT: PASSED ✓
+
+VERIFICATION:
+✓ spend() returns False when balance insufficient
+✓ Balance remains unchanged (50 == 50)
+✓ No transaction recorded to ledger
+✓ Ledger state valid for next operation
+
+CRITICAL TESTS PASSED:
+✓ test_spend_failure_insufficient_balance: PASSED
+✓ test_spend_success: PASSED (30 coins spent from 100, balance = 70)
+✓ test_spend_exact_balance: PASSED (50 coins spent from 50, balance = 0)
+
+INVARIANT: Balance can never go negative

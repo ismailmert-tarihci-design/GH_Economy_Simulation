@@ -1,0 +1,23 @@
+TASK 6 - COIN ECONOMY: INCOME CALCULATION EVIDENCE
+==================================================
+
+TEST: compute_coin_income - Gold Shared level 5, 8 duplicates
+EXPECTED: 18 coins_per_dupe * 8 dupes = 144 coins
+RESULT: PASSED ✓
+
+TEST: compute_coin_income - Maxed Gold Shared (level 100)
+EXPECTED: Flat reward of 10 coins (coins_per_dupe[0])
+RESULT: PASSED ✓
+
+IMPLEMENTATION DETAILS:
+- Correctly identifies maxed cards (level >= max_level)
+- Maxed cards: Return flat reward from coins_per_dupe[0]
+- Non-maxed cards: Return coins_per_dupe[level-1] * duplicates_received
+- 0-indexed lookup: card.level-1 maps to correct coins_per_dupe entry
+- Handles all three categories: GOLD_SHARED, BLUE_SHARED, UNIQUE
+
+TEST COVERAGE:
+✓ Level 1-6 income calculations
+✓ Maxed card flat rewards
+✓ Zero duplicate edge case
+✓ Different categories with different rates

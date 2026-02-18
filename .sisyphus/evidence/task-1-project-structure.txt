@@ -1,0 +1,27 @@
+.streamlit/:
+total 8
+drwxr-xr-x   3 mertt7  staff   96 Feb 18 15:41 .
+drwxr-xr-x  15 mertt7  staff  480 Feb 18 15:42 ..
+-rw-r--r--   1 mertt7  staff  203 Feb 18 15:41 config.toml
+
+data/defaults/:
+total 0
+drwxr-xr-x  2 mertt7  staff  64 Feb 18 15:41 .
+drwxr-xr-x  3 mertt7  staff  96 Feb 18 15:41 ..
+
+pages/:
+total 0
+drwxr-xr-x   2 mertt7  staff   64 Feb 18 15:41 .
+drwxr-xr-x  15 mertt7  staff  480 Feb 18 15:42 ..
+
+simulation/:
+total 16
+drwxr-xr-x   4 mertt7  staff   128 Feb 18 15:42 .
+drwxr-xr-x  15 mertt7  staff   480 Feb 18 15:42 ..
+-rw-r--r--   1 mertt7  staff    59 Feb 18 15:41 __init__.py
+-rw-r--r--   1 mertt7  staff  3663 Feb 18 15:42 models.py
+
+tests/:
+total 0
+drwxr-xr-x   2 mertt7  staff   64 Feb 18 15:41 .
+drwxr-xr-x  15 mertt7  staff  480 Feb 18 15:42 ..

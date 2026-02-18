@@ -1,0 +1,66 @@
+QA SECTION 5: EDGE CASE VERIFICATION
+=====================================
+
+TEST DATE: 2026-02-18
+
+EDGE CASE 1: ZERO PACKS
+-----------------------
+Configuration:
+- Set all pack_averages to 0.0
+- num_days = 10
+
+Results:
+✅ Simulation completed without crash
+✅ Days simulated: 10
+✅ Total bluestars: 0 (CORRECT - expected 0 with zero packs)
+✅ No errors or exceptions
+
+Verdict: PASS
+
+EDGE CASE 2: SINGLE DAY
+-----------------------
+Configuration:
+- num_days = 1
+
+Results:
+✅ Simulation completed without crash
+✅ Days simulated: 1 (CORRECT - single snapshot)
+✅ Total bluestars: 0
+✅ Coin balance: 0
+✅ Valid results returned with single-day data
+
+Verdict: PASS
+
+EDGE CASE 3: MAX MC RUNS (500)
+-------------------------------
+Configuration:
+- num_days = 10
+- Monte Carlo runs = 500
+
+Results:
+✅ MC simulation completed without crash
+✅ Runs: 500
+✅ Days: 10
+✅ Elapsed time: 3.97s (excellent performance)
+✅ Mean bluestars: 0.00 (valid result)
+✅ Warning message displayed for large run count (good UX)
+✅ Performance excellent: < 4 seconds for 500 runs
+
+Verdict: PASS
+
+ADDITIONAL OBSERVATIONS:
+-----------------------
+✅ All edge cases handle gracefully with no crashes
+✅ Zero-value configs produce expected zero results
+✅ Single-day simulations return valid single snapshots
+✅ Large MC run counts complete quickly (500 runs in ~4s)
+✅ User warnings displayed for large run counts
+✅ No memory issues or performance degradation
+
+OVERALL VERDICT: PASS
+=====================
+All edge cases verified successfully:
+- Zero packs: No crash, zero bluestars (correct)
+- Single day: No crash, single snapshot (correct)
+- 500 MC runs: No crash, completes in 3.97s (excellent)
+- No errors encountered in any edge case
