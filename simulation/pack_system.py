@@ -40,7 +40,7 @@ def _get_card_types_for_count(
     Raises:
         ValueError: If total_unlocked is less than minimum table key
     """
-    matching_keys = [k for k in card_types_table.keys() if k <= total_unlocked]
+    matching_keys = [k for k in card_types_table.keys() if int(k) <= total_unlocked]
     if not matching_keys:
         raise ValueError(
             f"total_unlocked ({total_unlocked}) is below minimum table key "

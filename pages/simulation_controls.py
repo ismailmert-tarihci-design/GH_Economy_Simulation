@@ -113,31 +113,31 @@ def render_simulation_controls(config: SimConfig) -> None:
 
 
 @st.cache_data(ttl=3600, max_entries=10)
-def _run_cached_simulation(_config_hash: str, config: SimConfig):
+def _run_cached_simulation(_config_hash: str, _config: SimConfig):
     """
     Run and cache deterministic simulation.
 
     Args:
         _config_hash: MD5 hash of config JSON for cache key
-        config: SimConfig object
+        _config: SimConfig object (underscore prefix = don't hash)
 
     Returns:
         SimResult from run_simulation
     """
-    return run_simulation(config, rng=None)
+    return run_simulation(_config, rng=None)
 
 
 @st.cache_data(ttl=3600, max_entries=10)
-def _run_cached_mc(_config_hash: str, config: SimConfig, num_runs: int):
+def _run_cached_mc(_config_hash: str, _config: SimConfig, num_runs: int):
     """
     Run and cache Monte Carlo simulation.
 
     Args:
         _config_hash: MD5 hash of config JSON for cache key
-        config: SimConfig object
+        _config: SimConfig object (underscore prefix = don't hash)
         num_runs: Number of Monte Carlo runs
 
     Returns:
         MCResult from run_monte_carlo
     """
-    return run_monte_carlo(config, num_runs=num_runs)
+    return run_monte_carlo(_config, num_runs=num_runs)
