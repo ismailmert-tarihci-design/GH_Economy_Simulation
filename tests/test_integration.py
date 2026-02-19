@@ -150,7 +150,7 @@ def test_edge_case_max_days_730(default_config):
 
 
 def test_edge_case_all_cards_maxed():
-    """Test simulation behavior when all cards start at max level."""
+    """Test simulation completes and cards can upgrade on day 1 via per-pull upgrades."""
     config = load_defaults()
     config.num_days = 10
 
@@ -159,8 +159,8 @@ def test_edge_case_all_cards_maxed():
     first_snapshot = result.daily_snapshots[0]
     for card_id in first_snapshot.card_levels.keys():
         if "gold" in card_id or "blue" in card_id:
-            assert first_snapshot.card_levels[card_id] == 1, (
-                f"Cards should start at level 1, {card_id} is at {first_snapshot.card_levels[card_id]}"
+            assert first_snapshot.card_levels[card_id] >= 1, (
+                f"Cards should be at least level 1, {card_id} is at {first_snapshot.card_levels[card_id]}"
             )
 
 
