@@ -1,4 +1,4 @@
-"""Dashboard with 4 interactive Plotly charts for simulation results."""
+"""Dashboard with 3 interactive Plotly charts for simulation results."""
 
 from typing import Any
 
@@ -7,7 +7,7 @@ import streamlit as st
 
 
 def render_dashboard() -> None:
-    """Render dashboard with all 4 charts."""
+    """Render dashboard with all 3 charts."""
     if "sim_result" not in st.session_state:
         st.warning("⚠️ No simulation results available. Run a simulation first.")
         return
@@ -20,7 +20,6 @@ def render_dashboard() -> None:
     _render_bluestar_chart(result, mode)
     _render_card_progression_chart(result, mode)
     _render_coin_flow_chart(result, mode)
-    _render_pack_roi_chart(result, mode)
 
 
 def _render_bluestar_chart(result: Any, mode: str) -> None:
@@ -210,34 +209,3 @@ def _render_coin_flow_chart(result: Any, mode: str) -> None:
         template="plotly_white",
     )
     st.plotly_chart(fig, width="stretch")
-
-
-def _render_pack_roi_chart(result: Any, mode: str) -> None:
-    """Chart 4: Pack efficiency - Bluestars per pack opened."""
-    pack_names = [f"Pack{i}" for i in range(1, 10)]
-    if mode == "deterministic":
-        snapshots = result.daily_snapshots
-        total_bluestars = snapshots[-1].total_bluestars if snapshots else 0
-    else:
-        means = result.daily_bluestar_means
-        total_bluestars = means[-1] if means else 0
-    bluestars_per_pack = [total_bluestars / 9] * 9
-    fig = go.Figure()
-    fig.add_trace(
-        go.Bar(
-            x=pack_names,
-            y=bluestars_per_pack,
-            marker=dict(color="rgb(31, 119, 180)"),
-            name="Bluestars per Pack",
-        )
-    )
-    fig.update_layout(
-        title="Pack Efficiency — Bluestars per Pack Opened",
-        xaxis=dict(title="Pack Type"),
-        yaxis=dict(title="Effective Bluestars per Pack"),
-        template="plotly_white",
-    )
-    st.plotly_chart(fig, width="stretch")
-    st.caption(
-        "📊 Methodology: Bluestars attributed proportionally based on pack opening frequency."
-    )
