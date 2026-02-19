@@ -9,7 +9,7 @@ from random import Random
 from typing import Optional
 
 from simulation.models import Card, CardCategory, GameState, SimConfig, StreakState
-from simulation.progression import compute_category_progression
+from simulation.progression import compute_mapping_aware_score
 
 # Legacy constants kept for backward compatibility (tests, external imports).
 # The simulation reads these values from SimConfig fields instead.
@@ -47,28 +47,29 @@ def decide_rarity(
     Algorithm Reference:
         Revamp Master Doc - RARITY DECISION flowchart
     """
-    # Step 1: Compute Progression Scores
-    # SShared = average of Gold + Blue progression
-    gold_prog = compute_category_progression(
+    # Step 1: Compute Progression Scores (mapping-aware)
+    # Both scores projected onto the shared scale [0, 1] using the
+    # progression mapping, so the gap correctly reflects the mapping
+    # relationship between shared and unique card levels.
+    gold_prog = compute_mapping_aware_score(
         game_state.cards, CardCategory.GOLD_SHARED, config.progression_mapping
     )
-    blue_prog = compute_category_progression(
+    blue_prog = compute_mapping_aware_score(
         game_state.cards, CardCategory.BLUE_SHARED, config.progression_mapping
     )
     s_shared = (gold_prog + blue_prog) / 2.0
 
-    # SUnique = average of all Unique cards
-    s_unique = compute_category_progression(
+    s_unique = compute_mapping_aware_score(
         game_state.cards, CardCategory.UNIQUE, config.progression_mapping
     )
 
-    # Step 2: Gap Adjustment
-    # Gap = SUnique - SShared
-    # WShared = base_shared_rate * (gap_base ^ Gap)
-    # WUnique = base_unique_rate * (gap_base ^ -Gap)
+    # Step 2: Gap Adjustment (mapping-aware)
+    # Gap = SUnique - SShared (both on shared scale)
+    # Scaled gap amplifies the difference for meaningful exponential effect
     gap = s_unique - s_shared
-    w_shared = config.base_shared_rate * (config.gap_base**gap)
-    w_unique = config.base_unique_rate * (config.gap_base ** (-gap))
+    scaled_gap = gap * config.gap_scale
+    w_shared = config.base_shared_rate * (config.gap_base**scaled_gap)
+    w_unique = config.base_unique_rate * (config.gap_base ** (-scaled_gap))
 
     # Step 3: Streak Penalty
     # FinalShared = WShared * (streak_decay_shared ^ streak_shared)

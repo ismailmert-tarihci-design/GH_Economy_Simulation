@@ -12,7 +12,9 @@ from simulation.models import Card, CardCategory, ProgressionMapping
 from simulation.progression import (
     can_upgrade_unique,
     compute_category_progression,
+    compute_mapping_aware_score,
     compute_progression_score,
+    get_equivalent_shared_level,
     get_max_unique_level,
     get_unlocked_unique_count,
 )
@@ -298,3 +300,93 @@ class TestGetUnlockedUniqueCount:
         schedule = {}
         count = get_unlocked_unique_count(100, schedule)
         assert count == 0
+
+
+class TestGetEquivalentSharedLevel:
+    """Test reverse mapping: unique level → equivalent shared level."""
+
+    def test_exact_mapping_entries(self, progression_mapping):
+        # shared_levels=[1, 5, 10, 20, 30, 50, 100], unique_levels=[1, 2, 3, 4, 5, 7, 10]
+        assert get_equivalent_shared_level(1, progression_mapping) == 1.0
+        assert get_equivalent_shared_level(2, progression_mapping) == 5.0
+        assert get_equivalent_shared_level(3, progression_mapping) == 10.0
+        assert get_equivalent_shared_level(4, progression_mapping) == 20.0
+        assert get_equivalent_shared_level(5, progression_mapping) == 30.0
+        assert get_equivalent_shared_level(7, progression_mapping) == 50.0
+        assert get_equivalent_shared_level(10, progression_mapping) == 100.0
+
+    def test_interpolation_between_entries(self, progression_mapping):
+        # unique=1.5 → between (1,1) and (5,2), fraction=0.5 → shared=1+0.5*(5-1)=3.0
+        result = get_equivalent_shared_level(1.5, progression_mapping)
+        assert result == pytest.approx(3.0)
+
+        # unique=6.0 → between (5,30) and (7,50), fraction=(6-5)/(7-5)=0.5 → 30+0.5*20=40.0
+        result = get_equivalent_shared_level(6.0, progression_mapping)
+        assert result == pytest.approx(40.0)
+
+    def test_below_minimum_clamps(self, progression_mapping):
+        result = get_equivalent_shared_level(0.5, progression_mapping)
+        assert result == 1.0
+
+    def test_above_maximum_clamps(self, progression_mapping):
+        result = get_equivalent_shared_level(15, progression_mapping)
+        assert result == 100.0
+
+    def test_empty_mapping_returns_1(self):
+        empty = ProgressionMapping(shared_levels=[], unique_levels=[])
+        assert get_equivalent_shared_level(5, empty) == 1.0
+
+
+class TestComputeMappingAwareScore:
+    """Test mapping-aware progression scoring on shared scale."""
+
+    def test_shared_cards_score_unchanged(self, progression_mapping):
+        cards = [
+            Card(id="g1", name="G1", category=CardCategory.GOLD_SHARED, level=50),
+            Card(id="g2", name="G2", category=CardCategory.GOLD_SHARED, level=50),
+        ]
+        score = compute_mapping_aware_score(
+            cards, CardCategory.GOLD_SHARED, progression_mapping
+        )
+        assert score == pytest.approx(0.50)
+
+    def test_unique_cards_projected_onto_shared_scale(self, progression_mapping):
+        # unique level 5 → equiv shared = 30 → score = 30/100 = 0.30
+        cards = [
+            Card(id="u1", name="U1", category=CardCategory.UNIQUE, level=5),
+            Card(id="u2", name="U2", category=CardCategory.UNIQUE, level=5),
+        ]
+        score = compute_mapping_aware_score(
+            cards, CardCategory.UNIQUE, progression_mapping
+        )
+        assert score == pytest.approx(0.30)
+
+    def test_balanced_cards_equal_scores(self):
+        # With default mapping {1:1,10:2,...,40:5,...}, shared=40 and unique=5
+        # are balanced → both should produce 0.40 score
+        mapping = ProgressionMapping(
+            shared_levels=[1, 10, 20, 30, 40, 60, 80, 100],
+            unique_levels=[1, 2, 3, 4, 5, 6, 7, 10],
+        )
+        shared_cards = [
+            Card(id="g1", name="G1", category=CardCategory.GOLD_SHARED, level=40),
+        ]
+        unique_cards = [
+            Card(id="u1", name="U1", category=CardCategory.UNIQUE, level=5),
+        ]
+        s_shared = compute_mapping_aware_score(
+            shared_cards, CardCategory.GOLD_SHARED, mapping
+        )
+        s_unique = compute_mapping_aware_score(
+            unique_cards, CardCategory.UNIQUE, mapping
+        )
+        assert s_shared == pytest.approx(s_unique)
+
+    def test_empty_category_returns_0(self, progression_mapping):
+        cards = [
+            Card(id="g1", name="G1", category=CardCategory.GOLD_SHARED, level=50),
+        ]
+        score = compute_mapping_aware_score(
+            cards, CardCategory.UNIQUE, progression_mapping
+        )
+        assert score == 0.0

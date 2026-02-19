@@ -118,17 +118,18 @@ def test_balanced_state_distribution(base_config, zero_streak):
     Test 1: Balanced state should yield ~70/30 shared/unique distribution.
 
     Setup:
-    - All shared cards at level 50/100 (0.5 progression)
-    - All unique at level 5/10 (0.5 progression)
+    - All shared cards at level 40/100
+    - All unique at level 5/10
+    - Per the test mapping (shared=40 ↔ unique=5), these are balanced
     - Zero streaks
 
     Expected: ~70% shared, ~30% unique over 10,000 rolls
     """
     cards = [
-        Card(id="g1", name="Gold1", category=CardCategory.GOLD_SHARED, level=50),
-        Card(id="g2", name="Gold2", category=CardCategory.GOLD_SHARED, level=50),
-        Card(id="b1", name="Blue1", category=CardCategory.BLUE_SHARED, level=50),
-        Card(id="b2", name="Blue2", category=CardCategory.BLUE_SHARED, level=50),
+        Card(id="g1", name="Gold1", category=CardCategory.GOLD_SHARED, level=40),
+        Card(id="g2", name="Gold2", category=CardCategory.GOLD_SHARED, level=40),
+        Card(id="b1", name="Blue1", category=CardCategory.BLUE_SHARED, level=40),
+        Card(id="b2", name="Blue2", category=CardCategory.BLUE_SHARED, level=40),
         Card(id="u1", name="Unique1", category=CardCategory.UNIQUE, level=5),
         Card(id="u2", name="Unique2", category=CardCategory.UNIQUE, level=5),
     ]
@@ -336,14 +337,14 @@ def test_deterministic_mode(base_config, zero_streak):
     Test 6: Deterministic mode should choose majority category.
 
     Setup:
-    - Balanced state (ProbShared ~0.7)
+    - Balanced state per mapping (shared=40, unique=5 → ProbShared ~0.7)
     - rng=None
 
     Expected: Always returns GOLD_SHARED (majority)
     """
     cards = [
-        Card(id="g1", name="Gold1", category=CardCategory.GOLD_SHARED, level=50),
-        Card(id="b1", name="Blue1", category=CardCategory.BLUE_SHARED, level=50),
+        Card(id="g1", name="Gold1", category=CardCategory.GOLD_SHARED, level=40),
+        Card(id="b1", name="Blue1", category=CardCategory.BLUE_SHARED, level=40),
         Card(id="u1", name="Unique1", category=CardCategory.UNIQUE, level=5),
     ]
 

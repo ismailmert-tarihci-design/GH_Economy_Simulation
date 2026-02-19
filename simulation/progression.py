@@ -47,6 +47,58 @@ def get_max_unique_level(avg_shared_level: float, mapping: ProgressionMapping) -
     return mapping.unique_levels[idx]
 
 
+def get_equivalent_shared_level(
+    avg_unique_level: float, mapping: ProgressionMapping
+) -> float:
+    """
+    Convert an average unique card level to its equivalent shared level
+    using the progression mapping (reverse lookup).
+
+    The mapping defines pairs: (shared_level, unique_level). This function
+    interpolates: given a unique level, return what shared level it corresponds to.
+
+    Uses linear interpolation between mapping entries for smooth scoring.
+
+    Args:
+        avg_unique_level: Average level of unique cards (1-10)
+        mapping: ProgressionMapping with shared_levels and unique_levels lists
+
+    Returns:
+        Equivalent shared level (1-100 scale) for use in gap calculations.
+
+    Example:
+        Mapping: {1:1, 10:2, 20:3, ...}
+        avg_unique_level=1.5 → interpolates between (1,1) and (10,2):
+            fraction = (1.5-1)/(2-1) = 0.5
+            result = 1 + 0.5*(10-1) = 5.5
+    """
+    if not mapping.shared_levels or not mapping.unique_levels:
+        return 1.0
+
+    shared = mapping.shared_levels
+    unique = mapping.unique_levels
+
+    # Clamp to mapping range
+    if avg_unique_level <= unique[0]:
+        return float(shared[0])
+    if avg_unique_level >= unique[-1]:
+        return float(shared[-1])
+
+    # Find the two mapping entries that bracket avg_unique_level
+    for i in range(len(unique) - 1):
+        if unique[i] <= avg_unique_level <= unique[i + 1]:
+            # Linear interpolation
+            u_lo, u_hi = unique[i], unique[i + 1]
+            s_lo, s_hi = shared[i], shared[i + 1]
+            if u_hi == u_lo:
+                return float(s_lo)
+            fraction = (avg_unique_level - u_lo) / (u_hi - u_lo)
+            return s_lo + fraction * (s_hi - s_lo)
+
+    # Fallback (shouldn't reach here due to clamping)
+    return float(shared[-1])
+
+
 def compute_progression_score(card: Card, mapping: ProgressionMapping) -> float:
     """
     Compute normalized progression score for a card [0, 1].
@@ -62,11 +114,38 @@ def compute_progression_score(card: Card, mapping: ProgressionMapping) -> float:
         Normalized score in [0, 1] range
     """
     if card.category == CardCategory.UNIQUE:
-        # Unique cards: normalize to max of 10
         return min(card.level / 10.0, 1.0)
     else:
-        # Shared cards (GOLD_SHARED or BLUE_SHARED): normalize to max of 100
         return min(card.level / 100.0, 1.0)
+
+
+def compute_mapping_aware_score(
+    cards: list[Card], category: CardCategory, mapping: ProgressionMapping
+) -> float:
+    """
+    Compute progression score on the SHARED scale [0, 1] for any category.
+
+    Unlike compute_progression_score which uses independent scales (shared=level/100,
+    unique=level/10), this projects unique progression onto the shared scale using
+    the progression mapping for apples-to-apples comparison in the gap formula.
+
+    Shared cards: avg_level / 100 (unchanged)
+    Unique cards: get_equivalent_shared_level(avg_level) / 100
+
+    This ensures the gap calculation in decide_rarity() correctly detects when
+    one category is ahead per the progression mapping relationship.
+    """
+    cat_cards = [c for c in cards if c.category == category]
+    if not cat_cards:
+        return 0.0
+
+    avg_level = sum(c.level for c in cat_cards) / len(cat_cards)
+
+    if category == CardCategory.UNIQUE:
+        equiv_shared = get_equivalent_shared_level(avg_level, mapping)
+        return min(equiv_shared / 100.0, 1.0)
+    else:
+        return min(avg_level / 100.0, 1.0)
 
 
 def compute_category_progression(

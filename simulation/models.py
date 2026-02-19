@@ -144,6 +144,10 @@ class SimConfig(BaseModel):
     gap_base: float = Field(
         default=1.5, description="Exponential base for progression gap balancing"
     )
+    gap_scale: float = Field(
+        default=10.0,
+        description="Multiplier applied to the gap before exponentiation (amplifies the nudge strength)",
+    )
     unique_candidate_pool: int = Field(
         default=10,
         description="Top-N lowest-level unique cards considered for selection",
