@@ -263,40 +263,39 @@ class TestCanUpgradeUnique:
 
 
 class TestGetUnlockedUniqueCount:
-    """Test unlock schedule accumulation."""
+    """Test unlock schedule lookup (total count at each day threshold)."""
 
-    def test_day_35_with_schedule_1_8_30_1(self):
-        # Day 35 with {1: 8, 30: 1} → 8 + 1 = 9
-        schedule = {1: 8, 30: 1}
+    def test_day_35_with_schedule_0_8_30_27(self):
+        schedule = {0: 8, 1: 15, 8: 19, 15: 23, 30: 27}
         count = get_unlocked_unique_count(35, schedule)
-        assert count == 9
+        assert count == 27
 
-    def test_day_15_with_schedule_1_8_30_1(self):
-        # Day 15 with {1: 8, 30: 1} → only 1:8, so 8 (30 not reached yet)
-        schedule = {1: 8, 30: 1}
+    def test_day_15_with_schedule_0_8_30_27(self):
+        schedule = {0: 8, 1: 15, 8: 19, 15: 23, 30: 27}
         count = get_unlocked_unique_count(15, schedule)
-        assert count == 8
+        assert count == 23
 
-    def test_day_1_starts_unlocks(self):
-        # Day 1 with {1: 8, 30: 1} → 8
-        schedule = {1: 8, 30: 1}
+    def test_day_1_matches_exact_key(self):
+        schedule = {0: 8, 1: 15, 8: 19}
         count = get_unlocked_unique_count(1, schedule)
+        assert count == 15
+
+    def test_day_0_matches_zero_key(self):
+        schedule = {0: 8, 1: 15, 8: 19}
+        count = get_unlocked_unique_count(0, schedule)
         assert count == 8
 
-    def test_day_0_no_unlocks(self):
-        # Day 0 (before any unlocks)
-        schedule = {1: 8, 30: 1}
+    def test_day_before_all_keys_returns_0(self):
+        schedule = {1: 8, 30: 15}
         count = get_unlocked_unique_count(0, schedule)
         assert count == 0
 
     def test_complex_schedule_day_100(self):
-        # Complex schedule: {1: 8, 30: 1, 60: 1, 90: 1}
-        schedule = {1: 8, 30: 1, 60: 1, 90: 1}
+        schedule = {0: 8, 1: 15, 8: 19, 15: 23, 30: 27, 50: 31, 80: 35, 110: 39}
         count = get_unlocked_unique_count(100, schedule)
-        assert count == 11
+        assert count == 35
 
     def test_empty_schedule(self):
-        # No unlocks scheduled
         schedule = {}
         count = get_unlocked_unique_count(100, schedule)
         assert count == 0

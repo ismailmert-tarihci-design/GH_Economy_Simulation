@@ -196,18 +196,30 @@ def get_unlocked_unique_count(day: int, schedule: Dict[int, int]) -> int:
     """
     Calculate total unlocked unique cards based on unlock schedule.
 
-    Sums all schedule entries where day_key <= current day.
+    Uses floor lookup: finds the highest day_key <= current day and returns
+    its value (which represents the TOTAL count at that day, not an increment).
 
     Args:
         day: Current day in simulation
-        schedule: Dictionary mapping day keys to unlock counts
-                  Example: {1: 8, 30: 1, 60: 1}
+        schedule: Dictionary mapping day keys to total unlocked counts
+                  Example: {0: 8, 1: 15, 8: 19} means:
+                  - Day 0: 8 total uniques
+                  - Day 1: 15 total uniques
+                  - Day 8+: 19 total uniques
 
     Returns:
         Total number of unlocked unique cards by this day
     """
-    total = 0
-    for day_key, unlock_count in schedule.items():
+    if not schedule:
+        return 0
+
+    applicable_day = None
+    for day_key in schedule.keys():
         if day_key <= day:
-            total += unlock_count
-    return total
+            if applicable_day is None or day_key > applicable_day:
+                applicable_day = day_key
+
+    if applicable_day is None:
+        return 0
+
+    return schedule[applicable_day]

@@ -175,8 +175,9 @@ def test_upgrades_fire(full_config):
 
 
 def test_unlock_schedule(full_config):
-    """Test: unique cards appear on scheduled days {1: 8, 5: 2}."""
+    """Test: unique cards appear on scheduled days {1: 8, 5: 10}."""
     full_config.num_days = 6
+    full_config.unique_unlock_schedule = {1: 8, 5: 10}
 
     result = run_simulation(full_config, rng=None)
 
