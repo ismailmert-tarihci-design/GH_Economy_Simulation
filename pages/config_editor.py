@@ -465,7 +465,7 @@ def _render_drop_algorithm(config: SimConfig) -> None:
 
     st.divider()
     st.markdown("**Gap Balancing & Candidate Pool**")
-    col_gap, col_pool = st.columns(2)
+    col_gap, col_scale, col_pool = st.columns(3)
     with col_gap:
         config.gap_base = st.number_input(
             "Gap Base",
@@ -476,6 +476,17 @@ def _render_drop_algorithm(config: SimConfig) -> None:
             format="%.1f",
             key="gap_base",
             help="Exponential base for progression gap balancing. Higher = stronger catch-up.",
+        )
+    with col_scale:
+        config.gap_scale = st.number_input(
+            "Gap Scale",
+            min_value=0.0,
+            max_value=50.0,
+            value=float(config.gap_scale),
+            step=1.0,
+            format="%.1f",
+            key="gap_scale",
+            help="Multiplier applied to the gap before exponentiation. Higher = stronger nudge toward the lagging category.",
         )
     with col_pool:
         config.unique_candidate_pool = st.number_input(
@@ -494,6 +505,7 @@ def _render_drop_algorithm(config: SimConfig) -> None:
         config.streak_decay_shared = 0.6
         config.streak_decay_unique = 0.3
         config.gap_base = 1.5
+        config.gap_scale = 10.0
         config.unique_candidate_pool = 10
         st.rerun()
 
