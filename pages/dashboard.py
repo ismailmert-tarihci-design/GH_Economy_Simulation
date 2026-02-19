@@ -1,25 +1,41 @@
-"""Dashboard with 3 interactive Plotly charts for simulation results."""
+"""Dashboard with interactive Plotly charts for simulation results."""
 
 from typing import Any
 
 import plotly.graph_objects as go
 import streamlit as st
 
+from pages.dashboard_charts import (
+    add_category_ci,
+    add_coin_balance_ci,
+    render_kpi_row,
+    render_unique_unlocked_chart,
+    render_upgrades_chart,
+)
+
 
 def render_dashboard() -> None:
-    """Render dashboard with all 3 charts."""
     if "sim_result" not in st.session_state:
-        st.warning("⚠️ No simulation results available. Run a simulation first.")
+        st.warning("No simulation results available. Run a simulation first.")
         return
 
     result = st.session_state.sim_result
     mode = st.session_state.sim_mode
 
-    st.title("📊 Simulation Dashboard")
+    st.title("Simulation Dashboard")
 
+    render_kpi_row(result, mode)
+    st.divider()
     _render_bluestar_chart(result, mode)
     _render_card_progression_chart(result, mode)
+    if mode == "deterministic":
+        _render_upgrades_and_unlocked(result)
     _render_coin_flow_chart(result, mode)
+
+
+def _render_upgrades_and_unlocked(result: Any) -> None:
+    render_upgrades_chart(result)
+    render_unique_unlocked_chart(result)
 
 
 def _render_bluestar_chart(result: Any, mode: str) -> None:
@@ -120,6 +136,7 @@ def _render_card_progression_chart(result: Any, mode: str) -> None:
                         line=dict(color=COLORS[category], width=2),
                     )
                 )
+        add_category_ci(fig, result)
     max_day = days[-1]
     fig.add_trace(
         go.Scatter(
@@ -201,6 +218,7 @@ def _render_coin_flow_chart(result: Any, mode: str) -> None:
                 line=dict(color="blue", width=2),
             )
         )
+        add_coin_balance_ci(fig, result)
     fig.update_layout(
         title="Coin Economy — Income vs Spending",
         xaxis=dict(title="Day"),

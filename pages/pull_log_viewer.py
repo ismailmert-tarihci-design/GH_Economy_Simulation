@@ -4,6 +4,7 @@ from collections import defaultdict
 from typing import Any, List
 
 import pandas as pd
+import plotly.graph_objects as go
 import streamlit as st
 
 
@@ -178,6 +179,8 @@ def _render_card_detail(pulls: list) -> None:
             pd.DataFrame(upgrade_rows), use_container_width=True, hide_index=True
         )
 
+    _render_dupe_accumulation_chart(pulls, upgrades)
+
     st.markdown("**Pull History**")
     rows = []
     for p in pulls:
@@ -201,3 +204,60 @@ def _render_card_detail(pulls: list) -> None:
 
     df = pd.DataFrame(rows)
     st.dataframe(df, use_container_width=True, hide_index=True)
+
+
+def _render_dupe_accumulation_chart(pulls: list, upgrades: list) -> None:
+    if len(pulls) < 2:
+        return
+
+    cumulative = []
+    running_total = 0
+    pull_labels = []
+    for p in pulls:
+        running_total += p.duplicates_received
+        cumulative.append(running_total)
+        pull_labels.append(f"Day {p.day}, Pull #{p.pull_index}")
+
+    x = list(range(1, len(cumulative) + 1))
+
+    fig = go.Figure()
+    fig.add_trace(
+        go.Scatter(
+            x=x,
+            y=cumulative,
+            mode="lines+markers",
+            name="Cumulative Dupes",
+            line=dict(color="rgb(31, 119, 180)", width=2),
+            marker=dict(size=4),
+            text=pull_labels,
+            hovertemplate="%{text}<br>Cumulative Dupes: %{y}<extra></extra>",
+        )
+    )
+
+    for u in upgrades:
+        pull_idx = next(
+            (
+                i + 1
+                for i, p in enumerate(pulls)
+                if p.day == u.day and any(pu.card_id == u.card_id for pu in p.upgrades)
+            ),
+            None,
+        )
+        if pull_idx is not None:
+            fig.add_vline(
+                x=pull_idx,
+                line_dash="dash",
+                line_color="rgba(255, 0, 0, 0.5)",
+                annotation_text=f"L{u.old_level}\u2192{u.new_level}",
+                annotation_position="top",
+            )
+
+    fig.update_layout(
+        title="Duplicate Accumulation",
+        xaxis=dict(title="Pull #"),
+        yaxis=dict(title="Cumulative Duplicates"),
+        hovermode="x unified",
+        template="plotly_white",
+        height=300,
+    )
+    st.plotly_chart(fig, use_container_width=True)

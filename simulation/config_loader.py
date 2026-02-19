@@ -6,9 +6,8 @@ and returns a SimConfig object.
 """
 
 import json
-import os
 from pathlib import Path
-from typing import Dict, Any
+from typing import Any
 
 from simulation.models import (
     SimConfig,
@@ -104,6 +103,73 @@ def load_defaults() -> SimConfig:
     )
 
     return config
+
+
+def save_defaults(config: "SimConfig") -> None:
+    """
+    Save the current SimConfig as the new default configuration.
+
+    Writes each config section back to its corresponding JSON file
+    in data/defaults/. Creates timestamped backups before overwriting.
+
+    Args:
+        config: SimConfig object to persist as defaults.
+    """
+    import shutil
+    from datetime import datetime
+
+    defaults_dir = _get_defaults_dir()
+    backup_dir = defaults_dir / "backups"
+    backup_dir.mkdir(parents=True, exist_ok=True)
+    timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+
+    def _backup_and_write(filename: str, data: Any) -> None:
+        path = defaults_dir / filename
+        if path.exists():
+            shutil.copy2(path, backup_dir / f"{path.stem}_{timestamp}{path.suffix}")
+        with open(path, "w") as f:
+            json.dump(data, f, indent=2)
+
+    # Pack configs
+    pack_data = {"packs": [p.model_dump() for p in config.packs]}
+    _backup_and_write("pack_configs.json", pack_data)
+
+    # Upgrade tables
+    upgrade_data = {
+        cat.value: table.model_dump() for cat, table in config.upgrade_tables.items()
+    }
+    _backup_and_write("upgrade_tables.json", upgrade_data)
+
+    # Duplicate ranges
+    dup_data = {
+        cat.value: dr.model_dump() for cat, dr in config.duplicate_ranges.items()
+    }
+    _backup_and_write("duplicate_ranges.json", dup_data)
+
+    # Coin per duplicate
+    coin_data = {
+        cat.value: cpd.model_dump() for cat, cpd in config.coin_per_duplicate.items()
+    }
+    _backup_and_write("coin_per_duplicate.json", coin_data)
+
+    # Progression mapping
+    shared_to_unique = {
+        str(s): u
+        for s, u in zip(
+            config.progression_mapping.shared_levels,
+            config.progression_mapping.unique_levels,
+        )
+    }
+    _backup_and_write(
+        "progression_mapping.json", {"shared_to_unique": shared_to_unique}
+    )
+
+    # Unique unlock schedule
+    schedule_data = {str(k): v for k, v in config.unique_unlock_schedule.items()}
+    _backup_and_write("unique_unlock_schedule.json", schedule_data)
+
+    # Daily pack schedule
+    _backup_and_write("daily_pack_schedule.json", config.daily_pack_schedule)
 
 
 def _get_profiles_dir() -> Path:

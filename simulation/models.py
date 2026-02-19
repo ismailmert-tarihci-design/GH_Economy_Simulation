@@ -108,11 +108,21 @@ class ProgressionMapping(BaseModel):
 
 
 class UserProfile(BaseModel):
-    """Reusable profile storing daily pack schedule and unique unlock schedule."""
+    """Reusable profile storing simulation configuration.
+
+    New profiles store the full SimConfig. Legacy profiles (pre-v2) only
+    have daily_pack_schedule and unique_unlock_schedule and are loaded
+    with backward compatibility.
+    """
 
     name: str
-    daily_pack_schedule: List[Dict[str, float]]
-    unique_unlock_schedule: Dict[int, int]
+    daily_pack_schedule: List[Dict[str, float]] = Field(default_factory=list)
+    unique_unlock_schedule: Dict[int, int] = Field(default_factory=dict)
+    full_config: Optional[Dict[str, Any]] = Field(
+        default=None,
+        description="Full SimConfig snapshot (JSON-serializable dict). "
+        "None for legacy profiles that only stored schedules.",
+    )
 
 
 class SimConfig(BaseModel):

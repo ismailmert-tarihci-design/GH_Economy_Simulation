@@ -33,12 +33,26 @@ elif "config" not in st.session_state:
     st.session_state.config = load_defaults()
 
 # Sidebar navigation
-st.sidebar.title("🌌 Navigation")
+st.sidebar.title("Navigation")
 page = st.sidebar.radio(
     "Select a page:",
     ["⚙️ Configuration", "▶️ Simulation", "📊 Dashboard", "📋 Pull Logs"],
     index=0,
 )
+
+st.sidebar.divider()
+st.sidebar.caption("Share Configuration")
+if st.sidebar.button("Copy Shareable URL", use_container_width=True):
+    try:
+        from simulation.url_config import encode_config
+
+        encoded = encode_config(st.session_state.config)
+        base_url = st.context.headers.get("host", "localhost:8501")
+        protocol = "https" if "streamlit.app" in base_url else "http"
+        share_url = f"{protocol}://{base_url}/?cfg={encoded}"
+        st.sidebar.code(share_url, language="text")
+    except Exception as e:
+        st.sidebar.error(f"Failed: {e}")
 
 # Route to appropriate page
 if page == "⚙️ Configuration":
