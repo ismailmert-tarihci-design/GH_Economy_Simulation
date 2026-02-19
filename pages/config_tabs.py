@@ -402,41 +402,22 @@ def render_drop_algorithm(config: SimConfig) -> None:
 
     st.divider()
     st.markdown("**Gap Balancing & Candidate Pool**")
-    col_scale, col_floor, col_ceil, col_pool = st.columns(4)
-    with col_scale:
-        config.gap_scale = st.number_input(
-            "Gap Scale",
-            min_value=0.0,
-            max_value=50.0,
-            value=float(config.gap_scale),
-            step=0.5,
+    st.caption(
+        "The exponential gap formula nudges drop rates to follow the progression mapping. "
+        "Gap = Sunique - Sshared. WShared = BaseShared × gap_base^Gap, WUnique = BaseUnique × gap_base^(-Gap)."
+    )
+    col_gap, col_pool = st.columns(2)
+    with col_gap:
+        config.gap_base = st.number_input(
+            "Gap Base (Exponential)",
+            min_value=1.0,
+            max_value=5.0,
+            value=float(config.gap_base),
+            step=0.1,
             format="%.1f",
-            key="gap_scale",
-            help="How much 1 tier of gap shifts the shared ratio. "
-            "Formula: rawRatio = base_shared_rate + gap_tiers × gap_scale. "
-            "Default 5.0 means 1 tier shifts ratio by 0.5.",
-        )
-    with col_floor:
-        config.ratio_floor = st.number_input(
-            "Ratio Floor",
-            min_value=0.0,
-            max_value=1.0,
-            value=float(config.ratio_floor),
-            step=0.05,
-            format="%.2f",
-            key="ratio_floor",
-            help="Minimum shared pull ratio. Prevents complete starvation of shared cards.",
-        )
-    with col_ceil:
-        config.ratio_ceiling = st.number_input(
-            "Ratio Ceiling",
-            min_value=0.0,
-            max_value=1.0,
-            value=float(config.ratio_ceiling),
-            step=0.05,
-            format="%.2f",
-            key="ratio_ceiling",
-            help="Maximum shared pull ratio. Prevents complete starvation of unique cards.",
+            key="gap_base",
+            help="Exponential base for gap adjustment. Higher values make the algorithm "
+            "react more aggressively to progression imbalance. Revamp Master Doc: 1.5",
         )
     with col_pool:
         config.unique_candidate_pool = st.number_input(
@@ -450,13 +431,11 @@ def render_drop_algorithm(config: SimConfig) -> None:
         )
 
     if st.button("🔄 Restore Drop Algorithm Defaults", key="restore_drop_algo"):
-        config.base_shared_rate = 0.40
-        config.base_unique_rate = 0.60
+        config.base_shared_rate = 0.70
+        config.base_unique_rate = 0.30
         config.streak_decay_shared = 0.6
         config.streak_decay_unique = 0.3
-        config.gap_scale = 5.0
-        config.ratio_floor = 0.05
-        config.ratio_ceiling = 0.95
+        config.gap_base = 1.5
         config.unique_candidate_pool = 10
         st.rerun()
 

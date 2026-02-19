@@ -293,8 +293,10 @@ def test_unique_streak_penalty(base_config, zero_streak):
     - streak_unique=3
 
     Expected: ProbUnique < 0.15 (significantly below no-streak unique rate)
-    With linear ratio: raw_ratio ≈ 0.34, unique_weight ≈ 0.66
-    After streak decay: 0.66 * 0.3^3 ≈ 0.018 → prob_unique ≈ 0.05-0.10
+    With exponential formula at balanced state (gap≈0):
+    WShared = 0.70, WUnique = 0.30
+    After streak decay: WUnique * 0.3^3 = 0.30 * 0.027 = 0.0081
+    After normalization: prob_unique ≈ 0.0081 / (0.70 + 0.0081) ≈ 0.011
     """
     cards = [
         Card(id="g1", name="Gold1", category=CardCategory.GOLD_SHARED, level=50),
