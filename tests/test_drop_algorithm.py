@@ -583,14 +583,14 @@ def test_unique_card_hero_streak_penalty(base_config, zero_streak):
 
     Expected:
     - card1 selected least often due to hero streak penalty
-    - card1 penalized by 0.6^3 = 0.216
+    - card1 penalized by streak_decay_unique^3 = 0.3^3 = 0.027
 
     Weights:
-    - card1: (1/2) * 0.216 = 0.108
+    - card1: (1/2) * 0.027 = 0.0135
     - card2: (1/2) * 1.0 = 0.5
     - card3: (1/2) * 1.0 = 0.5
-    Total: 1.108
-    card1 expected ratio = 0.108 / 1.108 = 9.7%
+    Total: 1.0135
+    card1 expected ratio = 0.0135 / 1.0135 = 1.3%
     """
     cards = [
         Card(id="u1", name="Unique1", category=CardCategory.UNIQUE, level=1),

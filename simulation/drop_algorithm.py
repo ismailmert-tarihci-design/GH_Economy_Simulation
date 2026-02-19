@@ -213,7 +213,7 @@ def select_unique_card(
     3. For each candidate:
        - WeightCard = 1 / (card.level + 1)
        - streak_for_hero = streak_state.streak_per_hero.get(card.id, 0)
-       - FinalWeight = WeightCard * (streak_decay_shared ** streak_for_hero)
+       - FinalWeight = WeightCard * (streak_decay_unique ** streak_for_hero)
     4. Selection:
        - Deterministic: pick card with highest FinalWeight
        - MC: weighted random choice
@@ -247,7 +247,7 @@ def select_unique_card(
         # Get hero streak (use card.id as key)
         hero_streak = streak_state.streak_per_hero.get(card.id, 0)
 
-        final_weight = base_weight * (config.streak_decay_shared**hero_streak)
+        final_weight = base_weight * (config.streak_decay_unique**hero_streak)
         weights.append(final_weight)
 
     # Selection
