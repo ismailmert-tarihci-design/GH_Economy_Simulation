@@ -1556,10 +1556,9 @@ def _render_implementation_details() -> None:
         """
         ## End of Documentation
         
-        For questions or suggestions, please refer to the codebase or contact the development team.
+        For questions or suggestions, please contact @İsmail Mert Tarihçi on Slack.
         
-        **Last Updated:** February 2026  
+        **Last Updated:** 20 February 2026  
         **Version:** 1.0.0  
-        **Codebase:** `/Users/mertt7/Documents/GitHub/coin_sim`
         """
     )
