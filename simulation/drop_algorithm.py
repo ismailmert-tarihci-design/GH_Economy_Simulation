@@ -9,7 +9,7 @@ with streak penalties applied as multiplicative weight modifiers.
 """
 
 from random import Random
-from typing import Optional
+from typing import List, Optional
 
 from simulation.models import Card, CardCategory, GameState, SimConfig, StreakState
 from simulation.progression import compute_mapping_aware_score
@@ -17,6 +17,43 @@ from simulation.progression import compute_mapping_aware_score
 STREAK_DECAY_SHARED = 0.6
 STREAK_DECAY_UNIQUE = 0.3
 GAP_BASE = 1.5
+
+
+def _deterministic_weighted_choice(
+    cards: List[Card], weights: List[float], game_state: GameState
+) -> Card:
+    """
+    Deterministic weighted selection that distributes proportionally.
+
+    Uses game state hash to pick a position in cumulative weight space,
+    ensuring reproducibility while distributing proportionally to weights.
+
+    Cards with higher weights get selected more often proportionally.
+    """
+    total = sum(weights)
+    if total <= 0:
+        return cards[0]
+
+    cumulative = []
+    running = 0.0
+    for w in weights:
+        running += w
+        cumulative.append(running)
+
+    hash_val = hash(
+        (
+            game_state.day,
+            tuple(c.level for c in cards),
+            tuple(c.duplicates for c in cards),
+        )
+    )
+    position = abs(hash_val) % 10000 / 10000.0 * total
+
+    for i, thresh in enumerate(cumulative):
+        if position <= thresh:
+            return cards[i]
+
+    return cards[-1]
 
 
 def decide_rarity(
@@ -76,7 +113,11 @@ def decide_rarity(
 
     # Step 6: Roll
     if rng is None:
-        return CardCategory.GOLD_SHARED if prob_shared >= 0.5 else CardCategory.UNIQUE
+        hash_val = hash((game_state.day, int(s_shared * 1000), int(s_unique * 1000)))
+        position = abs(hash_val) % 10000 / 10000.0
+        return (
+            CardCategory.GOLD_SHARED if position < prob_shared else CardCategory.UNIQUE
+        )
     else:
         return (
             CardCategory.GOLD_SHARED
@@ -181,11 +222,8 @@ def select_shared_card(
 
     # Selection
     if rng is None:
-        # Deterministic: pick highest weighted
-        max_idx = weights.index(max(weights))
-        return shared_cards[max_idx]
+        return _deterministic_weighted_choice(shared_cards, weights, game_state)
     else:
-        # MC: weighted random choice
         return rng.choices(shared_cards, weights=weights, k=1)[0]
 
 
@@ -243,8 +281,7 @@ def select_unique_card(
 
     # Selection
     if rng is None:
-        max_idx = weights.index(max(weights))
-        return candidates[max_idx]
+        return _deterministic_weighted_choice(candidates, weights, game_state)
     else:
         return rng.choices(candidates, weights=weights, k=1)[0]
 

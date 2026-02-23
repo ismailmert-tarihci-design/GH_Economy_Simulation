@@ -342,7 +342,7 @@ def test_deterministic_mode(base_config, zero_streak):
     - Balanced state per mapping (shared=40, unique=5 → ProbShared ~0.7)
     - rng=None
 
-    Expected: Always returns GOLD_SHARED (majority)
+    Expected: Deterministic mode returns same result for same inputs (reproducible)
     """
     cards = [
         Card(id="g1", name="Gold1", category=CardCategory.GOLD_SHARED, level=40),
@@ -358,11 +358,28 @@ def test_deterministic_mode(base_config, zero_streak):
         streak_state=zero_streak,
     )
 
-    for _ in range(100):
-        result = decide_rarity(game_state, base_config, zero_streak, rng=None)
-        assert result == CardCategory.GOLD_SHARED, (
-            "Deterministic mode with ProbShared>0.5 should always return GOLD_SHARED"
+    results = [
+        decide_rarity(game_state, base_config, zero_streak, rng=None) for _ in range(10)
+    ]
+    assert len(set(results)) == 1, (
+        "Deterministic mode should return same result for same inputs"
+    )
+
+    different_days = []
+    for day in range(1, 101):
+        gs = GameState(
+            day=day,
+            cards=cards,
+            coins=0,
+            total_bluestars=0,
+            streak_state=zero_streak,
         )
+        different_days.append(decide_rarity(gs, base_config, zero_streak, rng=None))
+
+    shared_count = sum(1 for r in different_days if r == CardCategory.GOLD_SHARED)
+    assert shared_count > 50, (
+        f"With ProbShared~0.7, expect majority GOLD_SHARED, got {shared_count}/100"
+    )
 
 
 def test_streak_update_shared(zero_streak):
