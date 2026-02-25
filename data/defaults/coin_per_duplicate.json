@@ -31,6 +31,6 @@
   },
   "UNIQUE": {
     "category": "UNIQUE",
-    "coins_per_dupe": [5, 8, 9, 11, 13, 14, 15, 16, 17]
+    "coins_per_dupe": [25, 29, 29, 29, 23, 16, 13, 11, 8]
   }
 }
