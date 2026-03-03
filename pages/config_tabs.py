@@ -14,7 +14,17 @@ from simulation.models import (
     CardCategory,
     CardTypesRange,
     GearDesignIncomeRow,
+    GearSlotCostConfig,
+    GearSlotCostRow,
     HeroUnlockRow,
+    PetBuildConfig,
+    PetBuildRow,
+    PetDuplicateConfig,
+    PetDuplicateRow,
+    PetLevelConfig,
+    PetLevelRow,
+    PetTierConfig,
+    PetTierRow,
     SimConfig,
     UserProfile,
 )
@@ -492,6 +502,11 @@ def render_profiles(config: SimConfig) -> None:
 
 
 def render_pet_hero_gear(config: SimConfig) -> None:
+    st.caption(
+        "Use section editors for quick updates and bulk tools for high-volume changes. "
+        "Bulk apply actions only run when you press Apply."
+    )
+
     st.subheader("Pet System")
     if config.pet_system_config is None:
         st.warning("Pet system config is missing.")
@@ -549,6 +564,245 @@ def render_pet_hero_gear(config: SimConfig) -> None:
             len(pet_config.build_table.builds if pet_config.build_table else []),
         )
 
+        with st.expander("Pet Tier Table", expanded=False):
+            if pet_config.tier_table is None:
+                st.warning("Pet tier table is missing.")
+            else:
+                rarity_keys = sorted(
+                    {
+                        rarity
+                        for row in pet_config.tier_table.tiers
+                        for rarity in row.rarity_probabilities.keys()
+                    }
+                )
+                tier_df = pd.DataFrame(
+                    [
+                        {
+                            "tier": row.tier,
+                            "summons_to_lvl_up": row.summons_to_lvl_up,
+                            **{
+                                rarity: float(row.rarity_probabilities.get(rarity, 0.0))
+                                for rarity in rarity_keys
+                            },
+                        }
+                        for row in pet_config.tier_table.tiers
+                    ]
+                )
+                edited_tier = st.data_editor(
+                    tier_df,
+                    column_config={
+                        "tier": st.column_config.NumberColumn(
+                            "Tier", min_value=1, max_value=15, step=1, disabled=True
+                        ),
+                        "summons_to_lvl_up": st.column_config.NumberColumn(
+                            "Summons To Lvl Up",
+                            min_value=0,
+                            step=1,
+                            format="%d",
+                            required=True,
+                        ),
+                        **{
+                            rarity: st.column_config.NumberColumn(
+                                rarity,
+                                min_value=0.0,
+                                max_value=100.0,
+                                step=0.1,
+                                format="%.1f",
+                                required=True,
+                            )
+                            for rarity in rarity_keys
+                        },
+                    },
+                    hide_index=True,
+                    width="stretch",
+                    key="pet_tier_editor",
+                )
+                if st.button("Apply Pet Tier Changes", key="apply_pet_tier"):
+                    pet_config.tier_table = PetTierConfig(
+                        tiers=[
+                            PetTierRow(
+                                tier=int(row.tier),
+                                summons_to_lvl_up=int(row.summons_to_lvl_up),
+                                rarity_probabilities={
+                                    rarity: float(getattr(row, rarity))
+                                    for rarity in rarity_keys
+                                },
+                            )
+                            for row in edited_tier.itertuples()
+                        ]
+                    )
+                    st.success("Pet tier table updated.")
+
+        with st.expander("Pet Level Cost Table", expanded=False):
+            if pet_config.level_table is None:
+                st.warning("Pet level table is missing.")
+            else:
+                rarity_filter = st.selectbox(
+                    "Rarity",
+                    sorted({row.rarity for row in pet_config.level_table.levels}),
+                    key="pet_level_rarity_filter",
+                )
+                level_df = pd.DataFrame(
+                    [
+                        {
+                            "rarity": row.rarity,
+                            "level": row.level,
+                            "resource_required": row.resource_required,
+                        }
+                        for row in pet_config.level_table.levels
+                        if row.rarity == rarity_filter
+                    ]
+                )
+                edited_levels = st.data_editor(
+                    level_df,
+                    column_config={
+                        "rarity": st.column_config.TextColumn("Rarity", disabled=True),
+                        "level": st.column_config.NumberColumn("Level", disabled=True),
+                        "resource_required": st.column_config.NumberColumn(
+                            "Resource Required",
+                            min_value=0,
+                            step=1,
+                            format="%d",
+                            required=True,
+                        ),
+                    },
+                    hide_index=True,
+                    width="stretch",
+                    key=f"pet_level_editor_{rarity_filter}",
+                )
+                if st.button(
+                    "Apply Pet Level Changes", key=f"apply_pet_level_{rarity_filter}"
+                ):
+                    new_rows = []
+                    edited_by_level = {
+                        int(row.level): int(row.resource_required)
+                        for row in edited_levels.itertuples()
+                    }
+                    for row in pet_config.level_table.levels:
+                        if row.rarity == rarity_filter and row.level in edited_by_level:
+                            new_rows.append(
+                                PetLevelRow(
+                                    rarity=row.rarity,
+                                    level=row.level,
+                                    resource_required=edited_by_level[row.level],
+                                )
+                            )
+                        else:
+                            new_rows.append(row)
+                    pet_config.level_table = PetLevelConfig(levels=new_rows)
+                    st.success(f"Pet level costs updated for rarity '{rarity_filter}'.")
+
+        with st.expander("Pet Duplicate Requirement Table", expanded=False):
+            if pet_config.duplicate_table is None:
+                st.warning("Pet duplicate table is missing.")
+            else:
+                rarity_filter = st.selectbox(
+                    "Rarity",
+                    sorted(
+                        {row.rarity for row in pet_config.duplicate_table.duplicates}
+                    ),
+                    key="pet_duplicate_rarity_filter",
+                )
+                duplicate_df = pd.DataFrame(
+                    [
+                        {
+                            "rarity": row.rarity,
+                            "level": row.level,
+                            "duplicates_required": row.duplicates_required,
+                        }
+                        for row in pet_config.duplicate_table.duplicates
+                        if row.rarity == rarity_filter
+                    ]
+                )
+                edited_duplicates = st.data_editor(
+                    duplicate_df,
+                    column_config={
+                        "rarity": st.column_config.TextColumn("Rarity", disabled=True),
+                        "level": st.column_config.NumberColumn("Level", disabled=True),
+                        "duplicates_required": st.column_config.NumberColumn(
+                            "Duplicates Required",
+                            min_value=0,
+                            step=1,
+                            format="%d",
+                            required=True,
+                        ),
+                    },
+                    hide_index=True,
+                    width="stretch",
+                    key=f"pet_duplicate_editor_{rarity_filter}",
+                )
+                if st.button(
+                    "Apply Pet Duplicate Changes",
+                    key=f"apply_pet_duplicate_{rarity_filter}",
+                ):
+                    new_rows = []
+                    edited_by_level = {
+                        int(row.level): int(row.duplicates_required)
+                        for row in edited_duplicates.itertuples()
+                    }
+                    for row in pet_config.duplicate_table.duplicates:
+                        if row.rarity == rarity_filter and row.level in edited_by_level:
+                            new_rows.append(
+                                PetDuplicateRow(
+                                    rarity=row.rarity,
+                                    level=row.level,
+                                    duplicates_required=edited_by_level[row.level],
+                                )
+                            )
+                        else:
+                            new_rows.append(row)
+                    pet_config.duplicate_table = PetDuplicateConfig(duplicates=new_rows)
+                    st.success(
+                        f"Pet duplicate requirements updated for rarity '{rarity_filter}'."
+                    )
+
+        with st.expander("Pet Build Cost Table", expanded=False):
+            if pet_config.build_table is None:
+                st.warning("Pet build table is missing.")
+            else:
+                build_df = pd.DataFrame(
+                    [
+                        {
+                            "build_level": row.build_level,
+                            "spirit_stones_cost": row.spirit_stones_cost,
+                        }
+                        for row in pet_config.build_table.builds
+                    ]
+                )
+                edited_build = st.data_editor(
+                    build_df,
+                    column_config={
+                        "build_level": st.column_config.NumberColumn(
+                            "Build Level",
+                            min_value=1,
+                            max_value=8,
+                            step=1,
+                            disabled=True,
+                        ),
+                        "spirit_stones_cost": st.column_config.NumberColumn(
+                            "Spirit Stones Cost",
+                            min_value=0,
+                            step=1,
+                            format="%d",
+                            required=True,
+                        ),
+                    },
+                    hide_index=True,
+                    width="stretch",
+                    key="pet_build_editor",
+                )
+                if st.button("Apply Pet Build Changes", key="apply_pet_build"):
+                    pet_config.build_table = PetBuildConfig(
+                        builds=[
+                            PetBuildRow(
+                                build_level=int(row.build_level),
+                                spirit_stones_cost=int(row.spirit_stones_cost),
+                            )
+                            for row in edited_build.itertuples()
+                        ]
+                    )
+                    st.success("Pet build costs updated.")
+
     st.divider()
     st.subheader("Hero System")
     if config.hero_system_config is None:
@@ -594,6 +848,32 @@ def render_pet_hero_gear(config: SimConfig) -> None:
             )
             for row in edited_hero.itertuples()
         ]
+
+        with st.expander("Hero Bulk Paste (CSV)", expanded=False):
+            bulk_text = st.text_area(
+                "Paste rows as day,hero_id,unique_cards_added",
+                value="",
+                key="hero_bulk_paste",
+                height=120,
+            )
+            if st.button("Apply Hero Bulk Paste", key="apply_hero_bulk"):
+                rows = []
+                for line in bulk_text.splitlines():
+                    line = line.strip()
+                    if not line:
+                        continue
+                    day, hero_id, unique_cards_added = [
+                        part.strip() for part in line.split(",", 2)
+                    ]
+                    rows.append(
+                        HeroUnlockRow(
+                            day=int(day),
+                            hero_id=hero_id,
+                            unique_cards_added=int(unique_cards_added),
+                        )
+                    )
+                hero_config.unlock_rows = rows
+                st.success(f"Applied {len(rows)} hero unlock rows.")
 
     st.divider()
     st.subheader("Gear System")
@@ -648,3 +928,113 @@ def render_pet_hero_gear(config: SimConfig) -> None:
         st.caption(
             f"Slot cost rows loaded: {len(slot_cost_rows)} (slots 1..6, levels 1..100)"
         )
+
+        with st.expander("Gear Slot Cost Table", expanded=False):
+            if gear_config.slot_costs is None:
+                st.warning("Gear slot cost table is missing.")
+            else:
+                selected_slot = st.selectbox(
+                    "Slot",
+                    [1, 2, 3, 4, 5, 6],
+                    key="gear_slot_cost_filter",
+                )
+                slot_df = pd.DataFrame(
+                    [
+                        {
+                            "slot_id": row.slot_id,
+                            "level": row.level,
+                            "design_cost": row.design_cost,
+                        }
+                        for row in gear_config.slot_costs.cost_table
+                        if row.slot_id == selected_slot
+                    ]
+                )
+                level_window = st.slider(
+                    "Level Window",
+                    min_value=1,
+                    max_value=100,
+                    value=(1, 25),
+                    key=f"gear_level_window_{selected_slot}",
+                )
+                filtered_slot_df = slot_df[
+                    (slot_df["level"] >= level_window[0])
+                    & (slot_df["level"] <= level_window[1])
+                ].copy()
+                edited_slot = st.data_editor(
+                    filtered_slot_df,
+                    column_config={
+                        "slot_id": st.column_config.NumberColumn("Slot", disabled=True),
+                        "level": st.column_config.NumberColumn("Level", disabled=True),
+                        "design_cost": st.column_config.NumberColumn(
+                            "Design Cost",
+                            min_value=0,
+                            step=1,
+                            format="%d",
+                            required=True,
+                        ),
+                    },
+                    hide_index=True,
+                    width="stretch",
+                    key=f"gear_slot_editor_{selected_slot}_{level_window[0]}_{level_window[1]}",
+                )
+                if st.button(
+                    "Apply Gear Slot Window Changes",
+                    key=f"apply_gear_slot_{selected_slot}_{level_window[0]}_{level_window[1]}",
+                ):
+                    cost_map = {
+                        (row.slot_id, row.level): row.design_cost
+                        for row in gear_config.slot_costs.cost_table
+                    }
+                    for row in edited_slot.itertuples():
+                        cost_map[(int(row.slot_id), int(row.level))] = int(
+                            row.design_cost
+                        )
+                    rebuilt_rows = [
+                        GearSlotCostRow(
+                            slot_id=slot_id,
+                            level=level,
+                            design_cost=cost_map[(slot_id, level)],
+                        )
+                        for slot_id in range(1, 7)
+                        for level in range(1, 101)
+                    ]
+                    gear_config.slot_costs = GearSlotCostConfig(cost_table=rebuilt_rows)
+                    st.success("Gear slot costs updated for selected window.")
+
+                st.caption("Quick generator for full 6x100 slot cost table")
+                col_base, col_step, col_slot = st.columns(3)
+                base_cost = col_base.number_input(
+                    "Base Cost", min_value=0, value=1, step=1, key="gear_gen_base"
+                )
+                level_step = col_step.number_input(
+                    "Level Step",
+                    min_value=0,
+                    value=1,
+                    step=1,
+                    key="gear_gen_level_step",
+                )
+                slot_step = col_slot.number_input(
+                    "Slot Step", min_value=0, value=0, step=1, key="gear_gen_slot_step"
+                )
+                if st.button(
+                    "Regenerate Full Gear Cost Table", key="regen_gear_cost_table"
+                ):
+                    rows = []
+                    for slot_id in range(1, 7):
+                        for level in range(1, 101):
+                            cost = int(
+                                base_cost
+                                + (level - 1) * level_step
+                                + (slot_id - 1) * slot_step
+                            )
+                            rows.append(
+                                GearSlotCostRow(
+                                    slot_id=slot_id,
+                                    level=level,
+                                    design_cost=max(0, cost),
+                                )
+                            )
+                    gear_config.slot_costs = GearSlotCostConfig(cost_table=rows)
+                    st.success(
+                        "Regenerated complete gear slot cost table (6 slots x 100 levels)."
+                    )

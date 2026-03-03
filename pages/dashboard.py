@@ -69,6 +69,7 @@ def render_dashboard() -> None:
     render_pack_counts_chart(result, mode)
     if mode == "deterministic":
         _render_pet_hero_gear_events(result)
+        _render_pet_hero_gear_details(result)
 
 
 def _render_upgrades_and_unlocked(result: Any) -> None:
@@ -291,3 +292,240 @@ def _render_pet_hero_gear_events(result: Any) -> None:
             }
         )
     st.dataframe(pd.DataFrame(rows), use_container_width=True, hide_index=True)
+
+
+def _render_pet_hero_gear_details(result: Any) -> None:
+    st.divider()
+    st.subheader("Detailed System Dashboards")
+    pet_tab, hero_tab, gear_tab = st.tabs(["Pet", "Hero", "Gear"])
+
+    with pet_tab:
+        _render_pet_detail_dashboard(result)
+    with hero_tab:
+        _render_hero_detail_dashboard(result)
+    with gear_tab:
+        _render_gear_detail_dashboard(result)
+
+
+def _render_pet_detail_dashboard(result: Any) -> None:
+    snapshots = result.daily_snapshots
+    owned_pet_ids: set[str] = set()
+    current_tier = 1
+    rows = []
+
+    for snapshot in snapshots:
+        summons = 0
+        level_upgrades = 0
+        build_upgrades = 0
+        for event in snapshot.pet_events:
+            if "summon_index" in event:
+                summons += 1
+                current_tier = max(
+                    current_tier, int(event.get("tier_after", current_tier))
+                )
+                if event.get("owned_after", False):
+                    pet_id = event.get("pet_id")
+                    if pet_id:
+                        owned_pet_ids.add(str(pet_id))
+            if event.get("event_type") == "level":
+                level_upgrades += 1
+            if event.get("event_type") == "build":
+                build_upgrades += 1
+
+        rows.append(
+            {
+                "Day": snapshot.day,
+                "Summons": summons,
+                "Level Upgrades": level_upgrades,
+                "Build Upgrades": build_upgrades,
+                "Current Tier": current_tier,
+                "Owned Pets": len(owned_pet_ids),
+            }
+        )
+
+    pet_df = pd.DataFrame(rows)
+    col1, col2, col3 = st.columns(3)
+    col1.metric("Total Summons", f"{int(pet_df['Summons'].sum()):,}")
+    col2.metric(
+        "Final Tier", int(pet_df["Current Tier"].iloc[-1]) if not pet_df.empty else 1
+    )
+    col3.metric("Owned Pets", len(owned_pet_ids))
+
+    fig = go.Figure()
+    fig.add_trace(go.Bar(x=pet_df["Day"], y=pet_df["Summons"], name="Summons"))
+    fig.add_trace(
+        go.Bar(
+            x=pet_df["Day"],
+            y=pet_df["Level Upgrades"],
+            name="Level Upgrades",
+        )
+    )
+    fig.add_trace(
+        go.Bar(
+            x=pet_df["Day"],
+            y=pet_df["Build Upgrades"],
+            name="Build Upgrades",
+        )
+    )
+    fig.add_trace(
+        go.Scatter(
+            x=pet_df["Day"],
+            y=pet_df["Current Tier"],
+            mode="lines+markers",
+            name="Tier",
+            yaxis="y2",
+        )
+    )
+    fig.update_layout(
+        title="Pet Progression by Day",
+        xaxis=dict(title="Day"),
+        yaxis=dict(title="Counts"),
+        yaxis2=dict(title="Tier", overlaying="y", side="right"),
+        barmode="group",
+        template="plotly_white",
+    )
+    st.plotly_chart(fig, width="stretch")
+    st.dataframe(pet_df, use_container_width=True, hide_index=True)
+
+
+def _render_hero_detail_dashboard(result: Any) -> None:
+    snapshots = result.daily_snapshots
+    unlocked_heroes: set[str] = set()
+    current_pool = 0
+    rows = []
+
+    for snapshot in snapshots:
+        added = 0
+        for event in snapshot.hero_unlock_events:
+            added += int(event.get("unique_cards_added", 0))
+            hero_id = event.get("hero_id")
+            if hero_id:
+                unlocked_heroes.add(str(hero_id))
+            current_pool = max(
+                current_pool, int(event.get("total_unique_pool_after", current_pool))
+            )
+        rows.append(
+            {
+                "Day": snapshot.day,
+                "Unique Cards Added": added,
+                "Total Unique Pool": current_pool,
+                "Unlocked Heroes": len(unlocked_heroes),
+            }
+        )
+
+    hero_df = pd.DataFrame(rows)
+    col1, col2, col3 = st.columns(3)
+    col1.metric(
+        "Total Unique Cards Added", f"{int(hero_df['Unique Cards Added'].sum()):,}"
+    )
+    col2.metric(
+        "Final Unique Pool",
+        int(hero_df["Total Unique Pool"].iloc[-1]) if not hero_df.empty else 0,
+    )
+    col3.metric("Unlocked Heroes", len(unlocked_heroes))
+
+    fig = go.Figure()
+    fig.add_trace(
+        go.Bar(
+            x=hero_df["Day"],
+            y=hero_df["Unique Cards Added"],
+            name="Unique Cards Added",
+        )
+    )
+    fig.add_trace(
+        go.Scatter(
+            x=hero_df["Day"],
+            y=hero_df["Total Unique Pool"],
+            mode="lines+markers",
+            name="Total Unique Pool",
+        )
+    )
+    fig.update_layout(
+        title="Hero Unlock Progression",
+        xaxis=dict(title="Day"),
+        yaxis=dict(title="Unique Cards"),
+        template="plotly_white",
+    )
+    st.plotly_chart(fig, width="stretch")
+    st.dataframe(hero_df, use_container_width=True, hide_index=True)
+
+
+def _render_gear_detail_dashboard(result: Any) -> None:
+    snapshots = result.daily_snapshots
+    slot_levels = {slot_id: 1 for slot_id in range(1, 7)}
+    rows = []
+
+    for snapshot in snapshots:
+        daily_upgrades = 0
+        for event in snapshot.gear_events:
+            slot_id = int(event.get("slot_id", 0))
+            if 1 <= slot_id <= 6:
+                slot_levels[slot_id] = max(
+                    slot_levels[slot_id], int(event.get("new_level", 1))
+                )
+                daily_upgrades += 1
+        rows.append(
+            {
+                "Day": snapshot.day,
+                "Daily Gear Upgrades": daily_upgrades,
+                "Average Gear Level": sum(slot_levels.values()) / 6.0,
+                **{f"Slot {slot_id}": slot_levels[slot_id] for slot_id in range(1, 7)},
+            }
+        )
+
+    gear_df = pd.DataFrame(rows)
+    col1, col2, col3 = st.columns(3)
+    col1.metric("Total Gear Upgrades", f"{int(gear_df['Daily Gear Upgrades'].sum()):,}")
+    col2.metric(
+        "Final Avg Gear Level",
+        f"{float(gear_df['Average Gear Level'].iloc[-1]):.2f}"
+        if not gear_df.empty
+        else "1.00",
+    )
+    col3.metric(
+        "Highest Slot Level",
+        int(max(slot_levels.values())) if slot_levels else 1,
+    )
+
+    fig = go.Figure()
+    fig.add_trace(
+        go.Bar(
+            x=gear_df["Day"], y=gear_df["Daily Gear Upgrades"], name="Daily Upgrades"
+        )
+    )
+    fig.add_trace(
+        go.Scatter(
+            x=gear_df["Day"],
+            y=gear_df["Average Gear Level"],
+            mode="lines+markers",
+            name="Average Gear Level",
+            yaxis="y2",
+        )
+    )
+    fig.update_layout(
+        title="Gear Progression",
+        xaxis=dict(title="Day"),
+        yaxis=dict(title="Daily Upgrades"),
+        yaxis2=dict(title="Average Level", overlaying="y", side="right"),
+        template="plotly_white",
+    )
+    st.plotly_chart(fig, width="stretch")
+
+    slot_fig = go.Figure()
+    for slot_id in range(1, 7):
+        slot_fig.add_trace(
+            go.Scatter(
+                x=gear_df["Day"],
+                y=gear_df[f"Slot {slot_id}"],
+                mode="lines",
+                name=f"Slot {slot_id}",
+            )
+        )
+    slot_fig.update_layout(
+        title="Per-Slot Gear Levels",
+        xaxis=dict(title="Day"),
+        yaxis=dict(title="Slot Level"),
+        template="plotly_white",
+    )
+    st.plotly_chart(slot_fig, width="stretch")
+    st.dataframe(gear_df, use_container_width=True, hide_index=True)
