@@ -214,18 +214,28 @@ _HTML = """\
 
 _CSS = """\
 :host {
-  --bg:#0f0f14; --surface:#1a1a24; --surface2:#22222f; --border:#2e2e40;
-  --text:#e8e8f0; --dim:#8888aa;
-  --iconic:#ffc940; --cool:#4da6ff; --pragmatic:#aaaacc; --joker:#c97fff;
-  --red:#ff5555; --orange:#ffaa44; --green:#44cc77;
+  /* Map to Streamlit theme tokens with game-specific accent fallbacks */
+  --bg: var(--st-background-color, #ffffff);
+  --surface: var(--st-secondary-background-color, #f0f2f6);
+  --surface2: color-mix(in srgb, var(--st-secondary-background-color, #f0f2f6) 70%, var(--st-border-color, #d0d0d0));
+  --border: var(--st-border-color, #dde0e4);
+  --text: var(--st-text-color, #262730);
+  --dim: var(--st-gray-color, #808495);
+  /* Game-specific accent colors (kept custom) */
+  --iconic:#ffc940; --cool:#4da6ff; --pragmatic:#8888aa; --joker:#c97fff;
+  --red: var(--st-red-color, #ff4b4b);
+  --orange: var(--st-orange-color, #ffa421);
+  --green: var(--st-green-color, #21c354);
   display:block; background:var(--bg); color:var(--text);
-  font-family:'Segoe UI',system-ui,sans-serif; font-size:14px;
+  font-family: var(--st-font, 'Segoe UI', system-ui, sans-serif);
+  font-size: var(--st-base-font-size, 14px);
+  border-radius: var(--st-base-radius, 8px);
 }
 *{box-sizing:border-box;margin:0;padding:0;}
 
 /* Header */
-header{background:linear-gradient(135deg,#1a1030,#0f1a30);padding:24px 40px;border-bottom:1px solid var(--border);}
-header h1{font-size:21px;font-weight:700;}
+header{background:linear-gradient(135deg, color-mix(in srgb, var(--st-primary-color, #1f77b4) 20%, var(--bg)), var(--bg));padding:24px 40px;border-bottom:1px solid var(--border);}
+header h1{font-size:21px;font-weight:700;color:var(--st-heading-color, var(--text));}
 header p{color:var(--dim);margin-top:5px;font-size:13px;}
 .joker-note{margin-top:10px;background:rgba(201,127,255,.1);border:1px solid rgba(201,127,255,.3);border-radius:8px;padding:10px 14px;font-size:13px;color:var(--joker);}
 
@@ -332,7 +342,7 @@ table.sc tr:hover td{background:var(--surface2);}
 /* Card Pack Preview */
 .pack-preview{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:20px;margin-bottom:22px;}
 .pack-header{display:flex;align-items:center;gap:14px;margin-bottom:18px;padding-bottom:16px;border-bottom:1px solid var(--border);}
-.pack-icon{width:54px;height:54px;border-radius:10px;background:linear-gradient(135deg,#2a1060,#0a2050);border:2px solid rgba(255,201,64,.4);display:flex;align-items:center;justify-content:center;font-size:24px;flex-shrink:0;}
+.pack-icon{width:54px;height:54px;border-radius:10px;background:linear-gradient(135deg, color-mix(in srgb, var(--st-primary-color, #1f77b4) 30%, var(--surface)), var(--surface));border:2px solid rgba(255,201,64,.4);display:flex;align-items:center;justify-content:center;font-size:24px;flex-shrink:0;}
 .pack-info h3{font-size:15px;font-weight:700;}
 .pack-info p{font-size:12px;color:var(--dim);margin-top:3px;}
 .pack-total-badge{margin-left:auto;background:var(--surface2);border-radius:8px;padding:8px 14px;text-align:center;flex-shrink:0;}
@@ -486,13 +496,23 @@ export default function(component) {
       PRAG_NAMES.forEach(n => row(n, rPrag, 'pragmatic-row', '\\u2b1c Pragma'));
     }
 
+    // Read computed theme colors for chart
+    function getThemeColor(prop, fallback) {
+      const host = parentElement.host ?? parentElement;
+      const v = getComputedStyle(host).getPropertyValue(prop).trim();
+      return v || fallback;
+    }
+
     let chart;
     function buildChart(rPrag, rCool, rIcon) {
       const toEur=(r,n)=>{const p=ePacks(r,n);return isFinite(p)?Math.round(p*packPrice/DPE):null;};
+      const textCol = getThemeColor('--text', '#262730');
+      const dimCol = getThemeColor('--dim', '#808495');
+      const borderCol = getThemeColor('--border', '#dde0e4');
       const ds=[
         {label:'Iconic',   color:'#ffc940', rate:rIcon},
         {label:'Cool',     color:'#4da6ff', rate:rCool},
-        {label:'Pragmatic',color:'#aaaacc', rate:rPrag},
+        {label:'Pragmatic',color:'#8888aa', rate:rPrag},
       ].map(d=>({label:d.label,data:CUM.map(n=>toEur(d.rate,n)),
         borderColor:d.color,backgroundColor:d.color+'18',fill:false,tension:.3,pointRadius:4,pointHoverRadius:6}));
       if(chart) chart.destroy();
@@ -500,12 +520,12 @@ export default function(component) {
       chart = new ChartJS(canvas.getContext('2d'),{
         type:'line',data:{labels:LEVELS,datasets:ds},
         options:{responsive:true,maintainAspectRatio:false,
-          plugins:{legend:{labels:{color:'#e8e8f0',font:{size:12}}},
+          plugins:{legend:{labels:{color:textCol,font:{size:12}}},
             tooltip:{callbacks:{label:c=>c.dataset.label+' : '+(c.parsed.y!=null?'\\u20ac'+c.parsed.y.toLocaleString('en-US'):'\\u2014')}}},
           scales:{
-            x:{ticks:{color:'#8888aa'},grid:{color:'#2e2e40'}},
-            y:{ticks:{color:'#8888aa',callback:v=>'\\u20ac'+v.toLocaleString('en-US')},grid:{color:'#2e2e40'},
-               title:{display:true,text:'Median Cumulative Cost (\\u20ac)',color:'#8888aa'}}}}});
+            x:{ticks:{color:dimCol},grid:{color:borderCol}},
+            y:{ticks:{color:dimCol,callback:v=>'\\u20ac'+v.toLocaleString('en-US')},grid:{color:borderCol},
+               title:{display:true,text:'Median Cumulative Cost (\\u20ac)',color:dimCol}}}}});
     }
 
     function buildInsights(rPrag, rCool, rIcon, rJok) {

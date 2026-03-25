@@ -1415,11 +1415,12 @@ def _render_implementation_details() -> None:
         │       ├── progression_mapping.json
         │       ├── daily_pack_schedule.json
         │       └── unique_unlock_schedule.json
-        ├── pages/
+        ├── app_pages/
         │   ├── config_editor.py          # Config UI
         │   ├── simulation_controls.py    # Run simulation UI
         │   ├── dashboard.py              # Charts and analytics
         │   ├── pull_log_viewer.py        # Event log viewer
+        │   ├── gacha_simulator.py        # Gacha drop rate simulator
         │   └── documentation.py          # This file
         ├── app.py                        # Streamlit entry point
         └── tests/                        # 176 unit/integration tests
