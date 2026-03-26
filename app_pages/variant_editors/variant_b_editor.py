@@ -9,6 +9,7 @@ import json
 import pandas as pd
 import streamlit as st
 
+from app_pages.bulk_edit_helpers import render_bulk_edit_bar
 from simulation.variants.variant_b.models import (
     HeroCardConfig,
     HeroCardDef,
@@ -105,6 +106,11 @@ def _render_heroes_tab(config: HeroCardConfig) -> None:
                 }
                 for c in hero.card_pool
             ])
+
+            bulk = render_bulk_edit_bar(f"hero_cards_{selected_idx}", card_df, label=f"{hero.name} Card Pool")
+            if bulk is not None:
+                card_df = bulk
+
             edited = st.data_editor(
                 card_df,
                 column_config={

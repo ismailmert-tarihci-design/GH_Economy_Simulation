@@ -3,6 +3,7 @@ import json
 import pandas as pd
 import streamlit as st
 
+from app_pages.bulk_edit_helpers import render_bulk_edit_bar
 from simulation.config_loader import (
     load_defaults,
     list_profiles,
@@ -166,6 +167,12 @@ def render_upgrade_tables(config: SimConfig) -> None:
         }
     )
 
+    bulk_replacement = render_bulk_edit_bar(
+        f"upgrade_{category.value}", df, label=f"{category.value} Upgrade Table"
+    )
+    if bulk_replacement is not None:
+        df = bulk_replacement
+
     edited_upgrades = st.data_editor(
         df,
         column_config={
@@ -223,6 +230,10 @@ def render_card_economy(config: SimConfig) -> None:
         }
     )
 
+    bulk = render_bulk_edit_bar(f"dup_range_{dup_category.value}", dup_df, label="Duplicate Ranges")
+    if bulk is not None:
+        dup_df = bulk
+
     edited_dup = st.data_editor(
         dup_df,
         column_config={
@@ -270,6 +281,10 @@ def render_card_economy(config: SimConfig) -> None:
     coin_df = pd.DataFrame(
         {"Level": range(1, num_coin_levels + 1), "Coins": coin_per_dup.coins_per_dupe}
     )
+
+    bulk = render_bulk_edit_bar(f"coin_per_dup_{coin_category.value}", coin_df, label="Coin per Duplicate")
+    if bulk is not None:
+        coin_df = bulk
 
     edited_coin = st.data_editor(
         coin_df,
