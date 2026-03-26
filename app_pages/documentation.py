@@ -21,20 +21,25 @@ def render_documentation() -> None:
     st.markdown("## Table of Contents")
     st.markdown(
         """
+        **Variant A — Classic Card System**
         1. [Stakeholder Release Summary](#stakeholder-release-summary)
         2. [Product Specifications](#product-specifications)
         3. [Overview](#overview)
         4. [Core Systems](#core-systems)
-            - [Drop Algorithm](#drop-algorithm)
-            - [Progression System](#progression-system)
-            - [Upgrade Engine](#upgrade-engine)
-            - [Pack System](#pack-system)
-            - [Coin Economy](#coin-economy)
         5. [Mathematical Formulas](#mathematical-formulas)
         6. [Data Models](#data-models)
         7. [Configuration Tables](#configuration-tables)
         8. [Simulation Modes](#simulation-modes)
         9. [Implementation Details](#implementation-details)
+
+        **A/B Testing Framework**
+        10. [Variant Framework](#variant-framework)
+
+        **Variant B — Hero Card System**
+        11. [Hero Card System Overview](#hero-card-system-overview)
+        12. [Hero Card Core Systems](#hero-card-core-systems)
+        13. [Hero Card Data Models](#hero-card-data-models)
+        14. [Premium Card Packs](#premium-card-packs)
         """
     )
 
@@ -65,6 +70,17 @@ def render_documentation() -> None:
     st.divider()
 
     _render_implementation_details()
+
+    st.divider()
+    _render_variant_framework()
+    st.divider()
+    _render_hero_card_overview()
+    st.divider()
+    _render_hero_card_core_systems()
+    st.divider()
+    _render_hero_card_data_models()
+    st.divider()
+    _render_premium_card_packs()
 
 
 def _render_stakeholder_release_summary() -> None:
@@ -1393,37 +1409,63 @@ def _render_implementation_details() -> None:
     st.markdown(
         """
         ### File Structure
-        
+
         ```
-        coin_sim/
-        ├── simulation/
-        │   ├── models.py                 # Pydantic data models
-        │   ├── config_loader.py          # Load JSON config tables
-        │   ├── drop_algorithm.py         # 3-phase drop algorithm
-        │   ├── progression.py            # Mapping-aware scoring, gating
-        │   ├── upgrade_engine.py         # Auto-upgrade logic
-        │   ├── pack_system.py            # Pack processing
-        │   ├── coin_economy.py           # Coin income/expense tracking
-        │   ├── orchestrator.py           # Main simulation loop
-        │   └── monte_carlo.py            # MC runner with Welford stats
-        ├── data/
-        │   └── defaults/
-        │       ├── upgrade_tables.json
-        │       ├── duplicate_ranges.json
-        │       ├── coin_per_duplicate.json
-        │       ├── pack_configs.json
-        │       ├── progression_mapping.json
-        │       ├── daily_pack_schedule.json
-        │       └── unique_unlock_schedule.json
-        ├── app_pages/
-        │   ├── config_editor.py          # Config UI
-        │   ├── simulation_controls.py    # Run simulation UI
-        │   ├── dashboard.py              # Charts and analytics
-        │   ├── pull_log_viewer.py        # Event log viewer
-        │   ├── gacha_simulator.py        # Gacha drop rate simulator
-        │   └── documentation.py          # This file
-        ├── app.py                        # Streamlit entry point
-        └── tests/                        # 176 unit/integration tests
+        simulation/
+        ├── models.py                          # Variant A data models
+        ├── orchestrator.py                    # Variant A simulation loop
+        ├── drop_algorithm.py                  # Variant A 3-phase drop algorithm
+        ├── upgrade_engine.py                  # Variant A auto-upgrade
+        ├── pack_system.py                     # Variant A pack processing
+        ├── progression.py                     # Mapping-aware scoring, gating
+        ├── coin_economy.py                    # Coin tracking (shared)
+        ├── pet_system.py                      # Pet subsystem (shared)
+        ├── hero_system.py                     # Hero unlock (Variant A)
+        ├── gear_system.py                     # Gear subsystem (shared)
+        ├── monte_carlo.py                     # MC runner (variant-agnostic)
+        ├── pull_logger.py                     # Event logging
+        ├── config_loader.py                   # Variant A config persistence
+        ├── url_config.py                      # URL encoding/decoding
+        └── variants/
+            ├── __init__.py                    # Variant registry
+            ├── protocol.py                    # Protocol contracts
+            ├── comparison.py                  # Metric extraction for overlay
+            ├── variant_a/__init__.py          # Thin adapter to existing code
+            └── variant_b/
+                ├── __init__.py                # Registration
+                ├── models.py                  # Hero card data models
+                ├── orchestrator.py            # Variant B simulation loop
+                ├── drop_algorithm.py          # Hero/shared drop decision
+                ├── upgrade_engine.py          # Hero XP + card upgrades
+                ├── hero_deck.py               # Per-hero card pools
+                ├── skill_tree.py              # Linear skill tree
+                ├── hero_joker.py              # Wildcard duplicates
+                ├── premium_packs.py           # Premium pack economics
+                └── config_loader.py           # Variant B defaults
+
+        app_pages/
+        ├── config_editor.py                   # Dispatches by variant
+        ├── simulation_controls.py             # Variant-aware run + comparison
+        ├── dashboard.py                       # Dispatches by variant
+        ├── dashboard_charts.py                # Variant A chart helpers
+        ├── config_tabs.py                     # Variant A config tab widgets
+        ├── config_sharing.py                  # Import/export
+        ├── results_manager.py                 # Saved results
+        ├── pull_log_viewer.py                 # Pull event inspector
+        ├── gacha_simulator.py                 # Gacha drop rate tool
+        ├── documentation.py                   # This file
+        ├── variant_editors/
+        │   ├── variant_a_editor.py            # Classic system editor
+        │   └── variant_b_editor.py            # Hero card system editor
+        └── variant_dashboards/
+            ├── variant_a_dashboard.py         # Classic dashboard
+            ├── variant_b_dashboard.py         # Hero progression dashboard
+            └── comparison_dashboard.py        # Side-by-side overlay
+
+        data/
+        └── defaults/                          # Variant A default JSON configs
+
+        app.py                                 # Entry point with variant picker
         ```
         
         ---
@@ -1643,10 +1685,543 @@ def _render_implementation_details() -> None:
     st.markdown(
         """
         ## End of Documentation
-        
+
         For questions or suggestions, please contact @İsmail Mert Tarihçi on Slack.
-        
-        **Last Updated:** 20 February 2026  
-        **Version:** 1.0.0  
+
+        **Last Updated:** 26 March 2026
+        **Version:** 2.0.0 — A/B Variant Framework + Hero Card System
+        """
+    )
+
+
+def _render_variant_framework() -> None:
+    st.markdown("## Variant Framework")
+    st.markdown(
+        """
+        The simulator supports **structural A/B testing** between fundamentally different
+        game economies. Each variant has its own simulation engine, data models, config
+        editor, and dashboard — while sharing common infrastructure (Monte Carlo, coin
+        economy, pet/gear subsystems).
+
+        ### Architecture
+
+        ```
+        simulation/
+          variants/
+            __init__.py           # Registry: register(), get(), list_variants()
+            protocol.py           # VariantInfo, ConfigProtocol, DailySnapshotProtocol
+            comparison.py         # Extract common metrics for overlay charts
+            variant_a/            # Thin adapter — points to existing code in simulation/
+            variant_b/            # New Hero Card System engine
+        ```
+
+        ### Protocol Layer
+
+        Every variant must satisfy these structural contracts (Python `typing.Protocol`):
+
+        **ConfigProtocol** — minimum config fields:
+        - `num_days: int`, `initial_coins: int`, `initial_bluestars: int`
+        - `model_dump_json() -> str`
+
+        **DailySnapshotProtocol** — common daily metrics for MC and comparison:
+        - `day`, `total_bluestars`, `bluestars_earned_today`
+        - `coins_balance`, `coins_earned_today`, `coins_spent_today`
+        - `category_avg_levels: Dict[str, float]`
+        - `pull_counts_by_type: Dict[str, int]`
+        - `pack_counts_by_type: Dict[str, int]`
+
+        **SimResultProtocol** — common result fields:
+        - `daily_snapshots: List[Any]`
+        - `total_bluestars`, `total_coins_earned`, `total_coins_spent`
+
+        Variants can add extra fields beyond the protocol for their own dashboards.
+
+        ### Variant Registration
+
+        Each variant registers via `VariantInfo`:
+        ```python
+        VariantInfo(
+            variant_id="variant_b",
+            display_name="Hero Card System",
+            description="...",
+            run_simulation=run_simulation,   # (config, rng?) -> result
+            load_defaults=load_defaults,     # () -> config
+            config_class=HeroCardConfig,
+            result_class=HeroSimResult,
+            extra_snapshot_fields=[...],
+        )
+        ```
+
+        ### Monte Carlo (Variant-Agnostic)
+
+        `run_monte_carlo()` accepts an optional `run_fn` parameter:
+        ```python
+        run_monte_carlo(config, num_runs=100, run_fn=variant_info.run_simulation)
+        ```
+        Falls back to Variant A's `run_simulation` if `run_fn` is None.
+
+        ### Comparison Mode
+
+        The "Compare All Variants" button runs both variants with the same day count.
+        The comparison dashboard overlays common protocol metrics (bluestars, coins,
+        shared card levels) on the same charts.
+
+        ### Adding a New Variant
+
+        1. Create `simulation/variants/variant_c/` with `models.py`, `orchestrator.py`,
+           `config_loader.py`, and `__init__.py` (with `register_variant_c()`)
+        2. Add try/import block in `simulation/variants/__init__.py`
+        3. Create `app_pages/variant_editors/variant_c_editor.py`
+        4. Create `app_pages/variant_dashboards/variant_c_dashboard.py`
+        5. Add dispatch branches in `config_editor.py` and `app.py`
+        """
+    )
+
+
+def _render_hero_card_overview() -> None:
+    st.markdown("## Hero Card System Overview")
+    st.markdown(
+        """
+        **Variant B** replaces the Variant A "Unique card" system with a hero-centric
+        card progression model. Shared cards (Gold/Blue) remain unchanged.
+
+        ### Key Differences from Variant A
+
+        | Aspect | Variant A (Classic) | Variant B (Hero Cards) |
+        |--------|--------------------|-----------------------|
+        | Unique cards | Global pool, ~10 cards, levels 1-10 | Per-hero decks, ~45 cards each, tiered by rarity |
+        | Card access | All cards available at unlock | Start with few starter cards, unlock via skill tree |
+        | Progression | Card dupes → upgrade → bluestars | Card dupes → upgrade → bluestars + Hero XP → hero level → unlock more cards |
+        | Drop algorithm | Exponential gap (shared vs unique) | Configurable hero vs shared rate + pity counter |
+        | Wildcards | None | Hero Joker = wildcard dupe within one hero's deck |
+        | Premium packs | None | 5 rarity tiers per hero, diamond-only, rotating FOMO |
+        | Heroes | Day-based unlock schedule | Day-based unlock + per-hero progression (XP, levels, skill tree) |
+
+        ### Hero Progression Loop
+
+        ```
+        Open Packs → Pull Hero Cards → Gain Duplicates
+              ↓
+        Upgrade Cards (dupes + coins → bluestars + Hero XP)
+              ↓
+        Hero XP accumulates → Hero Level Up
+              ↓
+        Skill Tree advances → Unlock new cards + perks
+              ↓
+        More cards in pool → More upgrade opportunities → Loop
+        ```
+
+        ### Card Rarities (within each hero's deck)
+
+        | Rarity | Distribution | XP on Upgrade | Drop Weight |
+        |--------|-------------|---------------|-------------|
+        | Common | ~40% of pool | Low (5 XP) | Highest |
+        | Uncommon | ~25% | Medium (10 XP) | High |
+        | Rare | ~20% | Medium-High (20 XP) | Medium |
+        | Epic | ~10% | High (40 XP) | Low |
+        | Legendary | ~5% | Very High (100 XP) | Lowest |
+
+        All percentages, XP values, and weights are fully configurable.
+        """
+    )
+
+
+def _render_hero_card_core_systems() -> None:
+    st.markdown("## Hero Card Core Systems")
+
+    st.markdown(
+        """
+        ### Hero Deck System
+
+        **Implementation:** `simulation/variants/variant_b/hero_deck.py`
+
+        Each hero has a **card pool** (~45 cards) with 5 rarity tiers. At hero unlock,
+        only **starter cards** (typically 3 common cards) are available. More cards unlock
+        as the hero levels up via the skill tree.
+
+        **Functions:**
+        - `initialize_hero(hero_def)` → creates HeroProgressState with starter cards unlocked
+        - `get_unlocked_cards(hero_state)` → returns cards available for drops/upgrades
+        - `unlock_cards(hero_state, card_ids)` → activates new cards (from skill tree)
+        - `hero_card_avg_level(hero_state)` → avg level across unlocked cards
+
+        ---
+
+        ### Linear Skill Tree
+
+        **Implementation:** `simulation/variants/variant_b/skill_tree.py`
+
+        Each hero has a **linear** skill tree. Each node requires a hero level threshold
+        and unlocks cards and/or perk markers.
+
+        **Structure:**
+        ```
+        Node 0: Level 2 required → Unlock cards [uncommon_1, uncommon_2]
+        Node 1: Level 4 required → Unlock cards [rare_1] + perk "Dodge Bonus"
+        Node 2: Level 6 required → Unlock cards [epic_1]
+        ...
+        ```
+
+        **Function:** `check_and_advance_skill_tree(hero_def, hero_state)`
+        - Checks all unactivated nodes where `hero_level >= node.hero_level_required`
+        - Activates nodes in order (linear — stops at first unmet requirement)
+        - Returns list of `(node_index, newly_unlocked_card_ids, perk_label)`
+
+        ---
+
+        ### Hero XP & Leveling
+
+        When a hero card is upgraded, the hero earns **Hero XP** (amount depends on
+        card rarity and level, configurable per-rarity in `hero_upgrade_tables`).
+
+        **Level-up logic:** `_check_hero_level_up(hero_state, hero_def)`
+        ```
+        while hero_xp >= xp_per_level[current_level - 1]:
+            hero_xp -= xp_per_level[current_level - 1]
+            hero_level += 1
+            → triggers skill tree check
+        ```
+
+        XP thresholds are configurable per hero (default: 50 + 25 per level).
+
+        ---
+
+        ### Hero Joker
+
+        **Implementation:** `simulation/variants/variant_b/hero_joker.py`
+
+        A Hero Joker is a **wildcard duplicate** usable on any card in that specific
+        hero's deck. Jokers can drop from:
+        - Regular pack pulls (configurable rate, default 1%)
+        - Premium packs (configurable per-pack joker rate)
+
+        **Usage:** The upgrade engine checks if a card needs more dupes than available.
+        If so, it consumes jokers to fill the gap:
+        ```
+        dupes_needed = upgrade_cost - card.duplicates
+        jokers_used = min(dupes_needed, hero.joker_count)
+        ```
+
+        Jokers are per-hero — a Woodie joker cannot be used on Suna's cards.
+
+        ---
+
+        ### Drop Algorithm (Variant B)
+
+        **Implementation:** `simulation/variants/variant_b/drop_algorithm.py`
+
+        **Phase 1: Hero vs Shared Decision**
+        ```
+        base_hero_rate = 0.60 (configurable)
+        base_shared_rate = 1.0 - base_hero_rate
+
+        If pity_counter >= pity_threshold:
+            → force hero card (pity system)
+        Else:
+            → roll against base rates
+        ```
+
+        Pity counter increments on shared pulls, resets on hero pulls.
+
+        **Phase 2: Card Selection (3 modes, configurable)**
+        - `lowest_level`: Weight = `1 / (card.level + 1)` — catch-up mechanic
+        - `weighted_rarity`: Common drops more, Legendary drops less
+        - `equal`: All unlocked cards have equal weight
+
+        **Phase 3: Duplicate Count**
+        ```
+        base = max(1, 4 - card_level // 10)
+        MC: randint(1, base)
+        Deterministic: (1 + base) // 2
+        ```
+
+        ---
+
+        ### Upgrade Engine (Variant B)
+
+        **Implementation:** `simulation/variants/variant_b/upgrade_engine.py`
+
+        **Greedy loop** — scans all heroes, all unlocked cards, sorted by level:
+
+        1. Find lowest-level card that can afford upgrade (dupes + jokers + coins)
+        2. Execute upgrade:
+           - Deduct card duplicates (use jokers for shortfall)
+           - Deduct coins
+           - Increment card level
+           - Grant bluestars
+           - Grant Hero XP
+        3. Check hero level-up → trigger skill tree advancement
+        4. Repeat until no upgrades possible
+
+        **Upgrade costs** are configurable per rarity:
+        ```
+        hero_upgrade_tables: [
+            { rarity: COMMON,    duplicate_costs: [3, 5, 7, ...], coin_costs: [...], xp_rewards: [...] },
+            { rarity: UNCOMMON,  ... },
+            { rarity: RARE,      ... },
+            { rarity: EPIC,      ... },
+            { rarity: LEGENDARY, ... },
+        ]
+        ```
+
+        ---
+
+        ### Daily Simulation Loop (Variant B)
+
+        **Implementation:** `simulation/variants/variant_b/orchestrator.py`
+
+        ```
+        For each day:
+            1. Check hero unlock schedule → initialize new heroes
+            2. Process regular pack pulls:
+               - For each pull: decide hero/shared → select card → add dupes
+               - Check joker drop per pull
+            3. Process premium pack purchases (if scheduled):
+               - Open packs → apply card dupes + jokers to game state
+               - Track diamonds spent
+            4. Attempt hero card upgrades (greedy):
+               - Upgrades generate Hero XP → hero level-ups → skill tree
+            5. Record daily snapshot (protocol fields + hero-specific fields)
+        ```
+        """
+    )
+
+
+def _render_hero_card_data_models() -> None:
+    st.markdown("## Hero Card Data Models")
+    st.markdown(
+        """
+        All models are Pydantic v2 BaseModels. Every field is editable from the frontend.
+
+        **Implementation:** `simulation/variants/variant_b/models.py`
+
+        ### Config Models
+
+        #### HeroCardConfig (main config — satisfies ConfigProtocol)
+        ```python
+        num_days: int
+        initial_coins: int
+        initial_bluestars: int
+        heroes: List[HeroDef]                              # All hero definitions
+        hero_unlock_schedule: Dict[int, List[str]]         # Day → hero_ids
+        num_gold_cards: int                                 # Shared Gold cards
+        num_blue_cards: int                                 # Shared Blue cards
+        hero_upgrade_tables: List[HeroUpgradeCostTable]    # Per-rarity costs
+        joker_drop_rate_in_regular_packs: float            # Joker chance per pull
+        drop_config: HeroDropConfig                        # Drop algorithm params
+        daily_pack_schedule: List[Dict[str, float]]        # Regular pack schedule
+        premium_packs: List[PremiumPackDef]                 # Premium pack definitions
+        premium_pack_schedule: List[PremiumPackSchedule]    # Availability windows
+        premium_pack_purchase_schedule: List[Dict[str, int]]  # Simulated purchases
+        pet_system_config: Optional[Any]                   # Shared subsystem
+        gear_system_config: Optional[Any]                  # Shared subsystem
+        ```
+
+        #### HeroDef
+        ```python
+        hero_id: str
+        name: str
+        card_pool: List[HeroCardDef]        # ~45 cards with rarity + XP values
+        skill_tree: List[SkillTreeNode]     # Linear nodes
+        xp_per_level: List[int]             # XP threshold per level
+        max_level: int                       # Default 50
+        starter_card_ids: List[str]          # Cards available at hero unlock
+        ```
+
+        #### HeroCardDef
+        ```python
+        card_id: str
+        hero_id: str
+        rarity: HeroCardRarity              # COMMON | UNCOMMON | RARE | EPIC | LEGENDARY
+        name: str
+        base_xp_on_upgrade: int             # Hero XP granted when this card upgrades
+        ```
+
+        #### SkillTreeNode
+        ```python
+        node_index: int
+        hero_level_required: int
+        cards_unlocked: List[str]           # card_ids unlocked at this node
+        perk_label: str                      # Display label (tracked as marker only)
+        ```
+
+        #### HeroUpgradeCostTable
+        ```python
+        rarity: HeroCardRarity
+        duplicate_costs: List[int]          # Dupes needed per level
+        coin_costs: List[int]               # Coins needed per level
+        bluestar_rewards: List[int]         # Bluestars earned per level
+        xp_rewards: List[int]               # Hero XP earned per level upgrade
+        ```
+
+        #### HeroDropConfig
+        ```python
+        hero_vs_shared_base_rate: float     # Base probability of hero card (default 0.60)
+        card_selection_mode: str            # "lowest_level" | "weighted_rarity" | "equal"
+        pity_counter_threshold: int         # Guaranteed hero card after N shared pulls (0=off)
+        streak_decay_shared: float          # Streak penalty for shared pulls
+        streak_decay_hero: float            # Streak penalty for hero pulls
+        ```
+
+        ### Runtime State Models
+
+        #### HeroCardGameState
+        ```python
+        day: int
+        heroes: Dict[str, HeroProgressState]   # Per-hero state
+        shared_cards: List[Card]                # Gold/Blue cards (same as Variant A)
+        coins: int
+        total_bluestars: int
+        pity_counter: int                       # Pulls since last hero card
+        ```
+
+        #### HeroProgressState
+        ```python
+        hero_id: str
+        xp: int                                 # Current XP (resets on level-up)
+        level: int                              # Current hero level
+        skill_tree_progress: int                # Last unlocked node index
+        cards: Dict[str, HeroCardState]         # card_id → state
+        joker_count: int                        # Available hero jokers
+        ```
+
+        #### HeroCardState
+        ```python
+        card_id: str
+        hero_id: str
+        rarity: HeroCardRarity
+        level: int
+        duplicates: int
+        unlocked: bool                          # Available via skill tree?
+        ```
+
+        ### Result Models
+
+        #### HeroCardDailySnapshot (satisfies DailySnapshotProtocol)
+        Protocol fields plus:
+        ```python
+        hero_xp_today: Dict[str, int]          # Per-hero XP earned
+        hero_levels: Dict[str, int]             # Per-hero current level
+        hero_card_avg_levels: Dict[str, float]  # Per-hero avg card level
+        skill_nodes_unlocked_today: Dict[str, int]
+        cards_unlocked_today: int
+        jokers_received_today: int
+        jokers_used_today: int
+        premium_packs_opened: int
+        premium_diamonds_spent: int
+        ```
+
+        #### HeroSimResult (satisfies SimResultProtocol)
+        Protocol fields plus:
+        ```python
+        final_hero_levels: Dict[str, int]
+        final_hero_xp: Dict[str, int]
+        total_premium_diamonds_spent: int
+        total_jokers_received: int
+        ```
+        """
+    )
+
+
+def _render_premium_card_packs() -> None:
+    st.markdown("## Premium Card Packs")
+    st.markdown(
+        """
+        Premium hero card packs are the core IAP monetization feature in Variant B.
+
+        ### Design Intent
+
+        - **Best way to reinforce specific heroes** and focus on a playstyle
+        - Reconciles hero-based player motivation with card-based progression
+        - Generates FOMO through rotating availability windows
+        - Supports themed series (e.g. "Fire Fighters" with Suna + Felorc)
+        - Purchased with **diamonds only** (premium currency)
+
+        ### Pack Properties
+
+        | Property | Description | Editable |
+        |----------|-------------|----------|
+        | `pack_id` | Unique identifier | Yes |
+        | `name` | Display name (e.g. "Woodie Premium Pack") | Yes |
+        | `pack_rarity` | BRONZE / SILVER / GOLD / PLATINUM / DIAMOND | Yes |
+        | `featured_hero_ids` | 1 or more heroes whose cards are included | Yes |
+        | `card_drop_rates` | Per-card probability weights (displayed to player) | Yes |
+        | `cards_per_pack` | Cards drawn per opening | Yes |
+        | `diamond_cost` | Price in diamonds | Yes |
+        | `joker_rate` | Chance of hero joker per draw | Yes |
+        | `dupe_boost_multiplier` | Multiplier on duplicates (>1 for limited offers) | Yes |
+
+        ### 5 Pack Rarities
+
+        Each hero can have up to 5 pack rarities, scaling in value:
+
+        | Rarity | Typical Diamond Cost | Cards/Pack | Joker Rate |
+        |--------|---------------------|------------|------------|
+        | Bronze | 200 | 3 | 1% |
+        | Silver | 500 | 5 | 2% |
+        | Gold | 1,000 | 8 | 3% |
+        | Platinum | 2,000 | 10 | 5% |
+        | Diamond | 5,000 | 15 | 8% |
+
+        All values are defaults and fully configurable per pack.
+
+        ### Rotating Availability (FOMO)
+
+        Premium packs are only available during specific day windows:
+        ```python
+        PremiumPackSchedule(
+            pack_id="woodie_diamond",
+            available_from_day=30,
+            available_until_day=45,
+        )
+        ```
+
+        The simulation models purchase behavior within availability windows
+        via `premium_pack_purchase_schedule` — a day-cycled list of `{pack_id: count}`.
+
+        ### Themed Series
+
+        Packs can feature multiple heroes:
+        - **Single hero**: "Woodie Elite Pack" — only Woodie cards
+        - **Multi-hero theme**: "Fire Fighters" — Suna + Felorc cards mixed
+        - **Playstyle focus**: "Woodie Dodge Master" — boosted rates for dodge/counter cards
+
+        ### Drop Rate Display
+
+        Every card in a premium pack has an **individual drop rate** stored in
+        `card_drop_rates`. These rates are:
+        - Displayed to the player in a dedicated window (required by gacha regulations)
+        - Probability weights (not percentages) — normalized at pull time
+        - Inversely proportional to rarity by default (Common ~5.0, Legendary ~0.3)
+
+        ### Dupe Boost for Limited Offers
+
+        The `dupe_boost_multiplier` field allows temporary promotions:
+        ```
+        Normal: 1 duplicate per pull × 1.0 = 1 duplicate
+        Launch event: 1 duplicate per pull × 2.0 = 2 duplicates
+        ```
+
+        ### Simulation Economics
+
+        The simulator answers: *"If a player buys X premium packs during window Y,
+        what's the expected hero progression impact?"*
+
+        Key metrics tracked:
+        - Diamonds spent on premium packs
+        - Cards and jokers received from premium packs
+        - Progression acceleration vs free-to-play baseline
+        - Premium pack cost per hero level gained
+
+        ### Implementation
+
+        **Files:**
+        - `simulation/variants/variant_b/premium_packs.py` — pack opening, drop resolution
+        - `simulation/variants/variant_b/models.py` — PremiumPackDef, PremiumPackSchedule
+
+        **Functions:**
+        - `get_available_packs(day, schedule, pack_defs)` — filter by availability window
+        - `open_premium_pack(pack_def, game_state, rng)` — resolve drops per card
+        - `process_premium_purchases(day, config, game_state, rng)` — daily purchase processing
         """
     )
