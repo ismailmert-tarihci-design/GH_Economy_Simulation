@@ -265,6 +265,7 @@ def _render_drop_algorithm_tab(config: HeroCardConfig) -> None:
     st.subheader("Drop Algorithm Settings")
     dc = config.drop_config
 
+    # Row 1: Hero vs Shared + Pity
     col1, col2 = st.columns(2)
     with col1:
         dc.hero_vs_shared_base_rate = st.slider(
@@ -274,32 +275,81 @@ def _render_drop_algorithm_tab(config: HeroCardConfig) -> None:
             key="vb_hero_rate",
         )
     with col2:
-        dc.card_selection_mode = st.selectbox(
-            "Card Selection Mode",
-            ["lowest_level", "weighted_rarity", "equal"],
-            index=["lowest_level", "weighted_rarity", "equal"].index(dc.card_selection_mode)
-            if dc.card_selection_mode in ["lowest_level", "weighted_rarity", "equal"] else 0,
-            key="vb_card_mode",
-        )
-
-    col3, col4 = st.columns(2)
-    with col3:
         dc.pity_counter_threshold = st.number_input(
             "Pity Counter (0=disabled)",
             min_value=0, max_value=100, value=dc.pity_counter_threshold, step=1,
             help="Guarantee hero card after N shared-only pulls",
             key="vb_pity",
         )
+
+    # Row 2: Hero Bucket Selection
+    st.markdown("**Hero Bucket Selection** *(heroes ranked by level, divided into 3 tiers)*")
+    col3, col4, col5 = st.columns(3)
+    with col3:
+        dc.bucket_bottom_weight = st.slider(
+            "Bottom Bucket %", min_value=0.0, max_value=1.0,
+            value=dc.bucket_bottom_weight, step=0.05,
+            help="Probability of selecting from lowest-level hero bucket",
+            key="vb_bkt_bot",
+        )
     with col4:
+        dc.bucket_middle_weight = st.slider(
+            "Middle Bucket %", min_value=0.0, max_value=1.0,
+            value=dc.bucket_middle_weight, step=0.05,
+            help="Probability of selecting from mid-level hero bucket",
+            key="vb_bkt_mid",
+        )
+    with col5:
+        dc.bucket_top_weight = st.slider(
+            "Top Bucket %", min_value=0.0, max_value=1.0,
+            value=dc.bucket_top_weight, step=0.05,
+            help="Probability of selecting from highest-level hero bucket",
+            key="vb_bkt_top",
+        )
+    bucket_sum = dc.bucket_bottom_weight + dc.bucket_middle_weight + dc.bucket_top_weight
+    if abs(bucket_sum - 1.0) > 0.01:
+        st.warning(f"Bucket weights sum to {bucket_sum:.2f} (should be 1.0). They will be normalized at runtime.")
+
+    # Row 3: Rarity Roll Weights
+    st.markdown("**Rarity Roll Weights** *(probability of each rarity when pulling a hero card)*")
+    col6, col7, col8 = st.columns(3)
+    with col6:
+        dc.rarity_weight_common = st.slider(
+            "Common %", min_value=0.0, max_value=1.0,
+            value=dc.rarity_weight_common, step=0.01,
+            key="vb_rw_c",
+        )
+    with col7:
+        dc.rarity_weight_rare = st.slider(
+            "Rare %", min_value=0.0, max_value=1.0,
+            value=dc.rarity_weight_rare, step=0.01,
+            key="vb_rw_r",
+        )
+    with col8:
+        dc.rarity_weight_epic = st.slider(
+            "Epic %", min_value=0.0, max_value=1.0,
+            value=dc.rarity_weight_epic, step=0.01,
+            key="vb_rw_e",
+        )
+    rarity_sum = dc.rarity_weight_common + dc.rarity_weight_rare + dc.rarity_weight_epic
+    if abs(rarity_sum - 1.0) > 0.01:
+        st.warning(f"Rarity weights sum to {rarity_sum:.2f} (should be 1.0). They will be normalized at runtime.")
+
+    # Row 4: Anti-streak Decay
+    st.markdown("**Anti-Streak Decay**")
+    col9, col10 = st.columns(2)
+    with col9:
         dc.streak_decay_shared = st.number_input(
             "Streak Decay (Shared)", min_value=0.0, max_value=1.0,
             value=dc.streak_decay_shared, step=0.05, key="vb_sd_shared",
         )
-
-    dc.streak_decay_hero = st.number_input(
-        "Streak Decay (Hero)", min_value=0.0, max_value=1.0,
-        value=dc.streak_decay_hero, step=0.05, key="vb_sd_hero",
-    )
+    with col10:
+        dc.streak_decay_hero = st.number_input(
+            "Streak Decay (Hero)", min_value=0.0, max_value=1.0,
+            value=dc.streak_decay_hero, step=0.05,
+            help="Weight multiplier applied per consecutive pull of the same hero (lower = stronger penalty)",
+            key="vb_sd_hero",
+        )
 
 
 def _render_joker_tab(config: HeroCardConfig) -> None:

@@ -1956,11 +1956,9 @@ def _render_hero_card_core_systems() -> None:
         **Upgrade costs** are configurable per rarity:
         ```
         hero_upgrade_tables: [
-            { rarity: COMMON,    duplicate_costs: [3, 5, 7, ...], coin_costs: [...], xp_rewards: [...] },
-            { rarity: UNCOMMON,  ... },
-            { rarity: RARE,      ... },
-            { rarity: EPIC,      ... },
-            { rarity: LEGENDARY, ... },
+            { rarity: COMMON, duplicate_costs: [3, 5, 7, ...], coin_costs: [...], xp_rewards: [...] },
+            { rarity: RARE,   ... },
+            { rarity: EPIC,   ... },
         ]
         ```
 
@@ -2032,7 +2030,7 @@ def _render_hero_card_data_models() -> None:
         ```python
         card_id: str
         hero_id: str
-        rarity: HeroCardRarity              # COMMON | UNCOMMON | RARE | EPIC | LEGENDARY
+        rarity: HeroCardRarity              # COMMON | RARE | EPIC
         name: str
         base_xp_on_upgrade: int             # Hero XP granted when this card upgrades
         ```
