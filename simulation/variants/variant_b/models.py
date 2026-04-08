@@ -19,10 +19,8 @@ from pydantic import BaseModel, Field
 class HeroCardRarity(str, Enum):
     """Rarity tiers within a hero's card deck. Names are display-only."""
     COMMON = "COMMON"
-    UNCOMMON = "UNCOMMON"
     RARE = "RARE"
     EPIC = "EPIC"
-    LEGENDARY = "LEGENDARY"
 
 
 class PremiumPackRarity(str, Enum):
@@ -118,11 +116,22 @@ class HeroUpgradeCostTable(BaseModel):
 
 class HeroDropConfig(BaseModel):
     """Drop algorithm parameters for Variant B."""
-    hero_vs_shared_base_rate: float = Field(default=0.60, description="Base probability of hero card vs shared card")
-    card_selection_mode: str = Field(default="lowest_level", description="Card selection strategy: lowest_level, weighted_rarity, gacha_rates")
+    hero_vs_shared_base_rate: float = Field(default=0.50, description="Base probability of hero card vs shared card")
     pity_counter_threshold: int = Field(default=0, description="Guaranteed hero card after N shared-only pulls (0=disabled)")
-    streak_decay_shared: float = Field(default=0.6)
-    streak_decay_hero: float = Field(default=0.3)
+
+    # Hero bucket selection weights (heroes ranked by level, divided into 3 tiers)
+    bucket_bottom_weight: float = Field(default=0.40, description="Probability of selecting from lowest-level hero bucket")
+    bucket_middle_weight: float = Field(default=0.35, description="Probability of selecting from mid-level hero bucket")
+    bucket_top_weight: float = Field(default=0.25, description="Probability of selecting from highest-level hero bucket")
+
+    # Rarity roll weights for hero card drops
+    rarity_weight_common: float = Field(default=0.64, description="Probability of dropping a COMMON card")
+    rarity_weight_rare: float = Field(default=0.30, description="Probability of dropping a RARE card")
+    rarity_weight_epic: float = Field(default=0.06, description="Probability of dropping an EPIC card")
+
+    # Anti-streak decay
+    streak_decay_shared: float = Field(default=0.6, description="Weight decay for repeated shared pulls")
+    streak_decay_hero: float = Field(default=0.3, description="Weight multiplier per consecutive pull of the same hero")
 
 
 # ---------------------------------------------------------------------------
@@ -210,6 +219,8 @@ class HeroCardGameState(BaseModel):
     coins: int = Field(default=0)
     total_bluestars: int = Field(default=0)
     pity_counter: int = Field(default=0, description="Pulls since last hero card")
+    last_hero_pulled: Optional[str] = Field(default=None, description="hero_id of last hero card pull (for anti-streak)")
+    hero_streak_count: int = Field(default=0, description="Consecutive pulls of the same hero")
     pet_state: Optional[Any] = None
     gear_state: Optional[Any] = None
 

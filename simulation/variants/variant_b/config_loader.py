@@ -93,8 +93,7 @@ def _builtin_defaults() -> HeroCardConfig:
         hero_upgrade_tables=_default_upgrade_tables(),
         joker_drop_rate_in_regular_packs=0.01,
         drop_config=HeroDropConfig(
-            hero_vs_shared_base_rate=0.60,
-            card_selection_mode="lowest_level",
+            hero_vs_shared_base_rate=0.50,
             pity_counter_threshold=10,
         ),
         daily_pack_schedule=[{"regular": 5.0}],
@@ -114,22 +113,18 @@ def _builtin_defaults() -> HeroCardConfig:
 
 def _create_sample_hero(hero_id: str, name: str, num_cards: int = 12) -> HeroDef:
     """Create a sample hero with a balanced card pool and linear skill tree."""
-    # Distribute cards across rarities: ~40% common, 25% uncommon, 20% rare, 10% epic, 5% legendary
+    # Distribute cards across rarities: ~55% common, 30% rare, 15% epic
     rarity_dist = [
-        (HeroCardRarity.COMMON, max(1, round(num_cards * 0.40))),
-        (HeroCardRarity.UNCOMMON, max(1, round(num_cards * 0.25))),
-        (HeroCardRarity.RARE, max(1, round(num_cards * 0.20))),
-        (HeroCardRarity.EPIC, max(1, round(num_cards * 0.10))),
-        (HeroCardRarity.LEGENDARY, max(1, round(num_cards * 0.05))),
+        (HeroCardRarity.COMMON, max(1, round(num_cards * 0.55))),
+        (HeroCardRarity.RARE, max(1, round(num_cards * 0.30))),
+        (HeroCardRarity.EPIC, max(1, round(num_cards * 0.15))),
     ]
 
     cards = []
     xp_values = {
         HeroCardRarity.COMMON: 5,
-        HeroCardRarity.UNCOMMON: 10,
         HeroCardRarity.RARE: 20,
         HeroCardRarity.EPIC: 40,
-        HeroCardRarity.LEGENDARY: 100,
     }
     card_idx = 1
     for rarity, count in rarity_dist:
@@ -196,10 +191,8 @@ def _create_premium_pack(
     # Assign drop rates inversely proportional to rarity
     rarity_weights = {
         HeroCardRarity.COMMON: 5.0,
-        HeroCardRarity.UNCOMMON: 3.0,
         HeroCardRarity.RARE: 2.0,
         HeroCardRarity.EPIC: 1.0,
-        HeroCardRarity.LEGENDARY: 0.3,
     }
 
     card_rates = [
@@ -263,10 +256,8 @@ def _default_upgrade_tables() -> list[HeroUpgradeCostTable]:
     tables = []
     for rarity, base_dupe, base_coin, base_bs, base_xp in [
         (HeroCardRarity.COMMON, 3, 50, 5, 5),
-        (HeroCardRarity.UNCOMMON, 5, 100, 10, 10),
         (HeroCardRarity.RARE, 8, 200, 20, 20),
         (HeroCardRarity.EPIC, 12, 400, 40, 40),
-        (HeroCardRarity.LEGENDARY, 20, 800, 80, 100),
     ]:
         num_levels = 20
         tables.append(HeroUpgradeCostTable(

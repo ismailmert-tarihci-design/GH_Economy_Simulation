@@ -86,6 +86,14 @@ def run_simulation(
                 result = select_hero_card(game_state, config, rng)
                 if result:
                     hero_id, card_id = result
+
+                    # Update anti-streak tracking
+                    if hero_id == game_state.last_hero_pulled:
+                        game_state.hero_streak_count += 1
+                    else:
+                        game_state.last_hero_pulled = hero_id
+                        game_state.hero_streak_count = 1
+
                     hero_state = game_state.heroes[hero_id]
                     card = hero_state.cards.get(card_id)
                     if card:

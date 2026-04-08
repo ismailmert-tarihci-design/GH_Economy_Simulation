@@ -189,10 +189,8 @@ def _pick_hero_card(
 
     rarity_weights = {
         HeroCardRarity.COMMON: 5.0,
-        HeroCardRarity.UNCOMMON: 3.0,
         HeroCardRarity.RARE: 2.0,
-        HeroCardRarity.EPIC: 1.0,
-        HeroCardRarity.LEGENDARY: 0.5,
+        HeroCardRarity.EPIC: 0.5,
     }
 
     if mode in ("weighted_rarity", "lowest_level"):
@@ -231,10 +229,8 @@ def _display_pull_results(results: list[dict], config: HeroCardConfig, heroes: l
 
     rarity_colors = {
         "COMMON": "#9e9e9e",
-        "UNCOMMON": "#4caf50",
         "RARE": "#2196f3",
         "EPIC": "#9c27b0",
-        "LEGENDARY": "#ff9800",
     }
 
     for r in results:
@@ -279,7 +275,7 @@ def _display_pull_results(results: list[dict], config: HeroCardConfig, heroes: l
                 st.markdown(f"- **{name}**: {count} ({pct:.0f}%)")
         with col2:
             st.markdown("By rarity:")
-            for rarity in ["COMMON", "UNCOMMON", "RARE", "EPIC", "LEGENDARY"]:
+            for rarity in ["COMMON", "RARE", "EPIC"]:
                 count = rarity_counts.get(rarity, 0)
                 if count > 0:
                     color = rarity_colors.get(rarity, "#fff")
