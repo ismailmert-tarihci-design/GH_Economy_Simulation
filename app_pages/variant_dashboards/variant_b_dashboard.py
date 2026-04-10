@@ -9,34 +9,25 @@ from typing import Any, Dict
 import plotly.graph_objects as go
 import streamlit as st
 
-# Chart template matching the dark theme
-_CHART_TEMPLATE = "plotly_dark"
-_CHART_BG = "rgba(0,0,0,0)"
-_GRID_COLOR = "rgba(255,255,255,0.06)"
-
-# Palette
-_BLUE = "#38BDF8"
-_GREEN = "#34D399"
-_AMBER = "#FBBF24"
-_RED = "#F87171"
-_VIOLET = "#A78BFA"
-_ORANGE = "#FB923C"
-_TEAL = "#2DD4BF"
-_PINK = "#E879F9"
-_HERO_COLORS = [_BLUE, _GREEN, _AMBER, _RED, _VIOLET, _ORANGE, _TEAL, _PINK,
-                "#67E8F9", "#86EFAC", "#FDE68A", "#FCA5A5", "#C4B5FD", "#FDBA74", "#5EEAD4", "#F0ABFC"]
+# Palette — strong contrast on white
+_BLUE = "#2563EB"
+_GREEN = "#16A34A"
+_AMBER = "#CA8A04"
+_RED = "#DC2626"
+_VIOLET = "#7C3AED"
+_ORANGE = "#EA580C"
+_TEAL = "#0891B2"
+_PINK = "#DB2777"
+_HERO_COLORS = [_BLUE, _GREEN, _ORANGE, _RED, _VIOLET, _AMBER, _TEAL, _PINK,
+                "#0284C7", "#059669", "#D97706", "#E11D48", "#6D28D9", "#C2410C", "#0E7490", "#BE185D"]
 
 
 def _styled_fig(title: str = "") -> go.Figure:
-    """Create a pre-styled Plotly figure matching the dark theme."""
+    """Create a pre-styled Plotly figure for the light theme."""
     fig = go.Figure()
     fig.update_layout(
         title=dict(text=title, font=dict(size=16)),
-        template=_CHART_TEMPLATE,
-        paper_bgcolor=_CHART_BG,
-        plot_bgcolor=_CHART_BG,
-        xaxis=dict(gridcolor=_GRID_COLOR, zeroline=False),
-        yaxis=dict(gridcolor=_GRID_COLOR, zeroline=False),
+        template="plotly_white",
         hovermode="x unified",
         margin=dict(l=40, r=20, t=50, b=40),
         legend=dict(orientation="h", yanchor="bottom", y=1.02, xanchor="right", x=1),
@@ -64,8 +55,14 @@ def render_variant_b_dashboard() -> None:
         st.info("No data in simulation results.", icon=":material/info:")
         return
 
+    # Build hero name lookup from config
+    config = st.session_state.get("config")
+    hero_name_map = {}
+    if config and hasattr(config, "heroes"):
+        hero_name_map = {h.hero_id: h.name for h in config.heroes}
+
     # ─── KPI row ──────────────────────────────────────────────────────────────
-    _render_kpis(result, snapshots)
+    _render_kpis(result, snapshots, hero_name_map)
 
     # ─── Charts in a 2-column grid ────────────────────────────────────────────
     col1, col2 = st.columns(2)
@@ -79,13 +76,13 @@ def render_variant_b_dashboard() -> None:
     col3, col4 = st.columns(2)
     with col3:
         with st.container(border=True):
-            _render_hero_level_chart(snapshots)
+            _render_hero_level_chart(snapshots, hero_name_map)
     with col4:
         with st.container(border=True):
-            _render_hero_card_level_chart(snapshots)
+            _render_hero_card_level_chart(snapshots, hero_name_map)
 
     with st.container(border=True):
-        _render_xp_chart(snapshots)
+        _render_xp_chart(snapshots, hero_name_map)
 
     # ─── Summary sections ─────────────────────────────────────────────────────
     col5, col6, col7 = st.columns(3)
@@ -97,7 +94,7 @@ def render_variant_b_dashboard() -> None:
         _render_skill_tree_summary(snapshots)
 
 
-def _render_kpis(result: Any, snapshots: list) -> None:
+def _render_kpis(result: Any, snapshots: list, hero_name_map: dict) -> None:
     with st.container(horizontal=True):
         st.metric("Total bluestars", f"{result.total_bluestars:,}", border=True)
         st.metric("Coins earned", f"{result.total_coins_earned:,}", border=True)
@@ -108,13 +105,13 @@ def _render_kpis(result: Any, snapshots: list) -> None:
     # Hero level badges
     if result.final_hero_levels:
         with st.expander(f"Final hero levels ({len(result.final_hero_levels)} heroes)", icon=":material/person:"):
-            # Show in rows of 6
             hero_items = list(result.final_hero_levels.items())
             for row_start in range(0, len(hero_items), 6):
                 row = hero_items[row_start:row_start + 6]
                 cols = st.columns(len(row))
                 for i, (hero_id, level) in enumerate(row):
-                    cols[i].metric(hero_id, f"Lv {level}", border=True)
+                    display_name = hero_name_map.get(hero_id, hero_id.title())
+                    cols[i].metric(display_name, f"Lv {level}", border=True)
 
 
 def _render_bluestar_chart(snapshots: list) -> None:
@@ -124,12 +121,12 @@ def _render_bluestar_chart(snapshots: list) -> None:
         x=days, y=[s.total_bluestars for s in snapshots],
         mode="lines", name="Bluestars",
         line=dict(color=_BLUE, width=2),
-        fill="tozeroy", fillcolor="rgba(56, 189, 248, 0.08)",
+        fill="tozeroy", fillcolor="rgba(37, 99, 235, 0.1)",
     ))
     st.plotly_chart(fig, use_container_width=True)
 
 
-def _render_hero_level_chart(snapshots: list) -> None:
+def _render_hero_level_chart(snapshots: list, hero_name_map: dict) -> None:
     if not snapshots or not snapshots[0].hero_levels:
         return
     days = [s.day for s in snapshots]
@@ -138,14 +135,15 @@ def _render_hero_level_chart(snapshots: list) -> None:
     fig = _styled_fig("Hero level progression")
     for i, hero_id in enumerate(hero_ids):
         levels = [s.hero_levels.get(hero_id, 0) for s in snapshots]
+        display_name = hero_name_map.get(hero_id, hero_id.title())
         fig.add_trace(go.Scatter(
             x=days, y=levels, mode="lines",
-            name=hero_id, line=dict(color=_HERO_COLORS[i % len(_HERO_COLORS)], width=2),
+            name=display_name, line=dict(color=_HERO_COLORS[i % len(_HERO_COLORS)], width=2),
         ))
     st.plotly_chart(fig, use_container_width=True)
 
 
-def _render_hero_card_level_chart(snapshots: list) -> None:
+def _render_hero_card_level_chart(snapshots: list, hero_name_map: dict) -> None:
     if not snapshots or not snapshots[0].hero_card_avg_levels:
         return
     days = [s.day for s in snapshots]
@@ -154,14 +152,15 @@ def _render_hero_card_level_chart(snapshots: list) -> None:
     fig = _styled_fig("Average hero card level")
     for i, hero_id in enumerate(hero_ids):
         avgs = [s.hero_card_avg_levels.get(hero_id, 0.0) for s in snapshots]
+        display_name = hero_name_map.get(hero_id, hero_id.title())
         fig.add_trace(go.Scatter(
             x=days, y=avgs, mode="lines",
-            name=hero_id, line=dict(color=_HERO_COLORS[i % len(_HERO_COLORS)], width=2),
+            name=display_name, line=dict(color=_HERO_COLORS[i % len(_HERO_COLORS)], width=2),
         ))
     st.plotly_chart(fig, use_container_width=True)
 
 
-def _render_xp_chart(snapshots: list) -> None:
+def _render_xp_chart(snapshots: list, hero_name_map: dict) -> None:
     if not snapshots or not snapshots[0].hero_xp_today:
         return
     days = [s.day for s in snapshots]
@@ -170,8 +169,9 @@ def _render_xp_chart(snapshots: list) -> None:
     fig = _styled_fig("Daily hero XP earned")
     for i, hero_id in enumerate(hero_ids):
         xp = [s.hero_xp_today.get(hero_id, 0) for s in snapshots]
+        display_name = hero_name_map.get(hero_id, hero_id.title())
         fig.add_trace(go.Bar(
-            x=days, y=xp, name=hero_id,
+            x=days, y=xp, name=display_name,
             marker_color=_HERO_COLORS[i % len(_HERO_COLORS)], opacity=0.8,
         ))
     fig.update_layout(barmode="group")
@@ -184,12 +184,12 @@ def _render_coin_chart(snapshots: list) -> None:
     fig.add_trace(go.Scatter(
         x=days, y=[s.coins_earned_today for s in snapshots],
         fill="tozeroy", name="Income",
-        line=dict(color=_GREEN), fillcolor="rgba(52, 211, 153, 0.15)",
+        line=dict(color=_GREEN), fillcolor="rgba(22, 163, 74, 0.1)",
     ))
     fig.add_trace(go.Scatter(
         x=days, y=[s.coins_spent_today for s in snapshots],
         fill="tozeroy", name="Spending",
-        line=dict(color=_RED), fillcolor="rgba(248, 113, 113, 0.15)",
+        line=dict(color=_RED), fillcolor="rgba(220, 38, 38, 0.1)",
     ))
     fig.add_trace(go.Scatter(
         x=days, y=[s.coins_balance for s in snapshots],
@@ -253,7 +253,7 @@ def _render_mc_bluestar_chart(result: Any) -> None:
     lower = [m - 1.96 * s for m, s in zip(means, stds)]
     fig.add_trace(go.Scatter(
         x=days + days[::-1], y=upper + lower[::-1],
-        fill="toself", fillcolor="rgba(56, 189, 248, 0.12)",
+        fill="toself", fillcolor="rgba(37, 99, 235, 0.12)",
         line=dict(color="rgba(255,255,255,0)"), name="95% CI",
     ))
     fig.add_trace(go.Scatter(

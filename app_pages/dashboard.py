@@ -125,7 +125,7 @@ def _render_bluestar_chart(result: Any, mode: str) -> None:
         xaxis=dict(title="Day"),
         yaxis=dict(title="Total Bluestars"),
         hovermode="x unified",
-        template="plotly_dark", paper_bgcolor="rgba(0,0,0,0)", plot_bgcolor="rgba(0,0,0,0)",
+        template="plotly_white",
     )
     st.plotly_chart(fig, use_container_width=True)
 
@@ -200,7 +200,7 @@ def _render_card_progression_chart(result: Any, mode: str) -> None:
         xaxis=dict(title="Day"),
         yaxis=dict(title="Average Card Level"),
         hovermode="x unified",
-        template="plotly_dark", paper_bgcolor="rgba(0,0,0,0)", plot_bgcolor="rgba(0,0,0,0)",
+        template="plotly_white",
     )
     st.plotly_chart(fig, use_container_width=True)
 
@@ -261,7 +261,7 @@ def _render_coin_flow_chart(result: Any, mode: str) -> None:
         xaxis=dict(title="Day"),
         yaxis=dict(title="Coins"),
         hovermode="x unified",
-        template="plotly_dark", paper_bgcolor="rgba(0,0,0,0)", plot_bgcolor="rgba(0,0,0,0)",
+        template="plotly_white",
     )
     st.plotly_chart(fig, use_container_width=True)
 
@@ -382,7 +382,7 @@ def _render_pet_detail_dashboard(result: Any) -> None:
         yaxis=dict(title="Counts"),
         yaxis2=dict(title="Tier", overlaying="y", side="right"),
         barmode="group",
-        template="plotly_dark", paper_bgcolor="rgba(0,0,0,0)", plot_bgcolor="rgba(0,0,0,0)",
+        template="plotly_white",
     )
     st.plotly_chart(fig, use_container_width=True)
     st.dataframe(pet_df, use_container_width=True, hide_index=True)
@@ -444,7 +444,7 @@ def _render_hero_detail_dashboard(result: Any) -> None:
         title="Hero Unlock Progression",
         xaxis=dict(title="Day"),
         yaxis=dict(title="Unique Cards"),
-        template="plotly_dark", paper_bgcolor="rgba(0,0,0,0)", plot_bgcolor="rgba(0,0,0,0)",
+        template="plotly_white",
     )
     st.plotly_chart(fig, use_container_width=True)
     st.dataframe(hero_df, use_container_width=True, hide_index=True)
@@ -507,7 +507,7 @@ def _render_gear_detail_dashboard(result: Any) -> None:
         xaxis=dict(title="Day"),
         yaxis=dict(title="Daily Upgrades"),
         yaxis2=dict(title="Average Level", overlaying="y", side="right"),
-        template="plotly_dark", paper_bgcolor="rgba(0,0,0,0)", plot_bgcolor="rgba(0,0,0,0)",
+        template="plotly_white",
     )
     st.plotly_chart(fig, use_container_width=True)
 
@@ -525,7 +525,7 @@ def _render_gear_detail_dashboard(result: Any) -> None:
         title="Per-Slot Gear Levels",
         xaxis=dict(title="Day"),
         yaxis=dict(title="Slot Level"),
-        template="plotly_dark", paper_bgcolor="rgba(0,0,0,0)", plot_bgcolor="rgba(0,0,0,0)",
+        template="plotly_white",
     )
     st.plotly_chart(slot_fig, use_container_width=True)
     st.dataframe(gear_df, use_container_width=True, hide_index=True)

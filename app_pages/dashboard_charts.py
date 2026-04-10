@@ -56,7 +56,7 @@ def render_upgrades_chart(result: Any) -> None:
         yaxis=dict(title="Upgrade Count", side="left"),
         yaxis2=dict(title="Bluestars Earned", side="right", overlaying="y"),
         hovermode="x unified",
-        template="plotly_dark", paper_bgcolor="rgba(0,0,0,0)", plot_bgcolor="rgba(0,0,0,0)",
+        template="plotly_white",
         legend=dict(x=0.01, y=0.99),
     )
     st.plotly_chart(fig, use_container_width=True)
@@ -83,7 +83,7 @@ def render_unique_unlocked_chart(result: Any) -> None:
         xaxis=dict(title="Day"),
         yaxis=dict(title="Cards Unlocked", dtick=1),
         hovermode="x unified",
-        template="plotly_dark", paper_bgcolor="rgba(0,0,0,0)", plot_bgcolor="rgba(0,0,0,0)",
+        template="plotly_white",
     )
     st.plotly_chart(fig, use_container_width=True)
 
@@ -195,7 +195,7 @@ def render_pull_counts_chart(result: Any, mode: str) -> None:
         xaxis=dict(title="Day"),
         yaxis=dict(title="Pull Count"),
         hovermode="x unified",
-        template="plotly_dark", paper_bgcolor="rgba(0,0,0,0)", plot_bgcolor="rgba(0,0,0,0)",
+        template="plotly_white",
     )
     st.plotly_chart(fig, use_container_width=True)
 
@@ -233,6 +233,6 @@ def render_pack_counts_chart(result: Any, mode: str) -> None:
         xaxis=dict(title="Day"),
         yaxis=dict(title="Card Pulls from Pack"),
         hovermode="x unified",
-        template="plotly_dark", paper_bgcolor="rgba(0,0,0,0)", plot_bgcolor="rgba(0,0,0,0)",
+        template="plotly_white",
     )
     st.plotly_chart(fig, use_container_width=True)

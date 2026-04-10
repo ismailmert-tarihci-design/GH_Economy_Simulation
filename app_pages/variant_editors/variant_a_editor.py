@@ -19,56 +19,57 @@ from simulation.models import SimConfig
 
 
 def render_variant_a_editor(config: SimConfig) -> None:
-    st.markdown("Edit simulation parameters. Changes update immediately.")
+    st.caption("Classic card system parameters. All changes update immediately.")
 
-    col_coins, col_stars = st.columns(2)
-    with col_coins:
-        config.initial_coins = st.number_input(
-            "Initial Coins",
-            min_value=0,
-            value=config.initial_coins,
-            step=100,
-            key="init_coins",
-        )
-    with col_stars:
-        config.initial_bluestars = st.number_input(
-            "Initial Bluestars",
-            min_value=0,
-            value=config.initial_bluestars,
-            step=10,
-            key="init_stars",
-        )
+    with st.container(border=True):
+        col_coins, col_stars = st.columns(2)
+        with col_coins:
+            config.initial_coins = st.number_input(
+                "Initial coins",
+                min_value=0,
+                value=config.initial_coins,
+                step=100,
+                key="init_coins",
+            )
+        with col_stars:
+            config.initial_bluestars = st.number_input(
+                "Initial bluestars",
+                min_value=0,
+                value=config.initial_bluestars,
+                step=10,
+                key="init_stars",
+            )
 
-    col_gold, col_blue = st.columns(2)
-    with col_gold:
-        config.num_gold_cards = st.number_input(
-            "Gold Shared Cards",
-            min_value=1,
-            max_value=50,
-            value=config.num_gold_cards,
-            step=1,
-            key="num_gold_cards",
-        )
-    with col_blue:
-        config.num_blue_cards = st.number_input(
-            "Blue Shared Cards",
-            min_value=1,
-            max_value=50,
-            value=config.num_blue_cards,
-            step=1,
-            key="num_blue_cards",
-        )
+        col_gold, col_blue = st.columns(2)
+        with col_gold:
+            config.num_gold_cards = st.number_input(
+                "Gold shared cards",
+                min_value=1,
+                max_value=50,
+                value=config.num_gold_cards,
+                step=1,
+                key="num_gold_cards",
+            )
+        with col_blue:
+            config.num_blue_cards = st.number_input(
+                "Blue shared cards",
+                min_value=1,
+                max_value=50,
+                value=config.num_blue_cards,
+                step=1,
+                key="num_blue_cards",
+            )
 
     tab1, tab2, tab3, tab4, tab5, tab6, tab7, tab8 = st.tabs(
         [
-            "Pack Configuration",
-            "Upgrade Tables",
-            "Card Economy",
-            "Progression & Schedule",
-            "Drop Algorithm",
-            "Pet/Hero/Gear",
-            "Profiles",
-            "Import / Export",
+            ":material/inventory_2: Pack configuration",
+            ":material/paid: Upgrade tables",
+            ":material/monetization_on: Card economy",
+            ":material/calendar_today: Progression & schedule",
+            ":material/casino: Drop algorithm",
+            ":material/pets: Pet / hero / gear",
+            ":material/person: Profiles",
+            ":material/swap_horiz: Import / export",
         ]
     )
 

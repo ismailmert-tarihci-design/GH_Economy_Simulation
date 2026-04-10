@@ -263,87 +263,162 @@ def _render_upgrade_costs_tab(config: HeroCardConfig) -> None:
 
 
 def _render_drop_algorithm_tab(config: HeroCardConfig) -> None:
-    st.subheader("Drop Algorithm")
+    st.subheader("Drop algorithm")
+    st.caption("Each step in the flowchart is editable. Changes update the simulation immediately.")
     dc = config.drop_config
 
-    # --- Controls ---
-    col1, col2 = st.columns(2)
-    with col1:
-        dc.hero_vs_shared_base_rate = st.slider(
-            "Hero vs Shared base rate",
-            min_value=0.0, max_value=1.0, value=dc.hero_vs_shared_base_rate, step=0.05,
-            help="Probability of pulling a hero card vs shared card",
-            key="vb_hero_rate",
-        )
-    with col2:
+    # ─── START ────────────────────────────────────────────────────────────────
+    with st.container(border=True):
+        st.markdown("**:material/playing_cards: Regular pack pull**")
+        st.caption("Player opens a regular pack. Each card pull follows this algorithm.")
+
+    st.markdown("<div style='text-align:center;color:#94a3b8;font-size:24px'>↓</div>", unsafe_allow_html=True)
+
+    # ─── PITY CHECK ───────────────────────────────────────────────────────────
+    with st.container(border=True):
+        st.markdown("**:material/shield: Pity check**")
         dc.pity_counter_threshold = st.number_input(
-            "Pity counter (0 = disabled)",
+            "Guarantee hero card after N shared-only pulls (0 = disabled)",
             min_value=0, max_value=100, value=dc.pity_counter_threshold, step=1,
-            help="Guarantee hero card after N shared-only pulls",
             key="vb_pity",
         )
+        if dc.pity_counter_threshold > 0:
+            st.caption(f"After {dc.pity_counter_threshold} shared pulls without a hero card → force hero card.")
+        else:
+            st.caption("Pity system disabled.")
 
-    st.markdown("##### Hero bucket selection")
-    st.caption("Heroes ranked by level, split into 3 tiers")
-    b1, b2, b3 = st.columns(3)
-    with b1:
-        dc.bucket_bottom_weight = st.slider(
-            "Bottom bucket", min_value=0.0, max_value=1.0,
-            value=dc.bucket_bottom_weight, step=0.05, key="vb_bkt_bot",
-        )
-    with b2:
-        dc.bucket_middle_weight = st.slider(
-            "Middle bucket", min_value=0.0, max_value=1.0,
-            value=dc.bucket_middle_weight, step=0.05, key="vb_bkt_mid",
-        )
-    with b3:
-        dc.bucket_top_weight = st.slider(
-            "Top bucket", min_value=0.0, max_value=1.0,
-            value=dc.bucket_top_weight, step=0.05, key="vb_bkt_top",
-        )
-    bucket_sum = dc.bucket_bottom_weight + dc.bucket_middle_weight + dc.bucket_top_weight
-    if abs(bucket_sum - 1.0) > 0.01:
-        st.warning(f"Bucket weights sum to {bucket_sum:.2f} — should be 1.0")
+    st.markdown("<div style='text-align:center;color:#94a3b8;font-size:24px'>↓</div>", unsafe_allow_html=True)
 
-    st.markdown("##### Rarity weights")
-    r1, r2, r3 = st.columns(3)
-    with r1:
-        dc.rarity_weight_common = st.slider(
-            "Common", min_value=0.0, max_value=1.0,
-            value=dc.rarity_weight_common, step=0.01, key="vb_rw_c",
+    # ─── HERO vs SHARED ──────────────────────────────────────────────────────
+    with st.container(border=True):
+        st.markdown("**:material/call_split: Hero vs shared**")
+        dc.hero_vs_shared_base_rate = st.slider(
+            "Hero card probability",
+            min_value=0.0, max_value=1.0, value=dc.hero_vs_shared_base_rate, step=0.05,
+            key="vb_hero_rate",
         )
-    with r2:
-        dc.rarity_weight_rare = st.slider(
-            "Rare", min_value=0.0, max_value=1.0,
-            value=dc.rarity_weight_rare, step=0.01, key="vb_rw_r",
-        )
-    with r3:
-        dc.rarity_weight_epic = st.slider(
-            "Epic", min_value=0.0, max_value=1.0,
-            value=dc.rarity_weight_epic, step=0.01, key="vb_rw_e",
-        )
-    rarity_sum = dc.rarity_weight_common + dc.rarity_weight_rare + dc.rarity_weight_epic
-    if abs(rarity_sum - 1.0) > 0.01:
-        st.warning(f"Rarity weights sum to {rarity_sum:.2f} — should be 1.0")
+        hero_pct = dc.hero_vs_shared_base_rate * 100
+        shared_pct = (1 - dc.hero_vs_shared_base_rate) * 100
+        st.markdown(f":blue-badge[Hero {hero_pct:.0f}%] :orange-badge[Shared {shared_pct:.0f}%]")
 
-    st.markdown("##### Anti-streak decay")
-    s1, s2 = st.columns(2)
-    with s1:
-        dc.streak_decay_shared = st.number_input(
-            "Shared streak decay", min_value=0.0, max_value=1.0,
-            value=dc.streak_decay_shared, step=0.05, key="vb_sd_shared",
-        )
-    with s2:
-        dc.streak_decay_hero = st.number_input(
-            "Hero streak decay", min_value=0.0, max_value=1.0,
-            value=dc.streak_decay_hero, step=0.05,
-            help="Multiplier per consecutive same-hero pull (lower = stronger penalty)",
-            key="vb_sd_hero",
-        )
+    # ─── TWO PATHS ────────────────────────────────────────────────────────────
+    col_hero, col_shared = st.columns(2)
 
-    # --- Live diagram ---
-    st.divider()
-    _render_drop_diagram(config)
+    with col_hero:
+        st.markdown("<div style='text-align:center;color:#94a3b8;font-size:24px'>↓ <small>Hero card</small></div>", unsafe_allow_html=True)
+
+        # Step 1: Pick bucket
+        with st.container(border=True):
+            st.markdown("**1. Pick bucket**")
+            st.caption("Heroes ranked by level, split into 3 tiers")
+            dc.bucket_bottom_weight = st.slider(
+                "Bottom (lowest level)", min_value=0.0, max_value=1.0,
+                value=dc.bucket_bottom_weight, step=0.05, key="vb_bkt_bot",
+            )
+            dc.bucket_middle_weight = st.slider(
+                "Middle", min_value=0.0, max_value=1.0,
+                value=dc.bucket_middle_weight, step=0.05, key="vb_bkt_mid",
+            )
+            dc.bucket_top_weight = st.slider(
+                "Top (highest level)", min_value=0.0, max_value=1.0,
+                value=dc.bucket_top_weight, step=0.05, key="vb_bkt_top",
+            )
+            bucket_sum = dc.bucket_bottom_weight + dc.bucket_middle_weight + dc.bucket_top_weight
+            if abs(bucket_sum - 1.0) > 0.01:
+                st.warning(f"Bucket weights sum to {bucket_sum:.2f} — should be 1.0")
+            else:
+                st.markdown(
+                    f":green-badge[Bottom {dc.bucket_bottom_weight*100:.0f}%] "
+                    f":blue-badge[Mid {dc.bucket_middle_weight*100:.0f}%] "
+                    f":violet-badge[Top {dc.bucket_top_weight*100:.0f}%]"
+                )
+
+        st.markdown("<div style='text-align:center;color:#94a3b8;font-size:24px'>↓</div>", unsafe_allow_html=True)
+
+        # Step 2: Pick hero
+        with st.container(border=True):
+            st.markdown("**2. Pick hero**")
+            st.caption("Anti-streak: reduce weight for consecutive same-hero pulls")
+            dc.streak_decay_hero = st.slider(
+                "Streak decay multiplier", min_value=0.0, max_value=1.0,
+                value=dc.streak_decay_hero, step=0.05, key="vb_sd_hero",
+                help="Applied per consecutive same-hero pull (lower = stronger penalty)",
+            )
+            st.caption(f"Each repeat: weight x{dc.streak_decay_hero}")
+
+        st.markdown("<div style='text-align:center;color:#94a3b8;font-size:24px'>↓</div>", unsafe_allow_html=True)
+
+        # Step 3: Roll rarity
+        with st.container(border=True):
+            st.markdown("**3. Roll rarity**")
+            dc.rarity_weight_common = st.slider(
+                "Common", min_value=0.0, max_value=1.0,
+                value=dc.rarity_weight_common, step=0.01, key="vb_rw_c",
+            )
+            dc.rarity_weight_rare = st.slider(
+                "Rare", min_value=0.0, max_value=1.0,
+                value=dc.rarity_weight_rare, step=0.01, key="vb_rw_r",
+            )
+            dc.rarity_weight_epic = st.slider(
+                "Epic", min_value=0.0, max_value=1.0,
+                value=dc.rarity_weight_epic, step=0.01, key="vb_rw_e",
+            )
+            rarity_sum = dc.rarity_weight_common + dc.rarity_weight_rare + dc.rarity_weight_epic
+            if abs(rarity_sum - 1.0) > 0.01:
+                st.warning(f"Rarity weights sum to {rarity_sum:.2f} — should be 1.0")
+            else:
+                st.markdown(
+                    f":gray-badge[Common {dc.rarity_weight_common*100:.0f}%] "
+                    f":blue-badge[Rare {dc.rarity_weight_rare*100:.0f}%] "
+                    f":violet-badge[Epic {dc.rarity_weight_epic*100:.0f}%]"
+                )
+
+        st.markdown("<div style='text-align:center;color:#94a3b8;font-size:24px'>↓</div>", unsafe_allow_html=True)
+
+        # Step 4: Pick card
+        with st.container(border=True):
+            st.markdown("**4. Pick card**")
+            st.caption("Lowest-level-first catch-up weighting: weight = 1/(level+1)")
+
+        st.markdown("<div style='text-align:center;color:#94a3b8;font-size:24px'>↓</div>", unsafe_allow_html=True)
+
+        # Step 5: Compute dupes
+        with st.container(border=True):
+            st.markdown("**5. Compute dupes**")
+            st.caption("round(dupe_cost x random(min%, max%)) — see **Dupe Ranges** tab")
+
+        st.markdown("<div style='text-align:center;color:#94a3b8;font-size:24px'>↓</div>", unsafe_allow_html=True)
+
+        # Upgrade result
+        with st.container(border=True):
+            st.markdown("**:material/upgrade: Upgrade**")
+            st.caption("Dupes + Coins → Level up → Bluestars + Hero XP. Pity counter resets.")
+
+    with col_shared:
+        st.markdown("<div style='text-align:center;color:#94a3b8;font-size:24px'>↓ <small>Shared card</small></div>", unsafe_allow_html=True)
+
+        with st.container(border=True):
+            st.markdown("**Pick shared card**")
+            st.caption(f"Lowest-level-first catch-up across {config.num_gold_cards} Gold + {config.num_blue_cards} Blue cards")
+
+        st.markdown("<div style='text-align:center;color:#94a3b8;font-size:24px'>↓</div>", unsafe_allow_html=True)
+
+        with st.container(border=True):
+            st.markdown("**Standard upgrade**")
+            st.caption("Same upgrade engine. Pity counter +1.")
+
+        # Shared streak decay (less prominent)
+        with st.container(border=True):
+            st.markdown("**Shared streak decay**")
+            dc.streak_decay_shared = st.slider(
+                "Shared decay multiplier", min_value=0.0, max_value=1.0,
+                value=dc.streak_decay_shared, step=0.05, key="vb_sd_shared",
+            )
+
+    # ─── JOKERS ───────────────────────────────────────────────────────────────
+    with st.container(border=True):
+        st.markdown("**:material/playing_cards: Jokers** — from hero-specific premium packs only")
+        st.caption("Each premium pack has its own joker rate (configured in Hero Packs tab). Jokers are universal wildcards.")
 
 
 def _render_joker_tab(config: HeroCardConfig) -> None:
@@ -515,117 +590,3 @@ def _render_import_export(config: HeroCardConfig) -> None:
                 st.error(f"Invalid config: {e}")
 
 
-def _render_drop_diagram(config: HeroCardConfig) -> None:
-    """Render a clean flowchart of the bucket-based drop algorithm."""
-    dc = config.drop_config
-    hero_pct = f"{dc.hero_vs_shared_base_rate * 100:.0f}"
-    shared_pct = f"{(1 - dc.hero_vs_shared_base_rate) * 100:.0f}"
-    pity = dc.pity_counter_threshold
-    bot = f"{dc.bucket_bottom_weight * 100:.0f}"
-    mid = f"{dc.bucket_middle_weight * 100:.0f}"
-    top_w = f"{dc.bucket_top_weight * 100:.0f}"
-    rc = f"{dc.rarity_weight_common * 100:.0f}"
-    rr = f"{dc.rarity_weight_rare * 100:.0f}"
-    re = f"{dc.rarity_weight_epic * 100:.0f}"
-    streak = dc.streak_decay_hero
-    gold = config.num_gold_cards
-    blue = config.num_blue_cards
-
-    html = f"""
-<style>
-*{{box-sizing:border-box;margin:0;padding:0}}
-.d{{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;
-    max-width:680px;margin:24px auto;color:#e8e8e8}}
-.n{{border-radius:10px;padding:16px 20px;margin:12px auto;text-align:center;
-    font-size:15px;line-height:1.6;max-width:560px}}
-.n b{{font-size:16px}}
-.start{{background:#0d1b2a;border:2px solid #4a90d9}}
-.decide{{background:#1b1b35;border:2px solid #f5a623}}
-.step{{background:#0f2318;border:2px solid #4caf50}}
-.result{{background:#2a0f0f;border:2px solid #ef5350}}
-.arr{{text-align:center;font-size:28px;color:#666;margin:4px 0;line-height:1}}
-.arr span{{font-size:13px;color:#999;display:block;margin-top:-2px}}
-.split{{display:flex;gap:20px;margin:12px 0}}
-.split>div{{flex:1}}
-.tag{{display:inline-block;padding:3px 10px;border-radius:12px;font-size:12px;
-     font-weight:700;margin:2px 3px}}
-.t-hero{{background:#e65100;color:#fff}}
-.t-shared{{background:#1565c0;color:#fff}}
-.t-pity{{background:#c62828;color:#fff}}
-.t-bkt{{background:#00695c;color:#fff}}
-.t-cmn{{background:#616161;color:#fff}}
-.t-rare{{background:#1565c0;color:#fff}}
-.t-epic{{background:#6a1b9a;color:#fff}}
-.sub{{font-size:13px;color:#aaa;margin-top:6px}}
-</style>
-<div class="d">
-
-<div class="n start"><b>REGULAR PACK PULL</b></div>
-<div class="arr">\u2193</div>
-
-<div class="n decide">
-  <b>PITY CHECK</b><br>
-  {pity}+ shared pulls without hero card?<br>
-  <span class="sub">Yes \u2192 force hero card &nbsp;|&nbsp; No \u2192 roll normally</span>
-</div>
-<div class="arr">\u2193</div>
-
-<div class="n decide">
-  <b>HERO vs SHARED</b><br>
-  <span class="tag t-hero">Hero {hero_pct}%</span>
-  <span class="tag t-shared">Shared {shared_pct}%</span>
-</div>
-
-<div class="split">
-<div>
-  <div class="arr">\u2193<span>Hero card</span></div>
-  <div class="n step"><b>1. Pick bucket</b><br>
-    <span class="tag t-bkt">Bottom {bot}%</span>
-    <span class="tag t-bkt">Mid {mid}%</span>
-    <span class="tag t-bkt">Top {top_w}%</span><br>
-    <span class="sub">Heroes ranked by level \u2192 3 tiers</span>
-  </div>
-  <div class="arr">\u2193</div>
-  <div class="n step"><b>2. Pick hero</b><br>
-    <span class="sub">Anti-streak: \u00d7{streak} per consecutive same-hero</span>
-  </div>
-  <div class="arr">\u2193</div>
-  <div class="n step"><b>3. Roll rarity</b><br>
-    <span class="tag t-cmn">Common {rc}%</span>
-    <span class="tag t-rare">Rare {rr}%</span>
-    <span class="tag t-epic">Epic {re}%</span>
-  </div>
-  <div class="arr">\u2193</div>
-  <div class="n step"><b>4. Pick card</b><br>
-    <span class="sub">Lowest-level-first catch-up</span>
-  </div>
-  <div class="arr">\u2193</div>
-  <div class="n step"><b>5. Compute dupes</b><br>
-    <span class="sub">round(dupe_cost \u00d7 random(min%, max%))<br>Per-rarity % ranges (see Dupe Ranges tab)</span>
-  </div>
-  <div class="arr">\u2193</div>
-  <div class="n result"><b>UPGRADE</b><br>
-    <span class="sub">Dupes + Coins \u2192 Level up \u2192 Bluestars + Hero XP<br>Pity counter resets</span>
-  </div>
-</div>
-<div>
-  <div class="arr">\u2193<span>Shared card</span></div>
-  <div class="n step"><b>Pick shared card</b><br>
-    <span class="sub">Lowest-level-first catch-up<br>{gold} Gold + {blue} Blue cards</span>
-  </div>
-  <div class="arr">\u2193</div>
-  <div class="n result"><b>STANDARD UPGRADE</b><br>
-    <span class="sub">Same upgrade engine<br>Pity counter +1</span>
-  </div>
-</div>
-</div>
-
-<div style="margin-top:20px;padding:14px 18px;border-radius:10px;background:#1a1028;border:2px solid #7b1fa2;max-width:560px;margin-left:auto;margin-right:auto;text-align:center">
-  <b>JOKERS</b> \u2014 only from <b>hero-specific premium packs</b><br>
-  <span class="sub">Each premium pack has its own joker rate (configured in Premium Packs tab).<br>
-  Jokers are universal wildcards that upgrade any hero card.</span>
-</div>
-
-</div>
-"""
-    st.components.v1.html(html, height=980, scrolling=False)
