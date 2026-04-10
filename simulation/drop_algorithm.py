@@ -148,23 +148,20 @@ def update_rarity_streak(
         New StreakState with updated rarity streaks
         (color and hero streaks are preserved, updated in Phase 2)
     """
-    new_state = StreakState(
-        streak_shared=streak_state.streak_shared,
-        streak_unique=streak_state.streak_unique,
-        streak_per_color=streak_state.streak_per_color.copy(),
-        streak_per_hero=streak_state.streak_per_hero.copy(),
-    )
-
     if chosen in (CardCategory.GOLD_SHARED, CardCategory.BLUE_SHARED):
-        # Shared card chosen
-        new_state.streak_shared += 1
-        new_state.streak_unique = 0
+        return StreakState(
+            streak_shared=streak_state.streak_shared + 1,
+            streak_unique=0,
+            streak_per_color=streak_state.streak_per_color,
+            streak_per_hero=streak_state.streak_per_hero,
+        )
     else:  # CardCategory.UNIQUE
-        # Unique card chosen
-        new_state.streak_unique += 1
-        new_state.streak_shared = 0
-
-    return new_state
+        return StreakState(
+            streak_shared=0,
+            streak_unique=streak_state.streak_unique + 1,
+            streak_per_color=streak_state.streak_per_color,
+            streak_per_hero=streak_state.streak_per_hero,
+        )
 
 
 def select_shared_card(
@@ -308,35 +305,39 @@ def update_card_streak(
     Returns:
         New StreakState with updated color/hero streaks
     """
-    new_state = StreakState(
-        streak_shared=streak_state.streak_shared,
-        streak_unique=streak_state.streak_unique,
-        streak_per_color=streak_state.streak_per_color.copy(),
-        streak_per_hero=streak_state.streak_per_hero.copy(),
-    )
-
     if selected_card.category == CardCategory.GOLD_SHARED:
-        new_state.streak_per_color["GOLD_SHARED"] = (
-            streak_state.streak_per_color.get("GOLD_SHARED", 0) + 1
+        new_color = {
+            "GOLD_SHARED": streak_state.streak_per_color.get("GOLD_SHARED", 0) + 1,
+            "BLUE_SHARED": 0,
+        }
+        return StreakState(
+            streak_shared=streak_state.streak_shared,
+            streak_unique=streak_state.streak_unique,
+            streak_per_color=new_color,
+            streak_per_hero=streak_state.streak_per_hero,
         )
-        new_state.streak_per_color["BLUE_SHARED"] = 0
     elif selected_card.category == CardCategory.BLUE_SHARED:
-        new_state.streak_per_color["BLUE_SHARED"] = (
-            streak_state.streak_per_color.get("BLUE_SHARED", 0) + 1
+        new_color = {
+            "GOLD_SHARED": 0,
+            "BLUE_SHARED": streak_state.streak_per_color.get("BLUE_SHARED", 0) + 1,
+        }
+        return StreakState(
+            streak_shared=streak_state.streak_shared,
+            streak_unique=streak_state.streak_unique,
+            streak_per_color=new_color,
+            streak_per_hero=streak_state.streak_per_hero,
         )
-        new_state.streak_per_color["GOLD_SHARED"] = 0
     else:  # UNIQUE
-        # Increment selected hero
-        new_state.streak_per_hero[selected_card.id] = (
-            streak_state.streak_per_hero.get(selected_card.id, 0) + 1
-        )
-
-        # Reset all other heroes
+        new_hero = {selected_card.id: streak_state.streak_per_hero.get(selected_card.id, 0) + 1}
         for card in game_state.cards:
             if card.category == CardCategory.UNIQUE and card.id != selected_card.id:
-                new_state.streak_per_hero[card.id] = 0
-
-    return new_state
+                new_hero[card.id] = 0
+        return StreakState(
+            streak_shared=streak_state.streak_shared,
+            streak_unique=streak_state.streak_unique,
+            streak_per_color=streak_state.streak_per_color,
+            streak_per_hero=new_hero,
+        )
 
 
 def compute_duplicates_received(

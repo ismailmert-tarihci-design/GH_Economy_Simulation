@@ -77,9 +77,16 @@ def get_upgrade_candidates(game_state: GameState, config: SimConfig) -> list[Car
     Returns:
         List of cards in priority order
     """
-    unique_cards = [c for c in game_state.cards if c.category == CardCategory.UNIQUE]
-    gold_cards = [c for c in game_state.cards if c.category == CardCategory.GOLD_SHARED]
-    blue_cards = [c for c in game_state.cards if c.category == CardCategory.BLUE_SHARED]
+    unique_cards: list[Card] = []
+    gold_cards: list[Card] = []
+    blue_cards: list[Card] = []
+    for c in game_state.cards:
+        if c.category == CardCategory.UNIQUE:
+            unique_cards.append(c)
+        elif c.category == CardCategory.GOLD_SHARED:
+            gold_cards.append(c)
+        else:
+            blue_cards.append(c)
 
     # Sort each category by level ascending (catch-up: lowest first)
     unique_cards.sort(key=lambda c: c.level)

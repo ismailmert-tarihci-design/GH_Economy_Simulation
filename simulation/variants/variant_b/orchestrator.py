@@ -181,9 +181,10 @@ def run_simulation(
             category_avg_levels["GOLD_SHARED"] = sum(c.level for c in gold_cards) / len(gold_cards)
         if blue_cards:
             category_avg_levels["BLUE_SHARED"] = sum(c.level for c in blue_cards) / len(blue_cards)
-        # Per-hero card averages
-        for hero_id, hero_state in game_state.heroes.items():
-            category_avg_levels[f"HERO_{hero_id}"] = hero_card_avg_level(hero_state)
+        # Per-hero card averages (compute once, reuse)
+        hero_avg_levels = {hid: hero_card_avg_level(hs) for hid, hs in game_state.heroes.items()}
+        for hero_id, avg in hero_avg_levels.items():
+            category_avg_levels[f"HERO_{hero_id}"] = avg
 
         snapshot = HeroCardDailySnapshot(
             day=day,
@@ -197,7 +198,7 @@ def run_simulation(
             pack_counts_by_type=day_pack_counts,
             hero_xp_today=day_hero_xp,
             hero_levels={hid: hs.level for hid, hs in game_state.heroes.items()},
-            hero_card_avg_levels={hid: hero_card_avg_level(hs) for hid, hs in game_state.heroes.items()},
+            hero_card_avg_levels=hero_avg_levels,
             skill_nodes_unlocked_today=day_skill_nodes,
             cards_unlocked_today=day_cards_unlocked,
             jokers_received_today=day_jokers_received,

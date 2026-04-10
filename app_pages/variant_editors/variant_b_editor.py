@@ -12,11 +12,7 @@ from simulation.variants.variant_b.models import (
     HeroCardConfig,
     HeroCardDef,
     HeroCardRarity,
-    HeroDef,
-    HeroDuplicateRange,
-    HeroUpgradeCostTable,
     PremiumPackCardRate,
-    PremiumPackDef,
     PremiumPackSchedule,
     SkillTreeNode,
 )
@@ -272,7 +268,7 @@ def _render_drop_algorithm_tab(config: HeroCardConfig) -> None:
         st.markdown("**:material/playing_cards: Regular pack pull**")
         st.caption("Player opens a regular pack. Each card pull follows this algorithm.")
 
-    st.markdown("<div style='text-align:center;color:#94a3b8;font-size:24px'>↓</div>", unsafe_allow_html=True)
+    st.markdown("<div style='text-align:center;color:#475569;font-size:28px;font-weight:600'>↓</div>", unsafe_allow_html=True)
 
     # ─── PITY CHECK ───────────────────────────────────────────────────────────
     with st.container(border=True):
@@ -287,7 +283,7 @@ def _render_drop_algorithm_tab(config: HeroCardConfig) -> None:
         else:
             st.caption("Pity system disabled.")
 
-    st.markdown("<div style='text-align:center;color:#94a3b8;font-size:24px'>↓</div>", unsafe_allow_html=True)
+    st.markdown("<div style='text-align:center;color:#475569;font-size:28px;font-weight:600'>↓</div>", unsafe_allow_html=True)
 
     # ─── HERO vs SHARED ──────────────────────────────────────────────────────
     with st.container(border=True):
@@ -305,7 +301,7 @@ def _render_drop_algorithm_tab(config: HeroCardConfig) -> None:
     col_hero, col_shared = st.columns(2)
 
     with col_hero:
-        st.markdown("<div style='text-align:center;color:#94a3b8;font-size:24px'>↓ <small>Hero card</small></div>", unsafe_allow_html=True)
+        st.markdown("<div style='text-align:center;color:#475569;font-size:28px;font-weight:600'>↓ <small>Hero card</small></div>", unsafe_allow_html=True)
 
         # Step 1: Pick bucket
         with st.container(border=True):
@@ -333,7 +329,7 @@ def _render_drop_algorithm_tab(config: HeroCardConfig) -> None:
                     f":violet-badge[Top {dc.bucket_top_weight*100:.0f}%]"
                 )
 
-        st.markdown("<div style='text-align:center;color:#94a3b8;font-size:24px'>↓</div>", unsafe_allow_html=True)
+        st.markdown("<div style='text-align:center;color:#475569;font-size:28px;font-weight:600'>↓</div>", unsafe_allow_html=True)
 
         # Step 2: Pick hero
         with st.container(border=True):
@@ -346,7 +342,7 @@ def _render_drop_algorithm_tab(config: HeroCardConfig) -> None:
             )
             st.caption(f"Each repeat: weight x{dc.streak_decay_hero}")
 
-        st.markdown("<div style='text-align:center;color:#94a3b8;font-size:24px'>↓</div>", unsafe_allow_html=True)
+        st.markdown("<div style='text-align:center;color:#475569;font-size:28px;font-weight:600'>↓</div>", unsafe_allow_html=True)
 
         # Step 3: Roll rarity
         with st.container(border=True):
@@ -373,21 +369,21 @@ def _render_drop_algorithm_tab(config: HeroCardConfig) -> None:
                     f":violet-badge[Epic {dc.rarity_weight_epic*100:.0f}%]"
                 )
 
-        st.markdown("<div style='text-align:center;color:#94a3b8;font-size:24px'>↓</div>", unsafe_allow_html=True)
+        st.markdown("<div style='text-align:center;color:#475569;font-size:28px;font-weight:600'>↓</div>", unsafe_allow_html=True)
 
         # Step 4: Pick card
         with st.container(border=True):
             st.markdown("**4. Pick card**")
             st.caption("Lowest-level-first catch-up weighting: weight = 1/(level+1)")
 
-        st.markdown("<div style='text-align:center;color:#94a3b8;font-size:24px'>↓</div>", unsafe_allow_html=True)
+        st.markdown("<div style='text-align:center;color:#475569;font-size:28px;font-weight:600'>↓</div>", unsafe_allow_html=True)
 
         # Step 5: Compute dupes
         with st.container(border=True):
             st.markdown("**5. Compute dupes**")
             st.caption("round(dupe_cost x random(min%, max%)) — see **Dupe Ranges** tab")
 
-        st.markdown("<div style='text-align:center;color:#94a3b8;font-size:24px'>↓</div>", unsafe_allow_html=True)
+        st.markdown("<div style='text-align:center;color:#475569;font-size:28px;font-weight:600'>↓</div>", unsafe_allow_html=True)
 
         # Upgrade result
         with st.container(border=True):
@@ -395,13 +391,13 @@ def _render_drop_algorithm_tab(config: HeroCardConfig) -> None:
             st.caption("Dupes + Coins → Level up → Bluestars + Hero XP. Pity counter resets.")
 
     with col_shared:
-        st.markdown("<div style='text-align:center;color:#94a3b8;font-size:24px'>↓ <small>Shared card</small></div>", unsafe_allow_html=True)
+        st.markdown("<div style='text-align:center;color:#475569;font-size:28px;font-weight:600'>↓ <small>Shared card</small></div>", unsafe_allow_html=True)
 
         with st.container(border=True):
             st.markdown("**Pick shared card**")
             st.caption(f"Lowest-level-first catch-up across {config.num_gold_cards} Gold + {config.num_blue_cards} Blue cards")
 
-        st.markdown("<div style='text-align:center;color:#94a3b8;font-size:24px'>↓</div>", unsafe_allow_html=True)
+        st.markdown("<div style='text-align:center;color:#475569;font-size:28px;font-weight:600'>↓</div>", unsafe_allow_html=True)
 
         with st.container(border=True):
             st.markdown("**Standard upgrade**")

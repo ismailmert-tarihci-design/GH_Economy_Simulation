@@ -277,9 +277,10 @@ def save_current_result(name: str, description: str = "") -> str:
             "completion_time": result.completion_time,
         }
     else:
+        from dataclasses import asdict
         result_data = {
             "daily_snapshots": [
-                s.__dict__ if hasattr(s, "__dict__") else s
+                asdict(s) if hasattr(s, "__dataclass_fields__") else s
                 for s in result.daily_snapshots
             ],
             "total_bluestars": result.total_bluestars,
@@ -287,7 +288,8 @@ def save_current_result(name: str, description: str = "") -> str:
             "total_coins_spent": result.total_coins_spent,
             "total_upgrades": result.total_upgrades,
             "pull_logs": [
-                p.__dict__ if hasattr(p, "__dict__") else p for p in result.pull_logs
+                asdict(p) if hasattr(p, "__dataclass_fields__") else p
+                for p in result.pull_logs
             ],
         }
 
