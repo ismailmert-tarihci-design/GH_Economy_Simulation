@@ -1,12 +1,11 @@
 """Hero-specific premium card pack economics.
 
 Premium packs are diamond-only, rotating availability, FOMO-driven.
-Each pack has per-card drop rates and optional dupe boost multipliers.
+Each pack has per-card drop rates. Dupes use the same %-of-cost mechanic as regular pulls.
 """
 
 from __future__ import annotations
 
-import math
 from random import Random
 from typing import Any, Dict, List, Optional, Tuple
 
@@ -16,6 +15,7 @@ from simulation.variants.variant_b.models import (
     PremiumPackDef,
     PremiumPackSchedule,
 )
+from simulation.variants.variant_b.drop_algorithm import compute_hero_duplicates
 
 
 def get_available_packs(
@@ -35,11 +35,13 @@ def get_available_packs(
 def open_premium_pack(
     pack_def: PremiumPackDef,
     game_state: HeroCardGameState,
+    config: HeroCardConfig,
     rng: Optional[Random] = None,
 ) -> List[Dict[str, Any]]:
     """Open a premium pack and return list of pull results.
 
-    Each pull result is a dict: {card_id, hero_id, duplicates, is_joker}
+    Each pull result is a dict: {card_id, hero_id, duplicates, is_joker}.
+    Dupes use the same %-of-cost mechanic as regular pulls.
     """
     results: List[Dict[str, Any]] = []
 
@@ -80,15 +82,21 @@ def open_premium_pack(
         else:
             continue
 
-        # Determine hero_id from game state
+        # Determine hero_id and card state from game state
         hero_id = ""
+        card_level = 1
+        card_rarity = None
         for hid, hstate in game_state.heroes.items():
             if selected_card_id in hstate.cards:
                 hero_id = hid
+                card_level = hstate.cards[selected_card_id].level
+                card_rarity = hstate.cards[selected_card_id].rarity
                 break
 
-        base_dupes = 1
-        dupes = max(1, round(base_dupes * pack_def.dupe_boost_multiplier))
+        if card_rarity is not None:
+            dupes = compute_hero_duplicates(card_level, card_rarity, config, rng)
+        else:
+            dupes = 1
 
         results.append({
             "card_id": selected_card_id,
@@ -129,7 +137,7 @@ def process_premium_purchases(
             continue
 
         for _ in range(count):
-            pulls = open_premium_pack(pack_def, game_state, rng)
+            pulls = open_premium_pack(pack_def, game_state, config, rng)
             all_results.extend(pulls)
             total_diamonds += pack_def.diamond_cost
             total_jokers += sum(1 for p in pulls if p.get("is_joker", False))

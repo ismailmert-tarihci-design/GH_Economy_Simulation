@@ -15,12 +15,11 @@ from simulation.variants.variant_b.models import (
     HeroCardDef,
     HeroCardRarity,
     HeroDef,
+    HeroDuplicateRange,
     HeroDropConfig,
     HeroUpgradeCostTable,
-    PackVariant,
     PremiumPackCardRate,
     PremiumPackDef,
-    PremiumPackRarity,
     PremiumPackSchedule,
     SkillTreeNode,
 )
@@ -35,34 +34,31 @@ def load_defaults() -> HeroCardConfig:
 
 
 def _builtin_defaults() -> HeroCardConfig:
-    """Built-in default Variant B configuration with all 17 heroes."""
+    """Built-in default Variant B configuration with all 17 heroes (~32 cards each, 544 total)."""
     heroes = [
-        _create_sample_hero("woody", "Woody", num_cards=12),
-        _create_sample_hero("cowboy", "Cowboy", num_cards=10),
-        _create_sample_hero("barbarian", "Barbarian", num_cards=11),
-        _create_sample_hero("rexx", "Rexx", num_cards=10),
-        _create_sample_hero("sunna", "Sunna", num_cards=10),
-        _create_sample_hero("mammon", "Mammon", num_cards=12),
-        _create_sample_hero("rogue", "Rogue", num_cards=9),
-        _create_sample_hero("felorc", "Felorc", num_cards=11),
-        _create_sample_hero("eiva", "Eiva", num_cards=10),
-        _create_sample_hero("gudan", "Gudan", num_cards=10),
-        _create_sample_hero("druid", "Druid", num_cards=9),
-        _create_sample_hero("yasuhiro", "Yasuhiro", num_cards=11),
-        _create_sample_hero("nova", "Nova", num_cards=10),
-        _create_sample_hero("rickie", "Rickie", num_cards=9),
-        _create_sample_hero("raven", "Raven", num_cards=10),
-        _create_sample_hero("jester", "Jester", num_cards=11),
-        _create_sample_hero("munara", "Munara", num_cards=12),
+        _create_sample_hero("woody", "Woody", num_cards=32),
+        _create_sample_hero("cowboy", "Cowboy", num_cards=32),
+        _create_sample_hero("barbarian", "Barbarian", num_cards=32),
+        _create_sample_hero("rexx", "Rexx", num_cards=32),
+        _create_sample_hero("sunna", "Sunna", num_cards=32),
+        _create_sample_hero("mammon", "Mammon", num_cards=32),
+        _create_sample_hero("rogue", "Rogue", num_cards=32),
+        _create_sample_hero("felorc", "Felorc", num_cards=32),
+        _create_sample_hero("eiva", "Eiva", num_cards=32),
+        _create_sample_hero("gudan", "Gudan", num_cards=32),
+        _create_sample_hero("druid", "Druid", num_cards=32),
+        _create_sample_hero("yasuhiro", "Yasuhiro", num_cards=32),
+        _create_sample_hero("nova", "Nova", num_cards=32),
+        _create_sample_hero("rickie", "Rickie", num_cards=32),
+        _create_sample_hero("raven", "Raven", num_cards=32),
+        _create_sample_hero("jester", "Jester", num_cards=32),
+        _create_sample_hero("munara", "Munara", num_cards=32),
     ]
 
     # One premium pack per hero (card pool auto-derived from hero's cards)
     premium_packs = [
-        _create_hero_pack(hero, heroes) for hero in heroes
+        _create_hero_pack(hero) for hero in heroes
     ]
-
-    # 5 pack variants (bonus tiers applied to any hero pack)
-    pack_variants = _default_pack_variants()
 
     return HeroCardConfig(
         num_days=100,
@@ -86,6 +82,7 @@ def _builtin_defaults() -> HeroCardConfig:
         num_gold_cards=9,
         num_blue_cards=14,
         hero_upgrade_tables=_default_upgrade_tables(),
+        hero_duplicate_ranges=_default_duplicate_ranges(),
         joker_drop_rate_in_regular_packs=0.01,
         drop_config=HeroDropConfig(
             hero_vs_shared_base_rate=0.50,
@@ -93,7 +90,6 @@ def _builtin_defaults() -> HeroCardConfig:
         ),
         daily_pack_schedule=[{"regular": 5.0}],
         premium_packs=premium_packs,
-        pack_variants=pack_variants,
         premium_pack_schedule=[
             PremiumPackSchedule(pack_id=hero.hero_id, available_from_day=0, available_until_day=100)
             for hero in heroes
@@ -101,13 +97,20 @@ def _builtin_defaults() -> HeroCardConfig:
     )
 
 
-def _create_sample_hero(hero_id: str, name: str, num_cards: int = 12) -> HeroDef:
-    """Create a sample hero with a balanced card pool and linear skill tree."""
+def _create_sample_hero(hero_id: str, name: str, num_cards: int = 32) -> HeroDef:
+    """Create a sample hero with a balanced card pool and linear skill tree.
+
+    Default: ~32 cards per hero (17 heroes × 32 = 544 total).
+    Rarity distribution is a starting point — fully editable in the UI.
+    """
     # Distribute cards across rarities: ~55% common, 30% rare, 15% epic
+    num_common = max(1, round(num_cards * 0.55))
+    num_rare = max(1, round(num_cards * 0.30))
+    num_epic = max(1, num_cards - num_common - num_rare)
     rarity_dist = [
-        (HeroCardRarity.COMMON, max(1, round(num_cards * 0.55))),
-        (HeroCardRarity.RARE, max(1, round(num_cards * 0.30))),
-        (HeroCardRarity.EPIC, max(1, round(num_cards * 0.15))),
+        (HeroCardRarity.COMMON, num_common),
+        (HeroCardRarity.RARE, num_rare),
+        (HeroCardRarity.EPIC, num_epic),
     ]
 
     cards = []
@@ -131,16 +134,23 @@ def _create_sample_hero(hero_id: str, name: str, num_cards: int = 12) -> HeroDef
     # Starter cards: first 3 common cards
     starter_ids = [c.card_id for c in cards if c.rarity == HeroCardRarity.COMMON][:3]
 
-    # Linear skill tree: unlock cards every 2 levels
+    # Linear skill tree: unlock remaining cards progressively
+    # With ~29 remaining cards, unlock ~3 cards per node over ~10 nodes
     skill_tree = []
     remaining_cards = [c.card_id for c in cards if c.card_id not in starter_ids]
-    for node_idx, level_req in enumerate(range(2, 30, 2)):
+    num_nodes = min(10, len(remaining_cards))
+    cards_per_node = max(1, len(remaining_cards) // num_nodes) if num_nodes > 0 else 0
+    for node_idx in range(num_nodes):
         if not remaining_cards:
             break
-        # Unlock 1-2 cards per node
-        unlock_count = min(2, len(remaining_cards))
+        # Last node gets any remainder
+        if node_idx == num_nodes - 1:
+            unlock_count = len(remaining_cards)
+        else:
+            unlock_count = min(cards_per_node, len(remaining_cards))
         unlocked = remaining_cards[:unlock_count]
         remaining_cards = remaining_cards[unlock_count:]
+        level_req = 2 + node_idx  # levels 2-11 (hero max = 50)
         skill_tree.append(SkillTreeNode(
             node_index=node_idx,
             hero_level_required=level_req,
@@ -162,7 +172,7 @@ def _create_sample_hero(hero_id: str, name: str, num_cards: int = 12) -> HeroDef
     )
 
 
-def _create_hero_pack(hero: HeroDef, all_heroes: list[HeroDef]) -> PremiumPackDef:
+def _create_hero_pack(hero: HeroDef) -> PremiumPackDef:
     """Create one premium pack for a hero using their card pool."""
     rarity_weights = {
         HeroCardRarity.COMMON: 5.0,
@@ -181,24 +191,12 @@ def _create_hero_pack(hero: HeroDef, all_heroes: list[HeroDef]) -> PremiumPackDe
     return PremiumPackDef(
         pack_id=hero.hero_id,
         name=f"{hero.name} Card Pack",
-        pack_rarity=PremiumPackRarity.BRONZE,
         featured_hero_ids=[hero.hero_id],
         card_drop_rates=card_rates,
         cards_per_pack=5,
-        diamond_cost=200,
+        diamond_cost=500,
         joker_rate=0.02,
     )
-
-
-def _default_pack_variants() -> list[PackVariant]:
-    """Default 5 bonus tiers for hero card packs."""
-    return [
-        PackVariant(tier=PremiumPackRarity.BRONZE, diamond_cost=200, cards_per_pack=3, joker_rate=0.01, dupe_boost_multiplier=1.0),
-        PackVariant(tier=PremiumPackRarity.SILVER, diamond_cost=500, cards_per_pack=5, joker_rate=0.02, dupe_boost_multiplier=1.0),
-        PackVariant(tier=PremiumPackRarity.GOLD, diamond_cost=1000, cards_per_pack=8, joker_rate=0.03, dupe_boost_multiplier=1.5),
-        PackVariant(tier=PremiumPackRarity.PLATINUM, diamond_cost=2000, cards_per_pack=10, joker_rate=0.05, dupe_boost_multiplier=2.0),
-        PackVariant(tier=PremiumPackRarity.DIAMOND, diamond_cost=5000, cards_per_pack=15, joker_rate=0.08, dupe_boost_multiplier=3.0),
-    ]
 
 
 _log = logging.getLogger(__name__)
@@ -229,14 +227,14 @@ def save_config(config: HeroCardConfig) -> None:
 
 
 def _default_upgrade_tables() -> list[HeroUpgradeCostTable]:
-    """Create default upgrade cost tables for each rarity."""
+    """Create default upgrade cost tables for each rarity (max card level = 10)."""
     tables = []
     for rarity, base_dupe, base_coin, base_bs, base_xp in [
         (HeroCardRarity.COMMON, 3, 50, 5, 5),
         (HeroCardRarity.RARE, 8, 200, 20, 20),
         (HeroCardRarity.EPIC, 12, 400, 40, 40),
     ]:
-        num_levels = 20
+        num_levels = 10
         tables.append(HeroUpgradeCostTable(
             rarity=rarity,
             duplicate_costs=[base_dupe + i * 2 for i in range(num_levels)],
@@ -245,3 +243,31 @@ def _default_upgrade_tables() -> list[HeroUpgradeCostTable]:
             xp_rewards=[base_xp + i * 5 for i in range(num_levels)],
         ))
     return tables
+
+
+def _default_duplicate_ranges() -> list[HeroDuplicateRange]:
+    """Default duplicate % ranges for hero card pulls, per rarity.
+
+    When a hero card is pulled, dupes received = round(dupe_cost_for_next_level * pct),
+    where pct is drawn uniformly from [min_pct, max_pct] for that card's current level.
+
+    Percentages decrease as card level increases — early levels are easier to upgrade.
+    10 entries (one per card level, index 0 = level 1).
+    """
+    return [
+        HeroDuplicateRange(
+            rarity=HeroCardRarity.COMMON,
+            min_pct=[0.80, 0.70, 0.60, 0.50, 0.40, 0.30, 0.25, 0.20, 0.15, 0.10],
+            max_pct=[0.90, 0.85, 0.75, 0.65, 0.55, 0.45, 0.40, 0.35, 0.25, 0.20],
+        ),
+        HeroDuplicateRange(
+            rarity=HeroCardRarity.RARE,
+            min_pct=[0.60, 0.50, 0.40, 0.30, 0.25, 0.20, 0.15, 0.10, 0.08, 0.05],
+            max_pct=[0.80, 0.65, 0.55, 0.45, 0.35, 0.30, 0.25, 0.20, 0.15, 0.10],
+        ),
+        HeroDuplicateRange(
+            rarity=HeroCardRarity.EPIC,
+            min_pct=[0.40, 0.30, 0.20, 0.15, 0.10, 0.08, 0.06, 0.05, 0.04, 0.03],
+            max_pct=[0.60, 0.50, 0.35, 0.25, 0.20, 0.15, 0.12, 0.10, 0.08, 0.06],
+        ),
+    ]

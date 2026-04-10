@@ -97,7 +97,7 @@ def run_simulation(
                     hero_state = game_state.heroes[hero_id]
                     card = hero_state.cards.get(card_id)
                     if card:
-                        dupes = compute_hero_duplicates(card.level, rng)
+                        dupes = compute_hero_duplicates(card.level, card.rarity, config, rng)
                         card.duplicates += dupes
                         day_pull_counts["HERO"] = day_pull_counts.get("HERO", 0) + 1
 
@@ -126,9 +126,9 @@ def run_simulation(
                     game_state.coins += coin_income
                     day_coins_earned += coin_income
 
-        # 3. Process premium pack purchases
+        # 3. Process premium pack purchases (uses same dupe % mechanic)
         premium_pulls, diamonds_spent, jokers_from_premium = process_premium_purchases(
-            day, config, game_state, rng
+            day, config, game_state, rng=rng
         )
         day_premium_packs = len(premium_pulls)
         day_premium_diamonds = diamonds_spent

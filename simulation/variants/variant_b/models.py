@@ -23,13 +23,6 @@ class HeroCardRarity(str, Enum):
     EPIC = "EPIC"
 
 
-class PremiumPackRarity(str, Enum):
-    """The 5 rarity tiers of hero premium packs."""
-    BRONZE = "BRONZE"
-    SILVER = "SILVER"
-    GOLD = "GOLD"
-    PLATINUM = "PLATINUM"
-    DIAMOND = "DIAMOND"
 
 
 # ---------------------------------------------------------------------------
@@ -74,20 +67,10 @@ class PremiumPackCardRate(BaseModel):
     drop_rate: float = Field(description="Probability weight for this card")
 
 
-class PackVariant(BaseModel):
-    """One of 5 bonus tiers for hero card packs (Bronze→Diamond)."""
-    tier: PremiumPackRarity
-    diamond_cost: int = Field(default=500)
-    cards_per_pack: int = Field(default=5)
-    joker_rate: float = Field(default=0.02, description="Chance of joker per draw")
-    dupe_boost_multiplier: float = Field(default=1.0, description="Multiplier on duplicates")
-
-
 class PremiumPackDef(BaseModel):
-    """Definition of a hero-specific premium card pack."""
+    """Definition of a hero-specific premium card pack (single tier per hero)."""
     pack_id: str
     name: str
-    pack_rarity: PremiumPackRarity
     featured_hero_ids: List[str] = Field(description="Hero(es) whose cards are in this pack")
     card_drop_rates: List[PremiumPackCardRate] = Field(
         default_factory=list,
@@ -96,7 +79,6 @@ class PremiumPackDef(BaseModel):
     cards_per_pack: int = Field(default=5)
     diamond_cost: int = Field(default=500, description="Price in diamonds")
     joker_rate: float = Field(default=0.02, description="Chance of pulling a hero joker per draw")
-    dupe_boost_multiplier: float = Field(default=1.0, description="Multiplier on duplicates (>1 for limited offers)")
 
 
 class PremiumPackSchedule(BaseModel):
@@ -117,6 +99,17 @@ class HeroUpgradeCostTable(BaseModel):
     coin_costs: List[int] = Field(default_factory=list, description="Coins needed per level")
     bluestar_rewards: List[int] = Field(default_factory=list, description="Bluestars earned per level")
     xp_rewards: List[int] = Field(default_factory=list, description="Hero XP earned per level upgrade")
+
+
+class HeroDuplicateRange(BaseModel):
+    """Per-rarity duplicate percentage ranges for hero card pulls.
+
+    When a hero card is pulled, dupes received = round(dupe_cost_for_next_level * random(min_pct, max_pct)).
+    Each index corresponds to card level (index 0 = level 1).
+    """
+    rarity: HeroCardRarity
+    min_pct: List[float] = Field(default_factory=list, description="Min % of next-level dupe cost received per pull")
+    max_pct: List[float] = Field(default_factory=list, description="Max % of next-level dupe cost received per pull")
 
 
 # ---------------------------------------------------------------------------
@@ -183,9 +176,11 @@ class HeroCardConfig(BaseModel):
         description="Daily pack schedule (shared packs)"
     )
 
-    # Premium packs (one per hero, auto-generated from hero card pools)
+    # Duplicate ranges (per rarity, % of next-level dupe cost per pull)
+    hero_duplicate_ranges: List[HeroDuplicateRange] = Field(default_factory=list)
+
+    # Premium packs (one per hero, single tier)
     premium_packs: List[PremiumPackDef] = Field(default_factory=list)
-    pack_variants: List[PackVariant] = Field(default_factory=list, description="5 bonus tiers (Bronze→Diamond) applied to any hero pack")
     premium_pack_schedule: List[PremiumPackSchedule] = Field(default_factory=list)
     premium_pack_purchase_schedule: List[Dict[str, int]] = Field(
         default_factory=list,

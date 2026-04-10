@@ -16,7 +16,9 @@ from simulation.variants.variant_b.models import (
     HeroCardGameState,
     HeroCardRarity,
     HeroCardState,
+    HeroDuplicateRange,
     HeroProgressState,
+    HeroUpgradeCostTable,
 )
 from simulation.variants.variant_b.hero_deck import get_unlocked_cards
 
@@ -237,21 +239,66 @@ def select_shared_card(
 
 
 # ---------------------------------------------------------------------------
-# Duplicate computation (unchanged)
+# Duplicate computation — % of next-level dupe cost
 # ---------------------------------------------------------------------------
+
+def _find_dupe_range(
+    config: HeroCardConfig, rarity: HeroCardRarity
+) -> Optional[HeroDuplicateRange]:
+    """Find the duplicate range config for a given rarity."""
+    for dr in config.hero_duplicate_ranges:
+        if dr.rarity == rarity:
+            return dr
+    return None
+
+
+def _find_upgrade_table(
+    config: HeroCardConfig, rarity: HeroCardRarity
+) -> Optional[HeroUpgradeCostTable]:
+    """Find the upgrade cost table for a given rarity."""
+    for t in config.hero_upgrade_tables:
+        if t.rarity == rarity:
+            return t
+    return None
+
 
 def compute_hero_duplicates(
     card_level: int,
+    card_rarity: HeroCardRarity,
+    config: HeroCardConfig,
     rng: Optional[Random] = None,
 ) -> int:
     """Compute duplicates received for a hero card pull.
 
-    Simple model: 1-3 dupes, slightly more at lower levels.
+    Uses the variant-a style mechanic: dupes = round(dupe_cost_for_next_level * pct),
+    where pct is drawn from [min_pct, max_pct] for this card's level and rarity.
+    Returns at least 1 dupe. Returns 0 if card is already at max level.
     """
-    base = max(1, 4 - card_level // 10)
+    dupe_range = _find_dupe_range(config, card_rarity)
+    upgrade_table = _find_upgrade_table(config, card_rarity)
+
+    if not dupe_range or not upgrade_table:
+        # Fallback: 1 dupe if config is missing
+        return 1
+
+    level_idx = card_level - 1
+
+    # Card is at or above max configured level
+    if level_idx >= len(upgrade_table.duplicate_costs):
+        return 0
+    if level_idx >= len(dupe_range.min_pct):
+        return 0
+
+    base_cost = upgrade_table.duplicate_costs[level_idx]
+    min_pct = dupe_range.min_pct[level_idx]
+    max_pct = dupe_range.max_pct[level_idx]
+
     if rng:
-        return max(1, rng.randint(1, base))
-    return max(1, (1 + base) // 2)
+        pct = rng.uniform(min_pct, max_pct)
+    else:
+        pct = (min_pct + max_pct) / 2.0
+
+    return max(1, round(base_cost * pct))
 
 
 # ---------------------------------------------------------------------------

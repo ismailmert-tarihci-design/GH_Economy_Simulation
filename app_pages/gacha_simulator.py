@@ -1,7 +1,7 @@
 """Hero Pack Pull Simulator.
 
-Simulates opening a hero's card pack at a chosen variant tier (Bronze→Diamond).
-Uses actual Variant B config: per-hero card pools, drop rates, and pack variant bonuses.
+Simulates opening a hero's card pack using actual Variant B config:
+per-hero card pools, drop rates, and the dupe % mechanic.
 """
 
 from __future__ import annotations
@@ -13,9 +13,11 @@ import streamlit as st
 from simulation.variants.variant_b.models import (
     HeroCardConfig,
     HeroCardRarity,
-    PackVariant,
     PremiumPackDef,
-    PremiumPackRarity,
+)
+from simulation.variants.variant_b.drop_algorithm import (
+    _find_dupe_range,
+    _find_upgrade_table,
 )
 
 
@@ -55,24 +57,6 @@ def render_gacha_simulator() -> None:
     )
     pack = hero_packs[selected_hero]
 
-    # --- Select variant tier ---
-    variants = config.pack_variants
-    if not variants:
-        st.warning("No pack variants configured. Add them in Configuration > Pack Variants.")
-        return
-
-    tier_labels = {
-        v.tier.value: f"{v.tier.value} — {v.diamond_cost} diamonds, {v.cards_per_pack} cards, joker {v.joker_rate*100:.0f}%, dupe x{v.dupe_boost_multiplier:.1f}"
-        for v in variants
-    }
-    selected_tier = st.selectbox(
-        "Pack variant",
-        options=list(tier_labels.keys()),
-        format_func=lambda x: tier_labels[x],
-        key="gacha_tier_select",
-    )
-    variant = next(v for v in variants if v.tier.value == selected_tier)
-
     # --- Controls ---
     col1, col2 = st.columns(2)
     with col1:
@@ -80,19 +64,18 @@ def render_gacha_simulator() -> None:
     with col2:
         seed = st.number_input("RNG seed (0 = random)", min_value=0, max_value=999999, value=0, key="gacha_seed")
 
-    total_pulls = num_packs * variant.cards_per_pack
-    total_cost = num_packs * variant.diamond_cost
+    total_pulls = num_packs * pack.cards_per_pack
+    total_cost = num_packs * pack.diamond_cost
     st.caption(f"**{total_pulls}** pulls — **{total_cost:,}** diamonds")
 
     if st.button("Open packs", type="primary", use_container_width=True, key="gacha_open"):
         rng = Random(seed if seed > 0 else None)
-        results = _simulate(pack, variant, config, num_packs, rng)
-        _display(results, variant, config, num_packs)
+        results = _simulate(pack, config, num_packs, rng)
+        _display(results, pack, config, num_packs)
 
 
 def _simulate(
     pack: PremiumPackDef,
-    variant: PackVariant,
     config: HeroCardConfig,
     num_packs: int,
     rng: Random,
@@ -112,12 +95,15 @@ def _simulate(
     results = []
     pull_num = 0
 
+    # Track simulated card levels for dupe % calculation
+    sim_card_levels: dict[str, int] = {}
+
     for pack_idx in range(num_packs):
-        for _ in range(variant.cards_per_pack):
+        for _ in range(pack.cards_per_pack):
             pull_num += 1
             pull = {"pull_number": pull_num, "pack_number": pack_idx + 1}
 
-            if rng.random() < variant.joker_rate:
+            if rng.random() < pack.joker_rate:
                 pull["type"] = "joker"
                 results.append(pull)
                 continue
@@ -135,8 +121,12 @@ def _simulate(
                 continue
 
             info = card_info.get(selected_id, {})
-            dupes = max(1, round(variant.dupe_boost_multiplier))
             rarity = info.get("rarity")
+            card_level = sim_card_levels.get(selected_id, 1)
+
+            # Compute dupes using the % mechanic
+            dupes = _compute_sim_dupes(card_level, rarity, config, rng)
+
             pull["type"] = "card"
             pull["card_id"] = selected_id
             pull["card_name"] = info.get("name", selected_id)
@@ -148,14 +138,41 @@ def _simulate(
     return results
 
 
-def _display(results: list[dict], variant: PackVariant, config: HeroCardConfig, num_packs: int) -> None:
+def _compute_sim_dupes(
+    card_level: int,
+    rarity: HeroCardRarity | None,
+    config: HeroCardConfig,
+    rng: Random,
+) -> int:
+    """Compute dupes for the simulator using the same % mechanic as the real drop algorithm."""
+    if rarity is None:
+        return 1
+
+    dupe_range = _find_dupe_range(config, rarity)
+    upgrade_table = _find_upgrade_table(config, rarity)
+
+    if not dupe_range or not upgrade_table:
+        return 1
+
+    level_idx = card_level - 1
+    if level_idx >= len(upgrade_table.duplicate_costs) or level_idx >= len(dupe_range.min_pct):
+        return 0
+
+    base_cost = upgrade_table.duplicate_costs[level_idx]
+    min_pct = dupe_range.min_pct[level_idx]
+    max_pct = dupe_range.max_pct[level_idx]
+    pct = rng.uniform(min_pct, max_pct)
+    return max(1, round(base_cost * pct))
+
+
+def _display(results: list[dict], pack: PremiumPackDef, config: HeroCardConfig, num_packs: int) -> None:
     if not results:
         st.warning("No results.")
         return
 
     card_pulls = [r for r in results if r.get("type") == "card"]
     joker_pulls = [r for r in results if r.get("type") == "joker"]
-    total_cost = num_packs * variant.diamond_cost
+    total_cost = num_packs * pack.diamond_cost
 
     cols = st.columns(4)
     cols[0].metric("Total pulls", len(results))
@@ -199,4 +216,4 @@ def _display(results: list[dict], variant: PackVariant, config: HeroCardConfig, 
         with c2:
             if joker_pulls:
                 joker_pct = len(joker_pulls) / len(results) * 100
-                st.markdown(f"**Joker rate**: {joker_pct:.1f}% (config: {variant.joker_rate*100:.0f}%)")
+                st.markdown(f"**Joker rate**: {joker_pct:.1f}% (config: {pack.joker_rate*100:.0f}%)")

@@ -4,8 +4,6 @@ Every parameter is editable from the frontend: heroes, card pools, skill trees,
 XP tables, upgrade costs, premium packs, drop algorithm settings, joker rates.
 """
 
-import json
-
 import pandas as pd
 import streamlit as st
 
@@ -15,11 +13,10 @@ from simulation.variants.variant_b.models import (
     HeroCardDef,
     HeroCardRarity,
     HeroDef,
+    HeroDuplicateRange,
     HeroUpgradeCostTable,
-    PackVariant,
     PremiumPackCardRate,
     PremiumPackDef,
-    PremiumPackRarity,
     PremiumPackSchedule,
     SkillTreeNode,
 )
@@ -48,10 +45,10 @@ def render_variant_b_editor(config: HeroCardConfig) -> None:
         "Skill Trees",
         "XP & Leveling",
         "Upgrade Costs",
+        "Dupe Ranges",
         "Drop Algorithm",
         "Hero Joker",
         "Hero Packs",
-        "Pack Variants",
         "Pack Schedule",
         "Import / Export",
     ])
@@ -65,13 +62,13 @@ def render_variant_b_editor(config: HeroCardConfig) -> None:
     with tabs[3]:
         _render_upgrade_costs_tab(config)
     with tabs[4]:
-        _render_drop_algorithm_tab(config)
+        _render_duplicate_ranges_tab(config)
     with tabs[5]:
-        _render_joker_tab(config)
+        _render_drop_algorithm_tab(config)
     with tabs[6]:
-        _render_premium_packs_tab(config)
+        _render_joker_tab(config)
     with tabs[7]:
-        _render_pack_variants_tab(config)
+        _render_premium_packs_tab(config)
     with tabs[8]:
         _render_pack_schedule_tab(config)
     with tabs[9]:
@@ -363,7 +360,7 @@ def _render_joker_tab(config: HeroCardConfig) -> None:
 
 def _render_premium_packs_tab(config: HeroCardConfig) -> None:
     st.subheader("Hero Card Packs")
-    st.caption("Each hero has one card pack. Select a hero to edit its card drop rates.")
+    st.caption("Each hero has one card pack (single tier). Select a hero to edit pack stats and card drop rates.")
 
     if not config.premium_packs:
         st.info("No hero packs configured.")
@@ -374,6 +371,17 @@ def _render_premium_packs_tab(config: HeroCardConfig) -> None:
     pack_labels = [hero_name_map.get(p.featured_hero_ids[0], p.name) if p.featured_hero_ids else p.name for p in config.premium_packs]
     sel = st.selectbox("Select hero", range(len(pack_labels)), format_func=lambda i: pack_labels[i], key="vb_ppack_sel")
     pack = config.premium_packs[sel]
+
+    # Pack-level settings
+    st.markdown("**Pack Settings**")
+    c1, c2, c3 = st.columns(3)
+    with c1:
+        pack.cards_per_pack = st.number_input("Cards per Pack", min_value=1, max_value=50, value=pack.cards_per_pack, step=1, key=f"vb_pp_cpp_{sel}")
+    with c2:
+        pack.diamond_cost = st.number_input("Diamond Cost", min_value=0, value=pack.diamond_cost, step=50, key=f"vb_pp_cost_{sel}")
+    with c3:
+        joker_pct = st.number_input("Joker Rate %", min_value=0.0, max_value=30.0, value=round(pack.joker_rate * 100, 1), step=0.5, format="%.1f", key=f"vb_pp_joker_{sel}")
+        pack.joker_rate = joker_pct / 100.0
 
     st.markdown("**Per-card drop rates**")
     if pack.card_drop_rates:
@@ -404,44 +412,41 @@ def _render_premium_packs_tab(config: HeroCardConfig) -> None:
         ]
 
 
-def _render_pack_variants_tab(config: HeroCardConfig) -> None:
-    st.subheader("Pack Variants")
-    st.caption("5 bonus tiers applied to any hero pack. Edit costs, cards per pack, joker rates, and dupe multipliers.")
+def _render_duplicate_ranges_tab(config: HeroCardConfig) -> None:
+    st.subheader("Duplicate Ranges (per Rarity)")
+    st.caption(
+        "When a hero card is pulled, dupes received = round(dupe_cost_for_next_level \u00d7 random(min%, max%)). "
+        "One row per card level. Percentages should decrease as card level increases."
+    )
 
-    if not config.pack_variants:
-        st.info("No pack variants configured.")
+    if not config.hero_duplicate_ranges:
+        st.info("No duplicate ranges configured.")
         return
 
-    rows = [
-        {
-            "Tier": v.tier.value,
-            "Diamond Cost": v.diamond_cost,
-            "Cards per Pack": v.cards_per_pack,
-            "Joker Rate %": round(v.joker_rate * 100, 1),
-            "Dupe Multiplier": v.dupe_boost_multiplier,
-        }
-        for v in config.pack_variants
-    ]
-    df = pd.DataFrame(rows)
+    rarity_names = [dr.rarity.value for dr in config.hero_duplicate_ranges]
+    sel = st.selectbox("Rarity", range(len(rarity_names)), format_func=lambda i: rarity_names[i], key="vb_duperange_rarity")
+    dr = config.hero_duplicate_ranges[sel]
+
+    num_levels = len(dr.min_pct)
+    df = pd.DataFrame({
+        "Card Level": range(1, num_levels + 1),
+        "Min %": [round(v * 100, 1) for v in dr.min_pct],
+        "Max %": [round(v * 100, 1) for v in dr.max_pct],
+    })
     edited = st.data_editor(
         df,
         column_config={
-            "Tier": st.column_config.TextColumn("Tier", disabled=True),
-            "Diamond Cost": st.column_config.NumberColumn("Diamond Cost", min_value=0, step=50),
-            "Cards per Pack": st.column_config.NumberColumn("Cards per Pack", min_value=1, max_value=50, step=1),
-            "Joker Rate %": st.column_config.NumberColumn("Joker Rate %", min_value=0.0, max_value=30.0, step=0.5, format="%.1f"),
-            "Dupe Multiplier": st.column_config.NumberColumn("Dupe Multiplier", min_value=0.5, max_value=10.0, step=0.1, format="%.1f"),
+            "Card Level": st.column_config.NumberColumn("Card Level", disabled=True),
+            "Min %": st.column_config.NumberColumn("Min %", min_value=0.0, max_value=100.0, step=1.0, format="%.1f"),
+            "Max %": st.column_config.NumberColumn("Max %", min_value=0.0, max_value=100.0, step=1.0, format="%.1f"),
         },
         use_container_width=True,
         hide_index=True,
-        key="vb_pack_variants",
+        num_rows="dynamic",
+        key=f"vb_duperange_{sel}",
     )
-    for i, (_, row) in enumerate(edited.iterrows()):
-        if i < len(config.pack_variants):
-            config.pack_variants[i].diamond_cost = int(row["Diamond Cost"])
-            config.pack_variants[i].cards_per_pack = int(row["Cards per Pack"])
-            config.pack_variants[i].joker_rate = float(row["Joker Rate %"]) / 100.0
-            config.pack_variants[i].dupe_boost_multiplier = float(row["Dupe Multiplier"])
+    dr.min_pct = [float(row["Min %"]) / 100.0 for _, row in edited.iterrows()]
+    dr.max_pct = [float(row["Max %"]) / 100.0 for _, row in edited.iterrows()]
 
 
 def _render_pack_schedule_tab(config: HeroCardConfig) -> None:
@@ -596,7 +601,7 @@ def _render_drop_diagram(config: HeroCardConfig) -> None:
   </div>
   <div class="arr">\u2193</div>
   <div class="n step"><b>5. Compute dupes</b><br>
-    <span class="sub">max(1, 4 \u2212 level\u00f710) \u2192 random 1..base</span>
+    <span class="sub">round(dupe_cost \u00d7 random(min%, max%))<br>Per-rarity % ranges (see Dupe Ranges tab)</span>
   </div>
   <div class="arr">\u2193</div>
   <div class="n result"><b>UPGRADE</b><br>

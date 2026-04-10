@@ -2137,29 +2137,17 @@ def _render_premium_card_packs() -> None:
 
         ### Pack Properties
 
+        Each hero has a single pack (no tier variants). Properties:
+
         | Property | Description | Editable |
         |----------|-------------|----------|
         | `pack_id` | Unique identifier | Yes |
         | `name` | Display name (e.g. "Woodie Premium Pack") | Yes |
-        | `pack_rarity` | BRONZE / SILVER / GOLD / PLATINUM / DIAMOND | Yes |
         | `featured_hero_ids` | 1 or more heroes whose cards are included | Yes |
         | `card_drop_rates` | Per-card probability weights (displayed to player) | Yes |
         | `cards_per_pack` | Cards drawn per opening | Yes |
         | `diamond_cost` | Price in diamonds | Yes |
         | `joker_rate` | Chance of hero joker per draw | Yes |
-        | `dupe_boost_multiplier` | Multiplier on duplicates (>1 for limited offers) | Yes |
-
-        ### 5 Pack Rarities
-
-        Each hero can have up to 5 pack rarities, scaling in value:
-
-        | Rarity | Typical Diamond Cost | Cards/Pack | Joker Rate |
-        |--------|---------------------|------------|------------|
-        | Bronze | 200 | 3 | 1% |
-        | Silver | 500 | 5 | 2% |
-        | Gold | 1,000 | 8 | 3% |
-        | Platinum | 2,000 | 10 | 5% |
-        | Diamond | 5,000 | 15 | 8% |
 
         All values are defaults and fully configurable per pack.
 
@@ -2192,13 +2180,19 @@ def _render_premium_card_packs() -> None:
         - Probability weights (not percentages) — normalized at pull time
         - Inversely proportional to rarity by default (Common ~5.0, Legendary ~0.3)
 
-        ### Dupe Boost for Limited Offers
+        ### Duplicate % Mechanic
 
-        The `dupe_boost_multiplier` field allows temporary promotions:
+        When a hero card is pulled (from regular or premium packs), the number of
+        duplicates received is based on a percentage of the dupe cost for the card's
+        next level upgrade:
+
         ```
-        Normal: 1 duplicate per pull × 1.0 = 1 duplicate
-        Launch event: 1 duplicate per pull × 2.0 = 2 duplicates
+        dupes = round(dupe_cost_for_next_level × random(min_pct, max_pct))
         ```
+
+        The percentage ranges are configured per card rarity (Common / Rare / Epic)
+        and per card level. Higher levels yield lower percentages, making progression
+        harder as cards level up. See **Dupe Ranges** tab in the config editor.
 
         ### Simulation Economics
 
