@@ -1,0 +1,3504 @@
+{
+  "levels": [
+    {
+      "rarity": "Common",
+      "level": 1,
+      "power": 5
+    },
+    {
+      "rarity": "Common",
+      "level": 2,
+      "power": 10
+    },
+    {
+      "rarity": "Common",
+      "level": 3,
+      "power": 15
+    },
+    {
+      "rarity": "Common",
+      "level": 4,
+      "power": 20
+    },
+    {
+      "rarity": "Common",
+      "level": 5,
+      "power": 25
+    },
+    {
+      "rarity": "Common",
+      "level": 6,
+      "power": 30
+    },
+    {
+      "rarity": "Common",
+      "level": 7,
+      "power": 35
+    },
+    {
+      "rarity": "Common",
+      "level": 8,
+      "power": 40
+    },
+    {
+      "rarity": "Common",
+      "level": 9,
+      "power": 45
+    },
+    {
+      "rarity": "Common",
+      "level": 10,
+      "power": 50
+    },
+    {
+      "rarity": "Common",
+      "level": 11,
+      "power": 55
+    },
+    {
+      "rarity": "Common",
+      "level": 12,
+      "power": 60
+    },
+    {
+      "rarity": "Common",
+      "level": 13,
+      "power": 65
+    },
+    {
+      "rarity": "Common",
+      "level": 14,
+      "power": 70
+    },
+    {
+      "rarity": "Common",
+      "level": 15,
+      "power": 75
+    },
+    {
+      "rarity": "Common",
+      "level": 16,
+      "power": 80
+    },
+    {
+      "rarity": "Common",
+      "level": 17,
+      "power": 85
+    },
+    {
+      "rarity": "Common",
+      "level": 18,
+      "power": 90
+    },
+    {
+      "rarity": "Common",
+      "level": 19,
+      "power": 95
+    },
+    {
+      "rarity": "Common",
+      "level": 20,
+      "power": 100
+    },
+    {
+      "rarity": "Common",
+      "level": 21,
+      "power": 105
+    },
+    {
+      "rarity": "Common",
+      "level": 22,
+      "power": 110
+    },
+    {
+      "rarity": "Common",
+      "level": 23,
+      "power": 115
+    },
+    {
+      "rarity": "Common",
+      "level": 24,
+      "power": 120
+    },
+    {
+      "rarity": "Common",
+      "level": 25,
+      "power": 125
+    },
+    {
+      "rarity": "Common",
+      "level": 26,
+      "power": 130
+    },
+    {
+      "rarity": "Common",
+      "level": 27,
+      "power": 135
+    },
+    {
+      "rarity": "Common",
+      "level": 28,
+      "power": 140
+    },
+    {
+      "rarity": "Common",
+      "level": 29,
+      "power": 145
+    },
+    {
+      "rarity": "Common",
+      "level": 30,
+      "power": 150
+    },
+    {
+      "rarity": "Common",
+      "level": 31,
+      "power": 155
+    },
+    {
+      "rarity": "Common",
+      "level": 32,
+      "power": 160
+    },
+    {
+      "rarity": "Common",
+      "level": 33,
+      "power": 165
+    },
+    {
+      "rarity": "Common",
+      "level": 34,
+      "power": 170
+    },
+    {
+      "rarity": "Common",
+      "level": 35,
+      "power": 175
+    },
+    {
+      "rarity": "Common",
+      "level": 36,
+      "power": 180
+    },
+    {
+      "rarity": "Common",
+      "level": 37,
+      "power": 185
+    },
+    {
+      "rarity": "Common",
+      "level": 38,
+      "power": 190
+    },
+    {
+      "rarity": "Common",
+      "level": 39,
+      "power": 195
+    },
+    {
+      "rarity": "Common",
+      "level": 40,
+      "power": 200
+    },
+    {
+      "rarity": "Common",
+      "level": 41,
+      "power": 205
+    },
+    {
+      "rarity": "Common",
+      "level": 42,
+      "power": 210
+    },
+    {
+      "rarity": "Common",
+      "level": 43,
+      "power": 215
+    },
+    {
+      "rarity": "Common",
+      "level": 44,
+      "power": 220
+    },
+    {
+      "rarity": "Common",
+      "level": 45,
+      "power": 225
+    },
+    {
+      "rarity": "Common",
+      "level": 46,
+      "power": 230
+    },
+    {
+      "rarity": "Common",
+      "level": 47,
+      "power": 235
+    },
+    {
+      "rarity": "Common",
+      "level": 48,
+      "power": 240
+    },
+    {
+      "rarity": "Common",
+      "level": 49,
+      "power": 245
+    },
+    {
+      "rarity": "Common",
+      "level": 50,
+      "power": 250
+    },
+    {
+      "rarity": "Common",
+      "level": 51,
+      "power": 255
+    },
+    {
+      "rarity": "Common",
+      "level": 52,
+      "power": 260
+    },
+    {
+      "rarity": "Common",
+      "level": 53,
+      "power": 265
+    },
+    {
+      "rarity": "Common",
+      "level": 54,
+      "power": 270
+    },
+    {
+      "rarity": "Common",
+      "level": 55,
+      "power": 275
+    },
+    {
+      "rarity": "Common",
+      "level": 56,
+      "power": 280
+    },
+    {
+      "rarity": "Common",
+      "level": 57,
+      "power": 285
+    },
+    {
+      "rarity": "Common",
+      "level": 58,
+      "power": 290
+    },
+    {
+      "rarity": "Common",
+      "level": 59,
+      "power": 295
+    },
+    {
+      "rarity": "Common",
+      "level": 60,
+      "power": 300
+    },
+    {
+      "rarity": "Common",
+      "level": 61,
+      "power": 305
+    },
+    {
+      "rarity": "Common",
+      "level": 62,
+      "power": 310
+    },
+    {
+      "rarity": "Common",
+      "level": 63,
+      "power": 315
+    },
+    {
+      "rarity": "Common",
+      "level": 64,
+      "power": 320
+    },
+    {
+      "rarity": "Common",
+      "level": 65,
+      "power": 325
+    },
+    {
+      "rarity": "Common",
+      "level": 66,
+      "power": 330
+    },
+    {
+      "rarity": "Common",
+      "level": 67,
+      "power": 335
+    },
+    {
+      "rarity": "Common",
+      "level": 68,
+      "power": 340
+    },
+    {
+      "rarity": "Common",
+      "level": 69,
+      "power": 345
+    },
+    {
+      "rarity": "Common",
+      "level": 70,
+      "power": 350
+    },
+    {
+      "rarity": "Common",
+      "level": 71,
+      "power": 355
+    },
+    {
+      "rarity": "Common",
+      "level": 72,
+      "power": 360
+    },
+    {
+      "rarity": "Common",
+      "level": 73,
+      "power": 365
+    },
+    {
+      "rarity": "Common",
+      "level": 74,
+      "power": 370
+    },
+    {
+      "rarity": "Common",
+      "level": 75,
+      "power": 375
+    },
+    {
+      "rarity": "Common",
+      "level": 76,
+      "power": 380
+    },
+    {
+      "rarity": "Common",
+      "level": 77,
+      "power": 385
+    },
+    {
+      "rarity": "Common",
+      "level": 78,
+      "power": 390
+    },
+    {
+      "rarity": "Common",
+      "level": 79,
+      "power": 395
+    },
+    {
+      "rarity": "Common",
+      "level": 80,
+      "power": 400
+    },
+    {
+      "rarity": "Common",
+      "level": 81,
+      "power": 405
+    },
+    {
+      "rarity": "Common",
+      "level": 82,
+      "power": 410
+    },
+    {
+      "rarity": "Common",
+      "level": 83,
+      "power": 415
+    },
+    {
+      "rarity": "Common",
+      "level": 84,
+      "power": 420
+    },
+    {
+      "rarity": "Common",
+      "level": 85,
+      "power": 425
+    },
+    {
+      "rarity": "Common",
+      "level": 86,
+      "power": 430
+    },
+    {
+      "rarity": "Common",
+      "level": 87,
+      "power": 435
+    },
+    {
+      "rarity": "Common",
+      "level": 88,
+      "power": 440
+    },
+    {
+      "rarity": "Common",
+      "level": 89,
+      "power": 445
+    },
+    {
+      "rarity": "Common",
+      "level": 90,
+      "power": 450
+    },
+    {
+      "rarity": "Common",
+      "level": 91,
+      "power": 455
+    },
+    {
+      "rarity": "Common",
+      "level": 92,
+      "power": 460
+    },
+    {
+      "rarity": "Common",
+      "level": 93,
+      "power": 465
+    },
+    {
+      "rarity": "Common",
+      "level": 94,
+      "power": 470
+    },
+    {
+      "rarity": "Common",
+      "level": 95,
+      "power": 475
+    },
+    {
+      "rarity": "Common",
+      "level": 96,
+      "power": 480
+    },
+    {
+      "rarity": "Common",
+      "level": 97,
+      "power": 485
+    },
+    {
+      "rarity": "Common",
+      "level": 98,
+      "power": 490
+    },
+    {
+      "rarity": "Common",
+      "level": 99,
+      "power": 495
+    },
+    {
+      "rarity": "Common",
+      "level": 100,
+      "power": 500
+    },
+    {
+      "rarity": "Great",
+      "level": 1,
+      "power": 8
+    },
+    {
+      "rarity": "Great",
+      "level": 2,
+      "power": 16
+    },
+    {
+      "rarity": "Great",
+      "level": 3,
+      "power": 24
+    },
+    {
+      "rarity": "Great",
+      "level": 4,
+      "power": 32
+    },
+    {
+      "rarity": "Great",
+      "level": 5,
+      "power": 40
+    },
+    {
+      "rarity": "Great",
+      "level": 6,
+      "power": 48
+    },
+    {
+      "rarity": "Great",
+      "level": 7,
+      "power": 56
+    },
+    {
+      "rarity": "Great",
+      "level": 8,
+      "power": 64
+    },
+    {
+      "rarity": "Great",
+      "level": 9,
+      "power": 72
+    },
+    {
+      "rarity": "Great",
+      "level": 10,
+      "power": 80
+    },
+    {
+      "rarity": "Great",
+      "level": 11,
+      "power": 88
+    },
+    {
+      "rarity": "Great",
+      "level": 12,
+      "power": 96
+    },
+    {
+      "rarity": "Great",
+      "level": 13,
+      "power": 104
+    },
+    {
+      "rarity": "Great",
+      "level": 14,
+      "power": 112
+    },
+    {
+      "rarity": "Great",
+      "level": 15,
+      "power": 120
+    },
+    {
+      "rarity": "Great",
+      "level": 16,
+      "power": 128
+    },
+    {
+      "rarity": "Great",
+      "level": 17,
+      "power": 136
+    },
+    {
+      "rarity": "Great",
+      "level": 18,
+      "power": 144
+    },
+    {
+      "rarity": "Great",
+      "level": 19,
+      "power": 152
+    },
+    {
+      "rarity": "Great",
+      "level": 20,
+      "power": 160
+    },
+    {
+      "rarity": "Great",
+      "level": 21,
+      "power": 168
+    },
+    {
+      "rarity": "Great",
+      "level": 22,
+      "power": 176
+    },
+    {
+      "rarity": "Great",
+      "level": 23,
+      "power": 184
+    },
+    {
+      "rarity": "Great",
+      "level": 24,
+      "power": 192
+    },
+    {
+      "rarity": "Great",
+      "level": 25,
+      "power": 200
+    },
+    {
+      "rarity": "Great",
+      "level": 26,
+      "power": 208
+    },
+    {
+      "rarity": "Great",
+      "level": 27,
+      "power": 216
+    },
+    {
+      "rarity": "Great",
+      "level": 28,
+      "power": 224
+    },
+    {
+      "rarity": "Great",
+      "level": 29,
+      "power": 232
+    },
+    {
+      "rarity": "Great",
+      "level": 30,
+      "power": 240
+    },
+    {
+      "rarity": "Great",
+      "level": 31,
+      "power": 248
+    },
+    {
+      "rarity": "Great",
+      "level": 32,
+      "power": 256
+    },
+    {
+      "rarity": "Great",
+      "level": 33,
+      "power": 264
+    },
+    {
+      "rarity": "Great",
+      "level": 34,
+      "power": 272
+    },
+    {
+      "rarity": "Great",
+      "level": 35,
+      "power": 280
+    },
+    {
+      "rarity": "Great",
+      "level": 36,
+      "power": 288
+    },
+    {
+      "rarity": "Great",
+      "level": 37,
+      "power": 296
+    },
+    {
+      "rarity": "Great",
+      "level": 38,
+      "power": 304
+    },
+    {
+      "rarity": "Great",
+      "level": 39,
+      "power": 312
+    },
+    {
+      "rarity": "Great",
+      "level": 40,
+      "power": 320
+    },
+    {
+      "rarity": "Great",
+      "level": 41,
+      "power": 328
+    },
+    {
+      "rarity": "Great",
+      "level": 42,
+      "power": 336
+    },
+    {
+      "rarity": "Great",
+      "level": 43,
+      "power": 344
+    },
+    {
+      "rarity": "Great",
+      "level": 44,
+      "power": 352
+    },
+    {
+      "rarity": "Great",
+      "level": 45,
+      "power": 360
+    },
+    {
+      "rarity": "Great",
+      "level": 46,
+      "power": 368
+    },
+    {
+      "rarity": "Great",
+      "level": 47,
+      "power": 376
+    },
+    {
+      "rarity": "Great",
+      "level": 48,
+      "power": 384
+    },
+    {
+      "rarity": "Great",
+      "level": 49,
+      "power": 392
+    },
+    {
+      "rarity": "Great",
+      "level": 50,
+      "power": 400
+    },
+    {
+      "rarity": "Great",
+      "level": 51,
+      "power": 408
+    },
+    {
+      "rarity": "Great",
+      "level": 52,
+      "power": 416
+    },
+    {
+      "rarity": "Great",
+      "level": 53,
+      "power": 424
+    },
+    {
+      "rarity": "Great",
+      "level": 54,
+      "power": 432
+    },
+    {
+      "rarity": "Great",
+      "level": 55,
+      "power": 440
+    },
+    {
+      "rarity": "Great",
+      "level": 56,
+      "power": 448
+    },
+    {
+      "rarity": "Great",
+      "level": 57,
+      "power": 456
+    },
+    {
+      "rarity": "Great",
+      "level": 58,
+      "power": 464
+    },
+    {
+      "rarity": "Great",
+      "level": 59,
+      "power": 472
+    },
+    {
+      "rarity": "Great",
+      "level": 60,
+      "power": 480
+    },
+    {
+      "rarity": "Great",
+      "level": 61,
+      "power": 488
+    },
+    {
+      "rarity": "Great",
+      "level": 62,
+      "power": 496
+    },
+    {
+      "rarity": "Great",
+      "level": 63,
+      "power": 504
+    },
+    {
+      "rarity": "Great",
+      "level": 64,
+      "power": 512
+    },
+    {
+      "rarity": "Great",
+      "level": 65,
+      "power": 520
+    },
+    {
+      "rarity": "Great",
+      "level": 66,
+      "power": 528
+    },
+    {
+      "rarity": "Great",
+      "level": 67,
+      "power": 536
+    },
+    {
+      "rarity": "Great",
+      "level": 68,
+      "power": 544
+    },
+    {
+      "rarity": "Great",
+      "level": 69,
+      "power": 552
+    },
+    {
+      "rarity": "Great",
+      "level": 70,
+      "power": 560
+    },
+    {
+      "rarity": "Great",
+      "level": 71,
+      "power": 568
+    },
+    {
+      "rarity": "Great",
+      "level": 72,
+      "power": 576
+    },
+    {
+      "rarity": "Great",
+      "level": 73,
+      "power": 584
+    },
+    {
+      "rarity": "Great",
+      "level": 74,
+      "power": 592
+    },
+    {
+      "rarity": "Great",
+      "level": 75,
+      "power": 600
+    },
+    {
+      "rarity": "Great",
+      "level": 76,
+      "power": 608
+    },
+    {
+      "rarity": "Great",
+      "level": 77,
+      "power": 616
+    },
+    {
+      "rarity": "Great",
+      "level": 78,
+      "power": 624
+    },
+    {
+      "rarity": "Great",
+      "level": 79,
+      "power": 632
+    },
+    {
+      "rarity": "Great",
+      "level": 80,
+      "power": 640
+    },
+    {
+      "rarity": "Great",
+      "level": 81,
+      "power": 648
+    },
+    {
+      "rarity": "Great",
+      "level": 82,
+      "power": 656
+    },
+    {
+      "rarity": "Great",
+      "level": 83,
+      "power": 664
+    },
+    {
+      "rarity": "Great",
+      "level": 84,
+      "power": 672
+    },
+    {
+      "rarity": "Great",
+      "level": 85,
+      "power": 680
+    },
+    {
+      "rarity": "Great",
+      "level": 86,
+      "power": 688
+    },
+    {
+      "rarity": "Great",
+      "level": 87,
+      "power": 696
+    },
+    {
+      "rarity": "Great",
+      "level": 88,
+      "power": 704
+    },
+    {
+      "rarity": "Great",
+      "level": 89,
+      "power": 712
+    },
+    {
+      "rarity": "Great",
+      "level": 90,
+      "power": 720
+    },
+    {
+      "rarity": "Great",
+      "level": 91,
+      "power": 728
+    },
+    {
+      "rarity": "Great",
+      "level": 92,
+      "power": 736
+    },
+    {
+      "rarity": "Great",
+      "level": 93,
+      "power": 744
+    },
+    {
+      "rarity": "Great",
+      "level": 94,
+      "power": 752
+    },
+    {
+      "rarity": "Great",
+      "level": 95,
+      "power": 760
+    },
+    {
+      "rarity": "Great",
+      "level": 96,
+      "power": 768
+    },
+    {
+      "rarity": "Great",
+      "level": 97,
+      "power": 776
+    },
+    {
+      "rarity": "Great",
+      "level": 98,
+      "power": 784
+    },
+    {
+      "rarity": "Great",
+      "level": 99,
+      "power": 792
+    },
+    {
+      "rarity": "Great",
+      "level": 100,
+      "power": 800
+    },
+    {
+      "rarity": "Rare",
+      "level": 1,
+      "power": 12
+    },
+    {
+      "rarity": "Rare",
+      "level": 2,
+      "power": 24
+    },
+    {
+      "rarity": "Rare",
+      "level": 3,
+      "power": 36
+    },
+    {
+      "rarity": "Rare",
+      "level": 4,
+      "power": 48
+    },
+    {
+      "rarity": "Rare",
+      "level": 5,
+      "power": 60
+    },
+    {
+      "rarity": "Rare",
+      "level": 6,
+      "power": 72
+    },
+    {
+      "rarity": "Rare",
+      "level": 7,
+      "power": 84
+    },
+    {
+      "rarity": "Rare",
+      "level": 8,
+      "power": 96
+    },
+    {
+      "rarity": "Rare",
+      "level": 9,
+      "power": 108
+    },
+    {
+      "rarity": "Rare",
+      "level": 10,
+      "power": 120
+    },
+    {
+      "rarity": "Rare",
+      "level": 11,
+      "power": 132
+    },
+    {
+      "rarity": "Rare",
+      "level": 12,
+      "power": 144
+    },
+    {
+      "rarity": "Rare",
+      "level": 13,
+      "power": 156
+    },
+    {
+      "rarity": "Rare",
+      "level": 14,
+      "power": 168
+    },
+    {
+      "rarity": "Rare",
+      "level": 15,
+      "power": 180
+    },
+    {
+      "rarity": "Rare",
+      "level": 16,
+      "power": 192
+    },
+    {
+      "rarity": "Rare",
+      "level": 17,
+      "power": 204
+    },
+    {
+      "rarity": "Rare",
+      "level": 18,
+      "power": 216
+    },
+    {
+      "rarity": "Rare",
+      "level": 19,
+      "power": 228
+    },
+    {
+      "rarity": "Rare",
+      "level": 20,
+      "power": 240
+    },
+    {
+      "rarity": "Rare",
+      "level": 21,
+      "power": 252
+    },
+    {
+      "rarity": "Rare",
+      "level": 22,
+      "power": 264
+    },
+    {
+      "rarity": "Rare",
+      "level": 23,
+      "power": 276
+    },
+    {
+      "rarity": "Rare",
+      "level": 24,
+      "power": 288
+    },
+    {
+      "rarity": "Rare",
+      "level": 25,
+      "power": 300
+    },
+    {
+      "rarity": "Rare",
+      "level": 26,
+      "power": 312
+    },
+    {
+      "rarity": "Rare",
+      "level": 27,
+      "power": 324
+    },
+    {
+      "rarity": "Rare",
+      "level": 28,
+      "power": 336
+    },
+    {
+      "rarity": "Rare",
+      "level": 29,
+      "power": 348
+    },
+    {
+      "rarity": "Rare",
+      "level": 30,
+      "power": 360
+    },
+    {
+      "rarity": "Rare",
+      "level": 31,
+      "power": 372
+    },
+    {
+      "rarity": "Rare",
+      "level": 32,
+      "power": 384
+    },
+    {
+      "rarity": "Rare",
+      "level": 33,
+      "power": 396
+    },
+    {
+      "rarity": "Rare",
+      "level": 34,
+      "power": 408
+    },
+    {
+      "rarity": "Rare",
+      "level": 35,
+      "power": 420
+    },
+    {
+      "rarity": "Rare",
+      "level": 36,
+      "power": 432
+    },
+    {
+      "rarity": "Rare",
+      "level": 37,
+      "power": 444
+    },
+    {
+      "rarity": "Rare",
+      "level": 38,
+      "power": 456
+    },
+    {
+      "rarity": "Rare",
+      "level": 39,
+      "power": 468
+    },
+    {
+      "rarity": "Rare",
+      "level": 40,
+      "power": 480
+    },
+    {
+      "rarity": "Rare",
+      "level": 41,
+      "power": 492
+    },
+    {
+      "rarity": "Rare",
+      "level": 42,
+      "power": 504
+    },
+    {
+      "rarity": "Rare",
+      "level": 43,
+      "power": 516
+    },
+    {
+      "rarity": "Rare",
+      "level": 44,
+      "power": 528
+    },
+    {
+      "rarity": "Rare",
+      "level": 45,
+      "power": 540
+    },
+    {
+      "rarity": "Rare",
+      "level": 46,
+      "power": 552
+    },
+    {
+      "rarity": "Rare",
+      "level": 47,
+      "power": 564
+    },
+    {
+      "rarity": "Rare",
+      "level": 48,
+      "power": 576
+    },
+    {
+      "rarity": "Rare",
+      "level": 49,
+      "power": 588
+    },
+    {
+      "rarity": "Rare",
+      "level": 50,
+      "power": 600
+    },
+    {
+      "rarity": "Rare",
+      "level": 51,
+      "power": 612
+    },
+    {
+      "rarity": "Rare",
+      "level": 52,
+      "power": 624
+    },
+    {
+      "rarity": "Rare",
+      "level": 53,
+      "power": 636
+    },
+    {
+      "rarity": "Rare",
+      "level": 54,
+      "power": 648
+    },
+    {
+      "rarity": "Rare",
+      "level": 55,
+      "power": 660
+    },
+    {
+      "rarity": "Rare",
+      "level": 56,
+      "power": 672
+    },
+    {
+      "rarity": "Rare",
+      "level": 57,
+      "power": 684
+    },
+    {
+      "rarity": "Rare",
+      "level": 58,
+      "power": 696
+    },
+    {
+      "rarity": "Rare",
+      "level": 59,
+      "power": 708
+    },
+    {
+      "rarity": "Rare",
+      "level": 60,
+      "power": 720
+    },
+    {
+      "rarity": "Rare",
+      "level": 61,
+      "power": 732
+    },
+    {
+      "rarity": "Rare",
+      "level": 62,
+      "power": 744
+    },
+    {
+      "rarity": "Rare",
+      "level": 63,
+      "power": 756
+    },
+    {
+      "rarity": "Rare",
+      "level": 64,
+      "power": 768
+    },
+    {
+      "rarity": "Rare",
+      "level": 65,
+      "power": 780
+    },
+    {
+      "rarity": "Rare",
+      "level": 66,
+      "power": 792
+    },
+    {
+      "rarity": "Rare",
+      "level": 67,
+      "power": 804
+    },
+    {
+      "rarity": "Rare",
+      "level": 68,
+      "power": 816
+    },
+    {
+      "rarity": "Rare",
+      "level": 69,
+      "power": 828
+    },
+    {
+      "rarity": "Rare",
+      "level": 70,
+      "power": 840
+    },
+    {
+      "rarity": "Rare",
+      "level": 71,
+      "power": 852
+    },
+    {
+      "rarity": "Rare",
+      "level": 72,
+      "power": 864
+    },
+    {
+      "rarity": "Rare",
+      "level": 73,
+      "power": 876
+    },
+    {
+      "rarity": "Rare",
+      "level": 74,
+      "power": 888
+    },
+    {
+      "rarity": "Rare",
+      "level": 75,
+      "power": 900
+    },
+    {
+      "rarity": "Rare",
+      "level": 76,
+      "power": 912
+    },
+    {
+      "rarity": "Rare",
+      "level": 77,
+      "power": 924
+    },
+    {
+      "rarity": "Rare",
+      "level": 78,
+      "power": 936
+    },
+    {
+      "rarity": "Rare",
+      "level": 79,
+      "power": 948
+    },
+    {
+      "rarity": "Rare",
+      "level": 80,
+      "power": 960
+    },
+    {
+      "rarity": "Rare",
+      "level": 81,
+      "power": 972
+    },
+    {
+      "rarity": "Rare",
+      "level": 82,
+      "power": 984
+    },
+    {
+      "rarity": "Rare",
+      "level": 83,
+      "power": 996
+    },
+    {
+      "rarity": "Rare",
+      "level": 84,
+      "power": 1008
+    },
+    {
+      "rarity": "Rare",
+      "level": 85,
+      "power": 1020
+    },
+    {
+      "rarity": "Rare",
+      "level": 86,
+      "power": 1032
+    },
+    {
+      "rarity": "Rare",
+      "level": 87,
+      "power": 1044
+    },
+    {
+      "rarity": "Rare",
+      "level": 88,
+      "power": 1056
+    },
+    {
+      "rarity": "Rare",
+      "level": 89,
+      "power": 1068
+    },
+    {
+      "rarity": "Rare",
+      "level": 90,
+      "power": 1080
+    },
+    {
+      "rarity": "Rare",
+      "level": 91,
+      "power": 1092
+    },
+    {
+      "rarity": "Rare",
+      "level": 92,
+      "power": 1104
+    },
+    {
+      "rarity": "Rare",
+      "level": 93,
+      "power": 1116
+    },
+    {
+      "rarity": "Rare",
+      "level": 94,
+      "power": 1128
+    },
+    {
+      "rarity": "Rare",
+      "level": 95,
+      "power": 1140
+    },
+    {
+      "rarity": "Rare",
+      "level": 96,
+      "power": 1152
+    },
+    {
+      "rarity": "Rare",
+      "level": 97,
+      "power": 1164
+    },
+    {
+      "rarity": "Rare",
+      "level": 98,
+      "power": 1176
+    },
+    {
+      "rarity": "Rare",
+      "level": 99,
+      "power": 1188
+    },
+    {
+      "rarity": "Rare",
+      "level": 100,
+      "power": 1200
+    },
+    {
+      "rarity": "Epic",
+      "level": 1,
+      "power": 18
+    },
+    {
+      "rarity": "Epic",
+      "level": 2,
+      "power": 36
+    },
+    {
+      "rarity": "Epic",
+      "level": 3,
+      "power": 54
+    },
+    {
+      "rarity": "Epic",
+      "level": 4,
+      "power": 72
+    },
+    {
+      "rarity": "Epic",
+      "level": 5,
+      "power": 90
+    },
+    {
+      "rarity": "Epic",
+      "level": 6,
+      "power": 108
+    },
+    {
+      "rarity": "Epic",
+      "level": 7,
+      "power": 126
+    },
+    {
+      "rarity": "Epic",
+      "level": 8,
+      "power": 144
+    },
+    {
+      "rarity": "Epic",
+      "level": 9,
+      "power": 162
+    },
+    {
+      "rarity": "Epic",
+      "level": 10,
+      "power": 180
+    },
+    {
+      "rarity": "Epic",
+      "level": 11,
+      "power": 198
+    },
+    {
+      "rarity": "Epic",
+      "level": 12,
+      "power": 216
+    },
+    {
+      "rarity": "Epic",
+      "level": 13,
+      "power": 234
+    },
+    {
+      "rarity": "Epic",
+      "level": 14,
+      "power": 252
+    },
+    {
+      "rarity": "Epic",
+      "level": 15,
+      "power": 270
+    },
+    {
+      "rarity": "Epic",
+      "level": 16,
+      "power": 288
+    },
+    {
+      "rarity": "Epic",
+      "level": 17,
+      "power": 306
+    },
+    {
+      "rarity": "Epic",
+      "level": 18,
+      "power": 324
+    },
+    {
+      "rarity": "Epic",
+      "level": 19,
+      "power": 342
+    },
+    {
+      "rarity": "Epic",
+      "level": 20,
+      "power": 360
+    },
+    {
+      "rarity": "Epic",
+      "level": 21,
+      "power": 378
+    },
+    {
+      "rarity": "Epic",
+      "level": 22,
+      "power": 396
+    },
+    {
+      "rarity": "Epic",
+      "level": 23,
+      "power": 414
+    },
+    {
+      "rarity": "Epic",
+      "level": 24,
+      "power": 432
+    },
+    {
+      "rarity": "Epic",
+      "level": 25,
+      "power": 450
+    },
+    {
+      "rarity": "Epic",
+      "level": 26,
+      "power": 468
+    },
+    {
+      "rarity": "Epic",
+      "level": 27,
+      "power": 486
+    },
+    {
+      "rarity": "Epic",
+      "level": 28,
+      "power": 504
+    },
+    {
+      "rarity": "Epic",
+      "level": 29,
+      "power": 522
+    },
+    {
+      "rarity": "Epic",
+      "level": 30,
+      "power": 540
+    },
+    {
+      "rarity": "Epic",
+      "level": 31,
+      "power": 558
+    },
+    {
+      "rarity": "Epic",
+      "level": 32,
+      "power": 576
+    },
+    {
+      "rarity": "Epic",
+      "level": 33,
+      "power": 594
+    },
+    {
+      "rarity": "Epic",
+      "level": 34,
+      "power": 612
+    },
+    {
+      "rarity": "Epic",
+      "level": 35,
+      "power": 630
+    },
+    {
+      "rarity": "Epic",
+      "level": 36,
+      "power": 648
+    },
+    {
+      "rarity": "Epic",
+      "level": 37,
+      "power": 666
+    },
+    {
+      "rarity": "Epic",
+      "level": 38,
+      "power": 684
+    },
+    {
+      "rarity": "Epic",
+      "level": 39,
+      "power": 702
+    },
+    {
+      "rarity": "Epic",
+      "level": 40,
+      "power": 720
+    },
+    {
+      "rarity": "Epic",
+      "level": 41,
+      "power": 738
+    },
+    {
+      "rarity": "Epic",
+      "level": 42,
+      "power": 756
+    },
+    {
+      "rarity": "Epic",
+      "level": 43,
+      "power": 774
+    },
+    {
+      "rarity": "Epic",
+      "level": 44,
+      "power": 792
+    },
+    {
+      "rarity": "Epic",
+      "level": 45,
+      "power": 810
+    },
+    {
+      "rarity": "Epic",
+      "level": 46,
+      "power": 828
+    },
+    {
+      "rarity": "Epic",
+      "level": 47,
+      "power": 846
+    },
+    {
+      "rarity": "Epic",
+      "level": 48,
+      "power": 864
+    },
+    {
+      "rarity": "Epic",
+      "level": 49,
+      "power": 882
+    },
+    {
+      "rarity": "Epic",
+      "level": 50,
+      "power": 900
+    },
+    {
+      "rarity": "Epic",
+      "level": 51,
+      "power": 918
+    },
+    {
+      "rarity": "Epic",
+      "level": 52,
+      "power": 936
+    },
+    {
+      "rarity": "Epic",
+      "level": 53,
+      "power": 954
+    },
+    {
+      "rarity": "Epic",
+      "level": 54,
+      "power": 972
+    },
+    {
+      "rarity": "Epic",
+      "level": 55,
+      "power": 990
+    },
+    {
+      "rarity": "Epic",
+      "level": 56,
+      "power": 1008
+    },
+    {
+      "rarity": "Epic",
+      "level": 57,
+      "power": 1026
+    },
+    {
+      "rarity": "Epic",
+      "level": 58,
+      "power": 1044
+    },
+    {
+      "rarity": "Epic",
+      "level": 59,
+      "power": 1062
+    },
+    {
+      "rarity": "Epic",
+      "level": 60,
+      "power": 1080
+    },
+    {
+      "rarity": "Epic",
+      "level": 61,
+      "power": 1098
+    },
+    {
+      "rarity": "Epic",
+      "level": 62,
+      "power": 1116
+    },
+    {
+      "rarity": "Epic",
+      "level": 63,
+      "power": 1134
+    },
+    {
+      "rarity": "Epic",
+      "level": 64,
+      "power": 1152
+    },
+    {
+      "rarity": "Epic",
+      "level": 65,
+      "power": 1170
+    },
+    {
+      "rarity": "Epic",
+      "level": 66,
+      "power": 1188
+    },
+    {
+      "rarity": "Epic",
+      "level": 67,
+      "power": 1206
+    },
+    {
+      "rarity": "Epic",
+      "level": 68,
+      "power": 1224
+    },
+    {
+      "rarity": "Epic",
+      "level": 69,
+      "power": 1242
+    },
+    {
+      "rarity": "Epic",
+      "level": 70,
+      "power": 1260
+    },
+    {
+      "rarity": "Epic",
+      "level": 71,
+      "power": 1278
+    },
+    {
+      "rarity": "Epic",
+      "level": 72,
+      "power": 1296
+    },
+    {
+      "rarity": "Epic",
+      "level": 73,
+      "power": 1314
+    },
+    {
+      "rarity": "Epic",
+      "level": 74,
+      "power": 1332
+    },
+    {
+      "rarity": "Epic",
+      "level": 75,
+      "power": 1350
+    },
+    {
+      "rarity": "Epic",
+      "level": 76,
+      "power": 1368
+    },
+    {
+      "rarity": "Epic",
+      "level": 77,
+      "power": 1386
+    },
+    {
+      "rarity": "Epic",
+      "level": 78,
+      "power": 1404
+    },
+    {
+      "rarity": "Epic",
+      "level": 79,
+      "power": 1422
+    },
+    {
+      "rarity": "Epic",
+      "level": 80,
+      "power": 1440
+    },
+    {
+      "rarity": "Epic",
+      "level": 81,
+      "power": 1458
+    },
+    {
+      "rarity": "Epic",
+      "level": 82,
+      "power": 1476
+    },
+    {
+      "rarity": "Epic",
+      "level": 83,
+      "power": 1494
+    },
+    {
+      "rarity": "Epic",
+      "level": 84,
+      "power": 1512
+    },
+    {
+      "rarity": "Epic",
+      "level": 85,
+      "power": 1530
+    },
+    {
+      "rarity": "Epic",
+      "level": 86,
+      "power": 1548
+    },
+    {
+      "rarity": "Epic",
+      "level": 87,
+      "power": 1566
+    },
+    {
+      "rarity": "Epic",
+      "level": 88,
+      "power": 1584
+    },
+    {
+      "rarity": "Epic",
+      "level": 89,
+      "power": 1602
+    },
+    {
+      "rarity": "Epic",
+      "level": 90,
+      "power": 1620
+    },
+    {
+      "rarity": "Epic",
+      "level": 91,
+      "power": 1638
+    },
+    {
+      "rarity": "Epic",
+      "level": 92,
+      "power": 1656
+    },
+    {
+      "rarity": "Epic",
+      "level": 93,
+      "power": 1674
+    },
+    {
+      "rarity": "Epic",
+      "level": 94,
+      "power": 1692
+    },
+    {
+      "rarity": "Epic",
+      "level": 95,
+      "power": 1710
+    },
+    {
+      "rarity": "Epic",
+      "level": 96,
+      "power": 1728
+    },
+    {
+      "rarity": "Epic",
+      "level": 97,
+      "power": 1746
+    },
+    {
+      "rarity": "Epic",
+      "level": 98,
+      "power": 1764
+    },
+    {
+      "rarity": "Epic",
+      "level": 99,
+      "power": 1782
+    },
+    {
+      "rarity": "Epic",
+      "level": 100,
+      "power": 1800
+    },
+    {
+      "rarity": "Legendary",
+      "level": 1,
+      "power": 25
+    },
+    {
+      "rarity": "Legendary",
+      "level": 2,
+      "power": 50
+    },
+    {
+      "rarity": "Legendary",
+      "level": 3,
+      "power": 75
+    },
+    {
+      "rarity": "Legendary",
+      "level": 4,
+      "power": 100
+    },
+    {
+      "rarity": "Legendary",
+      "level": 5,
+      "power": 125
+    },
+    {
+      "rarity": "Legendary",
+      "level": 6,
+      "power": 150
+    },
+    {
+      "rarity": "Legendary",
+      "level": 7,
+      "power": 175
+    },
+    {
+      "rarity": "Legendary",
+      "level": 8,
+      "power": 200
+    },
+    {
+      "rarity": "Legendary",
+      "level": 9,
+      "power": 225
+    },
+    {
+      "rarity": "Legendary",
+      "level": 10,
+      "power": 250
+    },
+    {
+      "rarity": "Legendary",
+      "level": 11,
+      "power": 275
+    },
+    {
+      "rarity": "Legendary",
+      "level": 12,
+      "power": 300
+    },
+    {
+      "rarity": "Legendary",
+      "level": 13,
+      "power": 325
+    },
+    {
+      "rarity": "Legendary",
+      "level": 14,
+      "power": 350
+    },
+    {
+      "rarity": "Legendary",
+      "level": 15,
+      "power": 375
+    },
+    {
+      "rarity": "Legendary",
+      "level": 16,
+      "power": 400
+    },
+    {
+      "rarity": "Legendary",
+      "level": 17,
+      "power": 425
+    },
+    {
+      "rarity": "Legendary",
+      "level": 18,
+      "power": 450
+    },
+    {
+      "rarity": "Legendary",
+      "level": 19,
+      "power": 475
+    },
+    {
+      "rarity": "Legendary",
+      "level": 20,
+      "power": 500
+    },
+    {
+      "rarity": "Legendary",
+      "level": 21,
+      "power": 525
+    },
+    {
+      "rarity": "Legendary",
+      "level": 22,
+      "power": 550
+    },
+    {
+      "rarity": "Legendary",
+      "level": 23,
+      "power": 575
+    },
+    {
+      "rarity": "Legendary",
+      "level": 24,
+      "power": 600
+    },
+    {
+      "rarity": "Legendary",
+      "level": 25,
+      "power": 625
+    },
+    {
+      "rarity": "Legendary",
+      "level": 26,
+      "power": 650
+    },
+    {
+      "rarity": "Legendary",
+      "level": 27,
+      "power": 675
+    },
+    {
+      "rarity": "Legendary",
+      "level": 28,
+      "power": 700
+    },
+    {
+      "rarity": "Legendary",
+      "level": 29,
+      "power": 725
+    },
+    {
+      "rarity": "Legendary",
+      "level": 30,
+      "power": 750
+    },
+    {
+      "rarity": "Legendary",
+      "level": 31,
+      "power": 775
+    },
+    {
+      "rarity": "Legendary",
+      "level": 32,
+      "power": 800
+    },
+    {
+      "rarity": "Legendary",
+      "level": 33,
+      "power": 825
+    },
+    {
+      "rarity": "Legendary",
+      "level": 34,
+      "power": 850
+    },
+    {
+      "rarity": "Legendary",
+      "level": 35,
+      "power": 875
+    },
+    {
+      "rarity": "Legendary",
+      "level": 36,
+      "power": 900
+    },
+    {
+      "rarity": "Legendary",
+      "level": 37,
+      "power": 925
+    },
+    {
+      "rarity": "Legendary",
+      "level": 38,
+      "power": 950
+    },
+    {
+      "rarity": "Legendary",
+      "level": 39,
+      "power": 975
+    },
+    {
+      "rarity": "Legendary",
+      "level": 40,
+      "power": 1000
+    },
+    {
+      "rarity": "Legendary",
+      "level": 41,
+      "power": 1025
+    },
+    {
+      "rarity": "Legendary",
+      "level": 42,
+      "power": 1050
+    },
+    {
+      "rarity": "Legendary",
+      "level": 43,
+      "power": 1075
+    },
+    {
+      "rarity": "Legendary",
+      "level": 44,
+      "power": 1100
+    },
+    {
+      "rarity": "Legendary",
+      "level": 45,
+      "power": 1125
+    },
+    {
+      "rarity": "Legendary",
+      "level": 46,
+      "power": 1150
+    },
+    {
+      "rarity": "Legendary",
+      "level": 47,
+      "power": 1175
+    },
+    {
+      "rarity": "Legendary",
+      "level": 48,
+      "power": 1200
+    },
+    {
+      "rarity": "Legendary",
+      "level": 49,
+      "power": 1225
+    },
+    {
+      "rarity": "Legendary",
+      "level": 50,
+      "power": 1250
+    },
+    {
+      "rarity": "Legendary",
+      "level": 51,
+      "power": 1275
+    },
+    {
+      "rarity": "Legendary",
+      "level": 52,
+      "power": 1300
+    },
+    {
+      "rarity": "Legendary",
+      "level": 53,
+      "power": 1325
+    },
+    {
+      "rarity": "Legendary",
+      "level": 54,
+      "power": 1350
+    },
+    {
+      "rarity": "Legendary",
+      "level": 55,
+      "power": 1375
+    },
+    {
+      "rarity": "Legendary",
+      "level": 56,
+      "power": 1400
+    },
+    {
+      "rarity": "Legendary",
+      "level": 57,
+      "power": 1425
+    },
+    {
+      "rarity": "Legendary",
+      "level": 58,
+      "power": 1450
+    },
+    {
+      "rarity": "Legendary",
+      "level": 59,
+      "power": 1475
+    },
+    {
+      "rarity": "Legendary",
+      "level": 60,
+      "power": 1500
+    },
+    {
+      "rarity": "Legendary",
+      "level": 61,
+      "power": 1525
+    },
+    {
+      "rarity": "Legendary",
+      "level": 62,
+      "power": 1550
+    },
+    {
+      "rarity": "Legendary",
+      "level": 63,
+      "power": 1575
+    },
+    {
+      "rarity": "Legendary",
+      "level": 64,
+      "power": 1600
+    },
+    {
+      "rarity": "Legendary",
+      "level": 65,
+      "power": 1625
+    },
+    {
+      "rarity": "Legendary",
+      "level": 66,
+      "power": 1650
+    },
+    {
+      "rarity": "Legendary",
+      "level": 67,
+      "power": 1675
+    },
+    {
+      "rarity": "Legendary",
+      "level": 68,
+      "power": 1700
+    },
+    {
+      "rarity": "Legendary",
+      "level": 69,
+      "power": 1725
+    },
+    {
+      "rarity": "Legendary",
+      "level": 70,
+      "power": 1750
+    },
+    {
+      "rarity": "Legendary",
+      "level": 71,
+      "power": 1775
+    },
+    {
+      "rarity": "Legendary",
+      "level": 72,
+      "power": 1800
+    },
+    {
+      "rarity": "Legendary",
+      "level": 73,
+      "power": 1825
+    },
+    {
+      "rarity": "Legendary",
+      "level": 74,
+      "power": 1850
+    },
+    {
+      "rarity": "Legendary",
+      "level": 75,
+      "power": 1875
+    },
+    {
+      "rarity": "Legendary",
+      "level": 76,
+      "power": 1900
+    },
+    {
+      "rarity": "Legendary",
+      "level": 77,
+      "power": 1925
+    },
+    {
+      "rarity": "Legendary",
+      "level": 78,
+      "power": 1950
+    },
+    {
+      "rarity": "Legendary",
+      "level": 79,
+      "power": 1975
+    },
+    {
+      "rarity": "Legendary",
+      "level": 80,
+      "power": 2000
+    },
+    {
+      "rarity": "Legendary",
+      "level": 81,
+      "power": 2025
+    },
+    {
+      "rarity": "Legendary",
+      "level": 82,
+      "power": 2050
+    },
+    {
+      "rarity": "Legendary",
+      "level": 83,
+      "power": 2075
+    },
+    {
+      "rarity": "Legendary",
+      "level": 84,
+      "power": 2100
+    },
+    {
+      "rarity": "Legendary",
+      "level": 85,
+      "power": 2125
+    },
+    {
+      "rarity": "Legendary",
+      "level": 86,
+      "power": 2150
+    },
+    {
+      "rarity": "Legendary",
+      "level": 87,
+      "power": 2175
+    },
+    {
+      "rarity": "Legendary",
+      "level": 88,
+      "power": 2200
+    },
+    {
+      "rarity": "Legendary",
+      "level": 89,
+      "power": 2225
+    },
+    {
+      "rarity": "Legendary",
+      "level": 90,
+      "power": 2250
+    },
+    {
+      "rarity": "Legendary",
+      "level": 91,
+      "power": 2275
+    },
+    {
+      "rarity": "Legendary",
+      "level": 92,
+      "power": 2300
+    },
+    {
+      "rarity": "Legendary",
+      "level": 93,
+      "power": 2325
+    },
+    {
+      "rarity": "Legendary",
+      "level": 94,
+      "power": 2350
+    },
+    {
+      "rarity": "Legendary",
+      "level": 95,
+      "power": 2375
+    },
+    {
+      "rarity": "Legendary",
+      "level": 96,
+      "power": 2400
+    },
+    {
+      "rarity": "Legendary",
+      "level": 97,
+      "power": 2425
+    },
+    {
+      "rarity": "Legendary",
+      "level": 98,
+      "power": 2450
+    },
+    {
+      "rarity": "Legendary",
+      "level": 99,
+      "power": 2475
+    },
+    {
+      "rarity": "Legendary",
+      "level": 100,
+      "power": 2500
+    },
+    {
+      "rarity": "Mythic",
+      "level": 1,
+      "power": 35
+    },
+    {
+      "rarity": "Mythic",
+      "level": 2,
+      "power": 70
+    },
+    {
+      "rarity": "Mythic",
+      "level": 3,
+      "power": 105
+    },
+    {
+      "rarity": "Mythic",
+      "level": 4,
+      "power": 140
+    },
+    {
+      "rarity": "Mythic",
+      "level": 5,
+      "power": 175
+    },
+    {
+      "rarity": "Mythic",
+      "level": 6,
+      "power": 210
+    },
+    {
+      "rarity": "Mythic",
+      "level": 7,
+      "power": 245
+    },
+    {
+      "rarity": "Mythic",
+      "level": 8,
+      "power": 280
+    },
+    {
+      "rarity": "Mythic",
+      "level": 9,
+      "power": 315
+    },
+    {
+      "rarity": "Mythic",
+      "level": 10,
+      "power": 350
+    },
+    {
+      "rarity": "Mythic",
+      "level": 11,
+      "power": 385
+    },
+    {
+      "rarity": "Mythic",
+      "level": 12,
+      "power": 420
+    },
+    {
+      "rarity": "Mythic",
+      "level": 13,
+      "power": 455
+    },
+    {
+      "rarity": "Mythic",
+      "level": 14,
+      "power": 490
+    },
+    {
+      "rarity": "Mythic",
+      "level": 15,
+      "power": 525
+    },
+    {
+      "rarity": "Mythic",
+      "level": 16,
+      "power": 560
+    },
+    {
+      "rarity": "Mythic",
+      "level": 17,
+      "power": 595
+    },
+    {
+      "rarity": "Mythic",
+      "level": 18,
+      "power": 630
+    },
+    {
+      "rarity": "Mythic",
+      "level": 19,
+      "power": 665
+    },
+    {
+      "rarity": "Mythic",
+      "level": 20,
+      "power": 700
+    },
+    {
+      "rarity": "Mythic",
+      "level": 21,
+      "power": 735
+    },
+    {
+      "rarity": "Mythic",
+      "level": 22,
+      "power": 770
+    },
+    {
+      "rarity": "Mythic",
+      "level": 23,
+      "power": 805
+    },
+    {
+      "rarity": "Mythic",
+      "level": 24,
+      "power": 840
+    },
+    {
+      "rarity": "Mythic",
+      "level": 25,
+      "power": 875
+    },
+    {
+      "rarity": "Mythic",
+      "level": 26,
+      "power": 910
+    },
+    {
+      "rarity": "Mythic",
+      "level": 27,
+      "power": 945
+    },
+    {
+      "rarity": "Mythic",
+      "level": 28,
+      "power": 980
+    },
+    {
+      "rarity": "Mythic",
+      "level": 29,
+      "power": 1015
+    },
+    {
+      "rarity": "Mythic",
+      "level": 30,
+      "power": 1050
+    },
+    {
+      "rarity": "Mythic",
+      "level": 31,
+      "power": 1085
+    },
+    {
+      "rarity": "Mythic",
+      "level": 32,
+      "power": 1120
+    },
+    {
+      "rarity": "Mythic",
+      "level": 33,
+      "power": 1155
+    },
+    {
+      "rarity": "Mythic",
+      "level": 34,
+      "power": 1190
+    },
+    {
+      "rarity": "Mythic",
+      "level": 35,
+      "power": 1225
+    },
+    {
+      "rarity": "Mythic",
+      "level": 36,
+      "power": 1260
+    },
+    {
+      "rarity": "Mythic",
+      "level": 37,
+      "power": 1295
+    },
+    {
+      "rarity": "Mythic",
+      "level": 38,
+      "power": 1330
+    },
+    {
+      "rarity": "Mythic",
+      "level": 39,
+      "power": 1365
+    },
+    {
+      "rarity": "Mythic",
+      "level": 40,
+      "power": 1400
+    },
+    {
+      "rarity": "Mythic",
+      "level": 41,
+      "power": 1435
+    },
+    {
+      "rarity": "Mythic",
+      "level": 42,
+      "power": 1470
+    },
+    {
+      "rarity": "Mythic",
+      "level": 43,
+      "power": 1505
+    },
+    {
+      "rarity": "Mythic",
+      "level": 44,
+      "power": 1540
+    },
+    {
+      "rarity": "Mythic",
+      "level": 45,
+      "power": 1575
+    },
+    {
+      "rarity": "Mythic",
+      "level": 46,
+      "power": 1610
+    },
+    {
+      "rarity": "Mythic",
+      "level": 47,
+      "power": 1645
+    },
+    {
+      "rarity": "Mythic",
+      "level": 48,
+      "power": 1680
+    },
+    {
+      "rarity": "Mythic",
+      "level": 49,
+      "power": 1715
+    },
+    {
+      "rarity": "Mythic",
+      "level": 50,
+      "power": 1750
+    },
+    {
+      "rarity": "Mythic",
+      "level": 51,
+      "power": 1785
+    },
+    {
+      "rarity": "Mythic",
+      "level": 52,
+      "power": 1820
+    },
+    {
+      "rarity": "Mythic",
+      "level": 53,
+      "power": 1855
+    },
+    {
+      "rarity": "Mythic",
+      "level": 54,
+      "power": 1890
+    },
+    {
+      "rarity": "Mythic",
+      "level": 55,
+      "power": 1925
+    },
+    {
+      "rarity": "Mythic",
+      "level": 56,
+      "power": 1960
+    },
+    {
+      "rarity": "Mythic",
+      "level": 57,
+      "power": 1995
+    },
+    {
+      "rarity": "Mythic",
+      "level": 58,
+      "power": 2030
+    },
+    {
+      "rarity": "Mythic",
+      "level": 59,
+      "power": 2065
+    },
+    {
+      "rarity": "Mythic",
+      "level": 60,
+      "power": 2100
+    },
+    {
+      "rarity": "Mythic",
+      "level": 61,
+      "power": 2135
+    },
+    {
+      "rarity": "Mythic",
+      "level": 62,
+      "power": 2170
+    },
+    {
+      "rarity": "Mythic",
+      "level": 63,
+      "power": 2205
+    },
+    {
+      "rarity": "Mythic",
+      "level": 64,
+      "power": 2240
+    },
+    {
+      "rarity": "Mythic",
+      "level": 65,
+      "power": 2275
+    },
+    {
+      "rarity": "Mythic",
+      "level": 66,
+      "power": 2310
+    },
+    {
+      "rarity": "Mythic",
+      "level": 67,
+      "power": 2345
+    },
+    {
+      "rarity": "Mythic",
+      "level": 68,
+      "power": 2380
+    },
+    {
+      "rarity": "Mythic",
+      "level": 69,
+      "power": 2415
+    },
+    {
+      "rarity": "Mythic",
+      "level": 70,
+      "power": 2450
+    },
+    {
+      "rarity": "Mythic",
+      "level": 71,
+      "power": 2485
+    },
+    {
+      "rarity": "Mythic",
+      "level": 72,
+      "power": 2520
+    },
+    {
+      "rarity": "Mythic",
+      "level": 73,
+      "power": 2555
+    },
+    {
+      "rarity": "Mythic",
+      "level": 74,
+      "power": 2590
+    },
+    {
+      "rarity": "Mythic",
+      "level": 75,
+      "power": 2625
+    },
+    {
+      "rarity": "Mythic",
+      "level": 76,
+      "power": 2660
+    },
+    {
+      "rarity": "Mythic",
+      "level": 77,
+      "power": 2695
+    },
+    {
+      "rarity": "Mythic",
+      "level": 78,
+      "power": 2730
+    },
+    {
+      "rarity": "Mythic",
+      "level": 79,
+      "power": 2765
+    },
+    {
+      "rarity": "Mythic",
+      "level": 80,
+      "power": 2800
+    },
+    {
+      "rarity": "Mythic",
+      "level": 81,
+      "power": 2835
+    },
+    {
+      "rarity": "Mythic",
+      "level": 82,
+      "power": 2870
+    },
+    {
+      "rarity": "Mythic",
+      "level": 83,
+      "power": 2905
+    },
+    {
+      "rarity": "Mythic",
+      "level": 84,
+      "power": 2940
+    },
+    {
+      "rarity": "Mythic",
+      "level": 85,
+      "power": 2975
+    },
+    {
+      "rarity": "Mythic",
+      "level": 86,
+      "power": 3010
+    },
+    {
+      "rarity": "Mythic",
+      "level": 87,
+      "power": 3045
+    },
+    {
+      "rarity": "Mythic",
+      "level": 88,
+      "power": 3080
+    },
+    {
+      "rarity": "Mythic",
+      "level": 89,
+      "power": 3115
+    },
+    {
+      "rarity": "Mythic",
+      "level": 90,
+      "power": 3150
+    },
+    {
+      "rarity": "Mythic",
+      "level": 91,
+      "power": 3185
+    },
+    {
+      "rarity": "Mythic",
+      "level": 92,
+      "power": 3220
+    },
+    {
+      "rarity": "Mythic",
+      "level": 93,
+      "power": 3255
+    },
+    {
+      "rarity": "Mythic",
+      "level": 94,
+      "power": 3290
+    },
+    {
+      "rarity": "Mythic",
+      "level": 95,
+      "power": 3325
+    },
+    {
+      "rarity": "Mythic",
+      "level": 96,
+      "power": 3360
+    },
+    {
+      "rarity": "Mythic",
+      "level": 97,
+      "power": 3395
+    },
+    {
+      "rarity": "Mythic",
+      "level": 98,
+      "power": 3430
+    },
+    {
+      "rarity": "Mythic",
+      "level": 99,
+      "power": 3465
+    },
+    {
+      "rarity": "Mythic",
+      "level": 100,
+      "power": 3500
+    },
+    {
+      "rarity": "Immortal",
+      "level": 1,
+      "power": 50
+    },
+    {
+      "rarity": "Immortal",
+      "level": 2,
+      "power": 100
+    },
+    {
+      "rarity": "Immortal",
+      "level": 3,
+      "power": 150
+    },
+    {
+      "rarity": "Immortal",
+      "level": 4,
+      "power": 200
+    },
+    {
+      "rarity": "Immortal",
+      "level": 5,
+      "power": 250
+    },
+    {
+      "rarity": "Immortal",
+      "level": 6,
+      "power": 300
+    },
+    {
+      "rarity": "Immortal",
+      "level": 7,
+      "power": 350
+    },
+    {
+      "rarity": "Immortal",
+      "level": 8,
+      "power": 400
+    },
+    {
+      "rarity": "Immortal",
+      "level": 9,
+      "power": 450
+    },
+    {
+      "rarity": "Immortal",
+      "level": 10,
+      "power": 500
+    },
+    {
+      "rarity": "Immortal",
+      "level": 11,
+      "power": 550
+    },
+    {
+      "rarity": "Immortal",
+      "level": 12,
+      "power": 600
+    },
+    {
+      "rarity": "Immortal",
+      "level": 13,
+      "power": 650
+    },
+    {
+      "rarity": "Immortal",
+      "level": 14,
+      "power": 700
+    },
+    {
+      "rarity": "Immortal",
+      "level": 15,
+      "power": 750
+    },
+    {
+      "rarity": "Immortal",
+      "level": 16,
+      "power": 800
+    },
+    {
+      "rarity": "Immortal",
+      "level": 17,
+      "power": 850
+    },
+    {
+      "rarity": "Immortal",
+      "level": 18,
+      "power": 900
+    },
+    {
+      "rarity": "Immortal",
+      "level": 19,
+      "power": 950
+    },
+    {
+      "rarity": "Immortal",
+      "level": 20,
+      "power": 1000
+    },
+    {
+      "rarity": "Immortal",
+      "level": 21,
+      "power": 1050
+    },
+    {
+      "rarity": "Immortal",
+      "level": 22,
+      "power": 1100
+    },
+    {
+      "rarity": "Immortal",
+      "level": 23,
+      "power": 1150
+    },
+    {
+      "rarity": "Immortal",
+      "level": 24,
+      "power": 1200
+    },
+    {
+      "rarity": "Immortal",
+      "level": 25,
+      "power": 1250
+    },
+    {
+      "rarity": "Immortal",
+      "level": 26,
+      "power": 1300
+    },
+    {
+      "rarity": "Immortal",
+      "level": 27,
+      "power": 1350
+    },
+    {
+      "rarity": "Immortal",
+      "level": 28,
+      "power": 1400
+    },
+    {
+      "rarity": "Immortal",
+      "level": 29,
+      "power": 1450
+    },
+    {
+      "rarity": "Immortal",
+      "level": 30,
+      "power": 1500
+    },
+    {
+      "rarity": "Immortal",
+      "level": 31,
+      "power": 1550
+    },
+    {
+      "rarity": "Immortal",
+      "level": 32,
+      "power": 1600
+    },
+    {
+      "rarity": "Immortal",
+      "level": 33,
+      "power": 1650
+    },
+    {
+      "rarity": "Immortal",
+      "level": 34,
+      "power": 1700
+    },
+    {
+      "rarity": "Immortal",
+      "level": 35,
+      "power": 1750
+    },
+    {
+      "rarity": "Immortal",
+      "level": 36,
+      "power": 1800
+    },
+    {
+      "rarity": "Immortal",
+      "level": 37,
+      "power": 1850
+    },
+    {
+      "rarity": "Immortal",
+      "level": 38,
+      "power": 1900
+    },
+    {
+      "rarity": "Immortal",
+      "level": 39,
+      "power": 1950
+    },
+    {
+      "rarity": "Immortal",
+      "level": 40,
+      "power": 2000
+    },
+    {
+      "rarity": "Immortal",
+      "level": 41,
+      "power": 2050
+    },
+    {
+      "rarity": "Immortal",
+      "level": 42,
+      "power": 2100
+    },
+    {
+      "rarity": "Immortal",
+      "level": 43,
+      "power": 2150
+    },
+    {
+      "rarity": "Immortal",
+      "level": 44,
+      "power": 2200
+    },
+    {
+      "rarity": "Immortal",
+      "level": 45,
+      "power": 2250
+    },
+    {
+      "rarity": "Immortal",
+      "level": 46,
+      "power": 2300
+    },
+    {
+      "rarity": "Immortal",
+      "level": 47,
+      "power": 2350
+    },
+    {
+      "rarity": "Immortal",
+      "level": 48,
+      "power": 2400
+    },
+    {
+      "rarity": "Immortal",
+      "level": 49,
+      "power": 2450
+    },
+    {
+      "rarity": "Immortal",
+      "level": 50,
+      "power": 2500
+    },
+    {
+      "rarity": "Immortal",
+      "level": 51,
+      "power": 2550
+    },
+    {
+      "rarity": "Immortal",
+      "level": 52,
+      "power": 2600
+    },
+    {
+      "rarity": "Immortal",
+      "level": 53,
+      "power": 2650
+    },
+    {
+      "rarity": "Immortal",
+      "level": 54,
+      "power": 2700
+    },
+    {
+      "rarity": "Immortal",
+      "level": 55,
+      "power": 2750
+    },
+    {
+      "rarity": "Immortal",
+      "level": 56,
+      "power": 2800
+    },
+    {
+      "rarity": "Immortal",
+      "level": 57,
+      "power": 2850
+    },
+    {
+      "rarity": "Immortal",
+      "level": 58,
+      "power": 2900
+    },
+    {
+      "rarity": "Immortal",
+      "level": 59,
+      "power": 2950
+    },
+    {
+      "rarity": "Immortal",
+      "level": 60,
+      "power": 3000
+    },
+    {
+      "rarity": "Immortal",
+      "level": 61,
+      "power": 3050
+    },
+    {
+      "rarity": "Immortal",
+      "level": 62,
+      "power": 3100
+    },
+    {
+      "rarity": "Immortal",
+      "level": 63,
+      "power": 3150
+    },
+    {
+      "rarity": "Immortal",
+      "level": 64,
+      "power": 3200
+    },
+    {
+      "rarity": "Immortal",
+      "level": 65,
+      "power": 3250
+    },
+    {
+      "rarity": "Immortal",
+      "level": 66,
+      "power": 3300
+    },
+    {
+      "rarity": "Immortal",
+      "level": 67,
+      "power": 3350
+    },
+    {
+      "rarity": "Immortal",
+      "level": 68,
+      "power": 3400
+    },
+    {
+      "rarity": "Immortal",
+      "level": 69,
+      "power": 3450
+    },
+    {
+      "rarity": "Immortal",
+      "level": 70,
+      "power": 3500
+    },
+    {
+      "rarity": "Immortal",
+      "level": 71,
+      "power": 3550
+    },
+    {
+      "rarity": "Immortal",
+      "level": 72,
+      "power": 3600
+    },
+    {
+      "rarity": "Immortal",
+      "level": 73,
+      "power": 3650
+    },
+    {
+      "rarity": "Immortal",
+      "level": 74,
+      "power": 3700
+    },
+    {
+      "rarity": "Immortal",
+      "level": 75,
+      "power": 3750
+    },
+    {
+      "rarity": "Immortal",
+      "level": 76,
+      "power": 3800
+    },
+    {
+      "rarity": "Immortal",
+      "level": 77,
+      "power": 3850
+    },
+    {
+      "rarity": "Immortal",
+      "level": 78,
+      "power": 3900
+    },
+    {
+      "rarity": "Immortal",
+      "level": 79,
+      "power": 3950
+    },
+    {
+      "rarity": "Immortal",
+      "level": 80,
+      "power": 4000
+    },
+    {
+      "rarity": "Immortal",
+      "level": 81,
+      "power": 4050
+    },
+    {
+      "rarity": "Immortal",
+      "level": 82,
+      "power": 4100
+    },
+    {
+      "rarity": "Immortal",
+      "level": 83,
+      "power": 4150
+    },
+    {
+      "rarity": "Immortal",
+      "level": 84,
+      "power": 4200
+    },
+    {
+      "rarity": "Immortal",
+      "level": 85,
+      "power": 4250
+    },
+    {
+      "rarity": "Immortal",
+      "level": 86,
+      "power": 4300
+    },
+    {
+      "rarity": "Immortal",
+      "level": 87,
+      "power": 4350
+    },
+    {
+      "rarity": "Immortal",
+      "level": 88,
+      "power": 4400
+    },
+    {
+      "rarity": "Immortal",
+      "level": 89,
+      "power": 4450
+    },
+    {
+      "rarity": "Immortal",
+      "level": 90,
+      "power": 4500
+    },
+    {
+      "rarity": "Immortal",
+      "level": 91,
+      "power": 4550
+    },
+    {
+      "rarity": "Immortal",
+      "level": 92,
+      "power": 4600
+    },
+    {
+      "rarity": "Immortal",
+      "level": 93,
+      "power": 4650
+    },
+    {
+      "rarity": "Immortal",
+      "level": 94,
+      "power": 4700
+    },
+    {
+      "rarity": "Immortal",
+      "level": 95,
+      "power": 4750
+    },
+    {
+      "rarity": "Immortal",
+      "level": 96,
+      "power": 4800
+    },
+    {
+      "rarity": "Immortal",
+      "level": 97,
+      "power": 4850
+    },
+    {
+      "rarity": "Immortal",
+      "level": 98,
+      "power": 4900
+    },
+    {
+      "rarity": "Immortal",
+      "level": 99,
+      "power": 4950
+    },
+    {
+      "rarity": "Immortal",
+      "level": 100,
+      "power": 5000
+    }
+  ]
+}

@@ -477,3 +477,76 @@ class PetBuildConfig(BaseModel):
         if any(row.spirit_stones_cost < 0 for row in self.builds):
             raise ValueError("Pet build spirit_stones_cost must be non-negative")
         return self
+
+
+# ── Power Tables ──────────────────────────────────────────────────────
+
+
+class HeroPowerRow(BaseModel):
+    """Single row mapping hero level to power."""
+
+    level: int = Field(ge=1, le=50, description="Hero level (1-50)")
+    power: int = Field(ge=0, description="Power granted at this hero level")
+
+
+class HeroPowerConfig(BaseModel):
+    """Hero level → power lookup table."""
+
+    levels: List[HeroPowerRow]
+
+    @model_validator(mode="after")
+    def _validate_level_coverage(self):
+        seen = sorted(row.level for row in self.levels)
+        if seen != list(range(1, 51)):
+            raise ValueError(
+                "Hero power table must contain each level 1..50 exactly once"
+            )
+        return self
+
+
+class PetPowerRow(BaseModel):
+    """Single row mapping (rarity, pet level) to power."""
+
+    rarity: str
+    level: int = Field(ge=1, le=100, description="Pet level (1-100)")
+    power: int = Field(ge=0, description="Power granted at this rarity/level")
+
+
+class PetPowerConfig(BaseModel):
+    """Pet (rarity × level) → power lookup table."""
+
+    levels: List[PetPowerRow]
+
+    @model_validator(mode="after")
+    def _validate_level_coverage(self):
+        rarity_to_levels: Dict[str, set[int]] = {}
+        for row in self.levels:
+            rarity_to_levels.setdefault(row.rarity, set()).add(row.level)
+        for rarity, levels in rarity_to_levels.items():
+            if levels != set(range(1, 101)):
+                raise ValueError(
+                    f"Pet power table for rarity '{rarity}' must contain levels 1..100"
+                )
+        return self
+
+
+class GearPowerRow(BaseModel):
+    """Single row mapping gear level to power."""
+
+    level: int = Field(ge=1, le=100, description="Gear level (1-100)")
+    power: int = Field(ge=0, description="Power granted at this gear level")
+
+
+class GearPowerConfig(BaseModel):
+    """Gear level → power lookup table."""
+
+    levels: List[GearPowerRow]
+
+    @model_validator(mode="after")
+    def _validate_level_coverage(self):
+        seen = sorted(row.level for row in self.levels)
+        if seen != list(range(1, 101)):
+            raise ValueError(
+                "Gear power table must contain each level 1..100 exactly once"
+            )
+        return self

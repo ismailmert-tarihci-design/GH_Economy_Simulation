@@ -30,6 +30,9 @@ from simulation.models import (
     GearSlotCostRow,
     GearDesignConfig,
     GearSlotCostConfig,
+    HeroPowerConfig,
+    PetPowerConfig,
+    GearPowerConfig,
 )
 
 
@@ -521,6 +524,45 @@ def load_gear_slot_costs() -> GearSlotCostConfig:
         raise FileNotFoundError("gear_slot_cost_table.json not found in data/defaults/")
     except (ValueError, TypeError) as e:
         raise ConfigValidationError(f"Gear slot cost table validation failed: {str(e)}")
+
+
+def load_hero_power_table() -> HeroPowerConfig:
+    """Load hero power table from JSON (levels 1-50)."""
+    defaults_dir = _get_defaults_dir()
+    try:
+        with open(defaults_dir / "hero_power_table.json") as f:
+            data = json.load(f)
+        return HeroPowerConfig(**data)
+    except FileNotFoundError:
+        raise FileNotFoundError("hero_power_table.json not found in data/defaults/")
+    except (ValueError, TypeError) as e:
+        raise ConfigValidationError(f"Hero power table validation failed: {str(e)}")
+
+
+def load_pet_power_table() -> PetPowerConfig:
+    """Load pet power table from JSON (levels 1-100 × rarity)."""
+    defaults_dir = _get_defaults_dir()
+    try:
+        with open(defaults_dir / "pet_power_table.json") as f:
+            data = json.load(f)
+        return PetPowerConfig(**data)
+    except FileNotFoundError:
+        raise FileNotFoundError("pet_power_table.json not found in data/defaults/")
+    except (ValueError, TypeError) as e:
+        raise ConfigValidationError(f"Pet power table validation failed: {str(e)}")
+
+
+def load_gear_power_table() -> GearPowerConfig:
+    """Load gear power table from JSON (levels 1-100)."""
+    defaults_dir = _get_defaults_dir()
+    try:
+        with open(defaults_dir / "gear_power_table.json") as f:
+            data = json.load(f)
+        return GearPowerConfig(**data)
+    except FileNotFoundError:
+        raise FileNotFoundError("gear_power_table.json not found in data/defaults/")
+    except (ValueError, TypeError) as e:
+        raise ConfigValidationError(f"Gear power table validation failed: {str(e)}")
 
 
 def load_hero_unlocks(hero_unlock_rows: list[dict[str, Any]]) -> HeroUnlockTable:

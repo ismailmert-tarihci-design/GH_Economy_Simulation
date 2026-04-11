@@ -1,0 +1,204 @@
+{
+  "levels": [
+    {
+      "level": 1,
+      "power": 100
+    },
+    {
+      "level": 2,
+      "power": 200
+    },
+    {
+      "level": 3,
+      "power": 300
+    },
+    {
+      "level": 4,
+      "power": 400
+    },
+    {
+      "level": 5,
+      "power": 500
+    },
+    {
+      "level": 6,
+      "power": 600
+    },
+    {
+      "level": 7,
+      "power": 700
+    },
+    {
+      "level": 8,
+      "power": 800
+    },
+    {
+      "level": 9,
+      "power": 900
+    },
+    {
+      "level": 10,
+      "power": 1000
+    },
+    {
+      "level": 11,
+      "power": 1100
+    },
+    {
+      "level": 12,
+      "power": 1200
+    },
+    {
+      "level": 13,
+      "power": 1300
+    },
+    {
+      "level": 14,
+      "power": 1400
+    },
+    {
+      "level": 15,
+      "power": 1500
+    },
+    {
+      "level": 16,
+      "power": 1600
+    },
+    {
+      "level": 17,
+      "power": 1700
+    },
+    {
+      "level": 18,
+      "power": 1800
+    },
+    {
+      "level": 19,
+      "power": 1900
+    },
+    {
+      "level": 20,
+      "power": 2000
+    },
+    {
+      "level": 21,
+      "power": 2100
+    },
+    {
+      "level": 22,
+      "power": 2200
+    },
+    {
+      "level": 23,
+      "power": 2300
+    },
+    {
+      "level": 24,
+      "power": 2400
+    },
+    {
+      "level": 25,
+      "power": 2500
+    },
+    {
+      "level": 26,
+      "power": 2600
+    },
+    {
+      "level": 27,
+      "power": 2700
+    },
+    {
+      "level": 28,
+      "power": 2800
+    },
+    {
+      "level": 29,
+      "power": 2900
+    },
+    {
+      "level": 30,
+      "power": 3000
+    },
+    {
+      "level": 31,
+      "power": 3100
+    },
+    {
+      "level": 32,
+      "power": 3200
+    },
+    {
+      "level": 33,
+      "power": 3300
+    },
+    {
+      "level": 34,
+      "power": 3400
+    },
+    {
+      "level": 35,
+      "power": 3500
+    },
+    {
+      "level": 36,
+      "power": 3600
+    },
+    {
+      "level": 37,
+      "power": 3700
+    },
+    {
+      "level": 38,
+      "power": 3800
+    },
+    {
+      "level": 39,
+      "power": 3900
+    },
+    {
+      "level": 40,
+      "power": 4000
+    },
+    {
+      "level": 41,
+      "power": 4100
+    },
+    {
+      "level": 42,
+      "power": 4200
+    },
+    {
+      "level": 43,
+      "power": 4300
+    },
+    {
+      "level": 44,
+      "power": 4400
+    },
+    {
+      "level": 45,
+      "power": 4500
+    },
+    {
+      "level": 46,
+      "power": 4600
+    },
+    {
+      "level": 47,
+      "power": 4700
+    },
+    {
+      "level": 48,
+      "power": 4800
+    },
+    {
+      "level": 49,
+      "power": 4900
+    },
+    {
+      "level": 50,
+      "power": 5000
+    }
+  ]
+}
