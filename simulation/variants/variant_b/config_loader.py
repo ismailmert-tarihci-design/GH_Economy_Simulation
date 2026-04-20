@@ -40,25 +40,25 @@ def load_defaults() -> HeroCardConfig:
 
 
 def _builtin_defaults() -> HeroCardConfig:
-    """Built-in default Variant B configuration with all 17 heroes (~32 cards each, 544 total)."""
+    """Built-in default Variant B configuration with all 17 heroes (24 cards each, 408 total)."""
     heroes = [
-        _create_sample_hero("woody", "Woody", num_cards=32),
-        _create_sample_hero("cowboy", "Cowboy", num_cards=32),
-        _create_sample_hero("barbarian", "Barbarian", num_cards=32),
-        _create_sample_hero("rexx", "Rexx", num_cards=32),
-        _create_sample_hero("sunna", "Sunna", num_cards=32),
-        _create_sample_hero("mammon", "Mammon", num_cards=32),
-        _create_sample_hero("rogue", "Rogue", num_cards=32),
-        _create_sample_hero("felorc", "Felorc", num_cards=32),
-        _create_sample_hero("eiva", "Eiva", num_cards=32),
-        _create_sample_hero("gudan", "Gudan", num_cards=32),
-        _create_sample_hero("druid", "Druid", num_cards=32),
-        _create_sample_hero("yasuhiro", "Yasuhiro", num_cards=32),
-        _create_sample_hero("nova", "Nova", num_cards=32),
-        _create_sample_hero("rickie", "Rickie", num_cards=32),
-        _create_sample_hero("raven", "Raven", num_cards=32),
-        _create_sample_hero("jester", "Jester", num_cards=32),
-        _create_sample_hero("munara", "Munara", num_cards=32),
+        _create_sample_hero("woody", "Woody", num_cards=24),
+        _create_sample_hero("cowboy", "Cowboy", num_cards=24),
+        _create_sample_hero("barbarian", "Barbarian", num_cards=24),
+        _create_sample_hero("rexx", "Rexx", num_cards=24),
+        _create_sample_hero("sunna", "Sunna", num_cards=24),
+        _create_sample_hero("mammon", "Mammon", num_cards=24),
+        _create_sample_hero("rogue", "Rogue", num_cards=24),
+        _create_sample_hero("felorc", "Felorc", num_cards=24),
+        _create_sample_hero("eiva", "Eiva", num_cards=24),
+        _create_sample_hero("gudan", "Gudan", num_cards=24),
+        _create_sample_hero("druid", "Druid", num_cards=24),
+        _create_sample_hero("yasuhiro", "Yasuhiro", num_cards=24),
+        _create_sample_hero("nova", "Nova", num_cards=24),
+        _create_sample_hero("rickie", "Rickie", num_cards=24),
+        _create_sample_hero("raven", "Raven", num_cards=24),
+        _create_sample_hero("jester", "Jester", num_cards=24),
+        _create_sample_hero("munara", "Munara", num_cards=24),
     ]
 
     # One premium pack per hero (card pool auto-derived from hero's cards)
@@ -67,23 +67,29 @@ def _builtin_defaults() -> HeroCardConfig:
     ]
 
     return HeroCardConfig(
-        num_days=100,
+        num_days=730,
         initial_coins=0,
         initial_bluestars=0,
         heroes=heroes,
         hero_unlock_schedule={
+            # Year 1
             0: ["woody", "cowboy"],
-            3: ["barbarian"],
-            7: ["rexx", "sunna"],
-            10: ["mammon"],
-            14: ["rogue", "felorc"],
-            18: ["eiva"],
-            21: ["gudan", "druid"],
-            28: ["yasuhiro"],
-            35: ["nova", "rickie"],
-            42: ["raven"],
-            50: ["jester"],
-            60: ["munara"],
+            14: ["barbarian"],
+            30: ["rexx"],
+            50: ["sunna"],
+            75: ["mammon"],
+            100: ["rogue"],
+            130: ["felorc"],
+            170: ["eiva"],
+            220: ["gudan"],
+            280: ["druid"],
+            340: ["yasuhiro"],
+            # Year 2
+            400: ["nova"],
+            460: ["rickie"],
+            530: ["raven"],
+            600: ["jester"],
+            680: ["munara"],
         },
         num_gold_cards=9,
         num_blue_cards=14,
@@ -92,8 +98,8 @@ def _builtin_defaults() -> HeroCardConfig:
         hero_duplicate_ranges=_default_duplicate_ranges(),
         shared_upgrade_tables=_default_shared_upgrade_tables(),
         shared_duplicate_ranges=_default_shared_duplicate_ranges(),
-        shared_xp_per_level=[50 + i * 25 for i in range(50)],
-        shared_max_hero_level=50,
+        shared_xp_per_level=[50 + i * 25 for i in range(30)],
+        shared_max_hero_level=30,
         joker_drop_rate_in_regular_packs=0.01,
         drop_config=HeroDropConfig(
             hero_vs_shared_base_rate=0.50,
@@ -180,16 +186,17 @@ def _builtin_defaults() -> HeroCardConfig:
     )
 
 
-def _create_sample_hero(hero_id: str, name: str, num_cards: int = 32) -> HeroDef:
-    """Create a sample hero with a balanced card pool and linear skill tree.
+def _create_sample_hero(hero_id: str, name: str, num_cards: int = 24) -> HeroDef:
+    """Create a hero with a balanced card pool and real skill tree pattern.
 
-    Default: ~32 cards per hero (17 heroes × 32 = 544 total).
-    Rarity distribution is a starting point — fully editable in the UI.
+    Default: 24 cards per hero (17 heroes x 24 = 408 total).
+    12 starter cards (all GRAY), 12 unlocked via skill tree.
+    Rarity distribution and skill tree are fully editable in the UI.
     """
-    # Distribute cards across rarities: ~55% gray, 30% blue, 15% gold
-    num_gray = max(1, round(num_cards * 0.55))
-    num_blue = max(1, round(num_cards * 0.30))
-    num_gold = max(1, num_cards - num_gray - num_blue)
+    # Distribute cards across rarities: ~50% gray, 30% blue, 20% gold
+    num_gray = max(1, round(num_cards * 0.50))   # 12
+    num_blue = max(1, round(num_cards * 0.30))    # 7
+    num_gold = max(1, num_cards - num_gray - num_blue)  # 5
     rarity_dist = [
         (HeroCardRarity.GRAY, num_gray),
         (HeroCardRarity.BLUE, num_blue),
@@ -214,30 +221,66 @@ def _create_sample_hero(hero_id: str, name: str, num_cards: int = 32) -> HeroDef
             ))
             card_idx += 1
 
-    # Starter cards: first 3 gray cards
-    starter_ids = [c.card_id for c in cards if c.rarity == HeroCardRarity.GRAY][:3]
+    # Starter cards: all GRAY cards (12 starters)
+    starter_ids = [c.card_id for c in cards if c.rarity == HeroCardRarity.GRAY]
 
-    # Linear skill tree: 30 nodes, distributing remaining cards across them
-    # Some nodes unlock cards, others are perk-only nodes
-    skill_tree = []
+    # Remaining 12 cards (BLUE + GOLD) unlock via skill tree
     remaining_cards = [c.card_id for c in cards if c.card_id not in starter_ids]
-    num_nodes = 30
-    # Spread cards across the first len(remaining_cards) nodes
-    for node_idx in range(num_nodes):
-        if remaining_cards:
-            unlocked = [remaining_cards.pop(0)]
+
+    # Skill tree pattern (matches real game design):
+    # Levels where a card unlocks: 4, 6, 8, 10, 11, 13, 15, 17, 19, 21, 22, 24
+    # Other levels have stat boosts, hero passives, deck size, etc.
+    _TREE_TEMPLATE = [
+        # (level, reward_type)  — "card" means pop a card from remaining
+        (2, "Stat Boosts"),
+        (3, "Stat Boosts"),
+        (4, "card"),
+        (5, "Hero Passive"),
+        (6, "card"),
+        (7, "+1 Battle Deck Size"),
+        (8, "card"),
+        (9, "Hero Passive"),
+        (10, "card"),
+        (11, "card"),
+        (12, "+1 Battle Deck Size"),
+        (13, "card"),
+        (14, "Hero Passive"),
+        (15, "card"),
+        (16, "Perma Slot Upgrade"),
+        (17, "card"),
+        (18, "Hero Passive"),
+        (19, "card"),
+        (20, "+1 Battle Deck Size"),
+        (21, "card"),
+        (22, "card"),
+        (23, "Hero Passive"),
+        (24, "card"),
+        (25, "All Heroes Stat Boost"),
+        (26, "Ascension Shards"),
+        (27, "All Heroes Stat Boost"),
+        (28, "Ascension Shards"),
+        (29, "All Heroes Stat Boost"),
+        (30, "Ascension Shards"),
+    ]
+
+    skill_tree = []
+    card_queue = list(remaining_cards)
+    for node_idx, (level_req, reward) in enumerate(_TREE_TEMPLATE):
+        if reward == "card" and card_queue:
+            unlocked = [card_queue.pop(0)]
+            perk = f"Unlockable Card"
         else:
             unlocked = []
-        level_req = 2 + node_idx  # levels 2-34
+            perk = reward
         skill_tree.append(SkillTreeNode(
             node_index=node_idx,
             hero_level_required=level_req,
             cards_unlocked=unlocked,
-            perk_label=f"Level {level_req} unlock" if unlocked else f"Level {level_req} perk",
+            perk_label=perk,
         ))
 
-    # XP per level: escalating thresholds
-    xp_per_level = [50 + i * 25 for i in range(50)]
+    # XP per level: escalating thresholds (30 levels)
+    xp_per_level = [50 + i * 25 for i in range(30)]
 
     return HeroDef(
         hero_id=hero_id,
@@ -245,7 +288,7 @@ def _create_sample_hero(hero_id: str, name: str, num_cards: int = 32) -> HeroDef
         card_pool=cards,
         skill_tree=skill_tree,
         xp_per_level=xp_per_level,
-        max_level=50,
+        max_level=30,
         starter_card_ids=starter_ids,
     )
 

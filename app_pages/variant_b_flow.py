@@ -174,33 +174,37 @@ flowchart LR
 """)
 
     st.markdown("""
-Each hero's 32 cards break down as:
-- **18 GRAY** (55%), **10 BLUE** (30%), **4 GOLD** (15%)
-- 3 GRAY cards are `starter_card_ids` --- unlocked at init
-- All other 29 cards have `unlocked=False`
+Each hero's 24 cards break down as:
+- **12 GRAY** (50%), **7 BLUE** (30%), **5 GOLD** (20%)
+- All 12 GRAY cards are `starter_card_ids` --- unlocked at init
+- 12 remaining cards (BLUE + GOLD) have `unlocked=False`, unlocked via skill tree
 - `skill_tree_progress = -1` (no nodes processed)
 
 New heroes are added on their scheduled day via `_process_hero_unlocks`
-(line 385). They get the same 3-starter initialization.
+(line 385). They get the same 12-starter initialization.
 
-**Hero unlock schedule (default):**
+**Hero unlock schedule (default, spans 2 years):**
 
-| Day | Heroes |
-|-----|--------|
-| 0 | Woody, Cowboy |
-| 3 | Barbarian |
-| 7 | Rexx, Sunna |
-| 10 | Mammon |
-| 14 | Rogue, Felorc |
-| 18 | Eiva |
-| 21 | Gudan, Druid |
-| 28 | Yasuhiro |
-| 35 | Nova, Rickie |
-| 42 | Raven |
-| 50 | Jester |
-| 60 | Munara |
+| Day | Heroes | Year |
+|-----|--------|------|
+| 0 | Woody, Cowboy | 1 |
+| 14 | Barbarian | 1 |
+| 30 | Rexx | 1 |
+| 50 | Sunna | 1 |
+| 75 | Mammon | 1 |
+| 100 | Rogue | 1 |
+| 130 | Felorc | 1 |
+| 170 | Eiva | 1 |
+| 220 | Gudan | 1 |
+| 280 | Druid | 1 |
+| 340 | Yasuhiro | 1 |
+| 400 | Nova | 2 |
+| 460 | Rickie | 2 |
+| 530 | Raven | 2 |
+| 600 | Jester | 2 |
+| 680 | Munara | 2 |
 
-Total: **17 heroes x 32 cards = 544 hero cards** + 43 shared = 587 cards in pool.
+Total: **17 heroes x 24 cards = 408 hero cards** + 43 shared = 451 cards in pool.
 """)
 
 
@@ -327,7 +331,7 @@ flowchart TD
 **Five-step algorithm explained:**
 
 1. **Eligibility**: Only heroes with at least one unlocked card participate.
-   A newly unlocked hero with 3 starter GRAY cards is eligible immediately.
+   A newly unlocked hero with 12 starter GRAY cards is eligible immediately.
 
 2. **Bucket split**: With 2 heroes at equal levels, both go to the bottom bucket
    (middle and top are empty). With 5 heroes, bottom gets 3, middle gets 1, top gets 1.
@@ -341,8 +345,7 @@ flowchart TD
 
 5. **Rarity gating**: At game start, heroes only have GRAY cards unlocked.
    The rarity roll is restricted to available rarities, so BLUE and GOLD cards
-   **cannot drop until the skill tree unlocks them**. This is the critical
-   progression gate.
+   **cannot drop until the skill tree unlocks them** (first BLUE at hero level 4).
 """)
 
 
@@ -418,7 +421,7 @@ The percentages taper at higher levels:
 so a pull of 8 dupes earns `max(1, 8 * 25)` = 200 coins.
 
 **Shared cards** use the same formula with separate tables per category.
-GRAY_SHARED at level 1: 80-90% of 8 = 6-7 dupes, earning `6 * 3` = 18 coins.
+GRAY_SHARED at level 1: 80-90% of 8 = 6-7 dupes, earning `6 * 3` = ~18 coins.
 """)
 
 
@@ -563,31 +566,39 @@ flowchart TD
 **Linear progression**: Nodes must be activated in order. You cannot skip
 node 5 to reach node 6, even if the hero's level exceeds node 6's requirement.
 
-**Default tree structure** (per hero, 30 nodes):
+**Default tree structure** (per hero, 29 nodes matching levels 2-30):
 
-Each node unlocks 1 card. Cards are distributed in the order they appear in
-`card_pool`: GRAY cards first (nodes 0-14), then BLUE (nodes 15-24), then
-GOLD (nodes 25-28). Node 29 has no card (perk-only).
+12 of the 29 nodes unlock cards (BLUE + GOLD). The rest grant perks
+(stat boosts, hero passives, battle deck size, etc).
 
-| Node | Required Level | Unlocks |
-|------|---------------|---------|
-| 0 | 2 | 4th GRAY card |
-| 1 | 3 | 5th GRAY card |
-| ... | ... | ... |
-| 14 | 16 | 18th GRAY card (last) |
-| 15 | 17 | 1st BLUE card |
-| 16 | 18 | 2nd BLUE card |
-| ... | ... | ... |
-| 24 | 26 | 10th BLUE card (last) |
-| 25 | 27 | 1st GOLD card |
-| ... | ... | ... |
-| 28 | 30 | 4th GOLD card (last) |
-| 29 | 31 | Perk only |
+| Level | Reward | Cards |
+|-------|--------|-------|
+| 2-3 | Stat Boosts | - |
+| **4** | **Unlockable Card** | 1st BLUE |
+| 5 | Hero Passive | - |
+| **6** | **Unlockable Card** | 2nd BLUE |
+| 7 | +1 Battle Deck Size | - |
+| **8** | **Unlockable Card** | 3rd BLUE |
+| 9 | Hero Passive | - |
+| **10-11** | **Unlockable Cards** | 4th BLUE, 5th BLUE |
+| 12 | +1 Battle Deck Size | - |
+| **13** | **Unlockable Card** | 6th BLUE |
+| 14 | Hero Passive | - |
+| **15** | **Unlockable Card** | 7th BLUE (last) |
+| 16 | Perma Slot Upgrade | - |
+| **17** | **Unlockable Card** | 1st GOLD |
+| 18 | Hero Passive | - |
+| **19** | **Unlockable Card** | 2nd GOLD |
+| 20 | +1 Battle Deck Size | - |
+| **21-22** | **Unlockable Cards** | 3rd GOLD, 4th GOLD |
+| 23 | Hero Passive | - |
+| **24** | **Unlockable Card** | 5th GOLD (last) |
+| 25-30 | All Heroes Stat Boost / Ascension Shards | - |
 
 **This means:**
-- BLUE cards don't enter the drop pool until **hero level 17**
-- GOLD cards don't enter until **hero level 27**
-- A hero needs ~3,800 cumulative XP to reach level 17 (from GRAY upgrades alone)
+- BLUE cards enter the drop pool at **hero level 4** (~250 cumulative XP)
+- GOLD cards enter at **hero level 17** (~2,600 cumulative XP)
+- 12 GRAY starter cards are available from day 1
 """)
 
 
@@ -722,26 +733,6 @@ def _render_known_issues() -> None:
     st.markdown("## Known Issues / Design Notes")
 
     st.markdown("""
-### BLUE/GOLD cards take a long time to unlock
-
-The default skill tree distributes cards in rarity order: all GRAY cards
-fill nodes 0-14, BLUE fills 15-24, GOLD fills 25-28. Since each node
-requires 1 additional hero level, BLUE cards don't enter the pool until
-**hero level 17** and GOLD until **hero level 27**.
-
-Reaching level 17 from GRAY-only upgrades (10 XP each) requires ~3,800
-cumulative XP, or roughly **380 GRAY upgrades on one hero**. This may be
-intentionally slow for long-term retention, but it means the early game is
-entirely GRAY-dominated.
-
-**Possible tuning levers:**
-- Interleave rarities in the skill tree (mix BLUE cards into earlier nodes)
-- Increase XP rewards for GRAY upgrades
-- Lower the hero level requirements on skill tree nodes
-- Add BLUE cards to starter_card_ids
-
----
-
 ### Shared card selection has no category weighting
 
 `select_shared_card` picks from the flat pool of 43 cards weighted only by

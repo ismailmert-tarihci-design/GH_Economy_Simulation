@@ -129,7 +129,6 @@ page = st.navigation(
             st.Page(_page_pull_logs, title="Pull logs", icon=":material/list_alt:"),
             st.Page(_page_gacha, title="Pack simulator", icon=":material/playing_cards:"),
             st.Page(_page_variant_b_flow, title="Variant B flow", icon=":material/account_tree:"),
-            st.Page(_page_docs, title="Documentation", icon=":material/menu_book:"),
         ],
     }
 )

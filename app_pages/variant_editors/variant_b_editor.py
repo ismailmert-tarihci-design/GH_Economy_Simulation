@@ -45,6 +45,7 @@ def render_variant_b_editor(config: HeroCardConfig) -> None:
 
     tabs = st.tabs([
         ":material/person: Heroes & cards",
+        ":material/schedule: Hero unlock timeline",
         ":material/account_tree: Skill trees",
         ":material/trending_up: Shared XP",
         ":material/paid: Hero upgrade costs",
@@ -61,26 +62,28 @@ def render_variant_b_editor(config: HeroCardConfig) -> None:
     with tabs[0]:
         _render_heroes_tab(config)
     with tabs[1]:
-        _render_skill_tree_tab(config)
+        _render_unlock_timeline_tab(config)
     with tabs[2]:
-        _render_xp_tab(config)
+        _render_skill_tree_tab(config)
     with tabs[3]:
-        _render_upgrade_costs_tab(config)
+        _render_xp_tab(config)
     with tabs[4]:
-        _render_shared_upgrade_tab(config)
+        _render_upgrade_costs_tab(config)
     with tabs[5]:
-        _render_duplicate_ranges_tab(config)
+        _render_shared_upgrade_tab(config)
     with tabs[6]:
-        _render_shared_dupe_ranges_tab(config)
+        _render_duplicate_ranges_tab(config)
     with tabs[7]:
-        _render_drop_algorithm_tab(config)
+        _render_shared_dupe_ranges_tab(config)
     with tabs[8]:
-        _render_joker_tab(config)
+        _render_drop_algorithm_tab(config)
     with tabs[9]:
-        _render_premium_packs_tab(config)
+        _render_joker_tab(config)
     with tabs[10]:
-        _render_pack_schedule_tab(config)
+        _render_premium_packs_tab(config)
     with tabs[11]:
+        _render_pack_schedule_tab(config)
+    with tabs[12]:
         _render_import_export(config)
 
 
@@ -152,27 +155,91 @@ def _render_heroes_tab(config: HeroCardConfig) -> None:
             hero.card_pool = new_cards
             hero.starter_card_ids = new_starters
 
-    # Unlock schedule
     st.divider()
-    st.subheader("Hero Unlock Schedule")
-    st.caption("Day -> Heroes unlocked (comma-separated hero IDs)")
-    schedule_rows = [
-        {"Day": int(d), "Hero IDs": ", ".join(hids)}
-        for d, hids in sorted(config.hero_unlock_schedule.items(), key=lambda x: int(x[0]))
-    ]
-    if not schedule_rows:
-        schedule_rows = [{"Day": 0, "Hero IDs": ""}]
-    sched_df = pd.DataFrame(schedule_rows)
-    bulk = render_bulk_edit_bar("unlock_sched", sched_df, label="Unlock Schedule")
-    if bulk is not None:
-        sched_df = bulk
-    edited_sched = st.data_editor(sched_df, width="stretch", hide_index=True, num_rows="dynamic", key="vb_unlock_sched")
-    config.hero_unlock_schedule = {}
-    for _, row in edited_sched.iterrows():
-        day = int(row["Day"])
-        ids = [s.strip() for s in str(row["Hero IDs"]).split(",") if s.strip()]
-        if ids:
-            config.hero_unlock_schedule[day] = ids
+    st.caption("Use the **Hero unlock timeline** tab to edit when each hero becomes available.")
+
+
+def _render_unlock_timeline_tab(config: HeroCardConfig) -> None:
+    st.subheader("Hero Unlock Timeline")
+    st.caption(
+        "Drag the unlock day for each hero. "
+        "Heroes are grouped by year for a 730-day (2-year) simulation."
+    )
+
+    if not config.heroes:
+        st.info("Add heroes first in the Heroes & Cards tab.")
+        return
+
+    # Build a flat list: one row per hero with their unlock day
+    hero_id_to_name = {h.hero_id: h.name for h in config.heroes}
+    # Invert schedule: hero_id -> day
+    hero_day_map: dict[str, int] = {}
+    for day, hids in config.hero_unlock_schedule.items():
+        for hid in hids:
+            hero_day_map[hid] = int(day)
+
+    rows = []
+    for hero in config.heroes:
+        rows.append({
+            "Hero": hero.name,
+            "hero_id": hero.hero_id,
+            "Unlock Day": hero_day_map.get(hero.hero_id, 0),
+        })
+    rows.sort(key=lambda r: r["Unlock Day"])
+
+    timeline_df = pd.DataFrame(rows)
+
+    # Visual timeline chart
+    import plotly.express as px  # type: ignore[import-untyped]
+
+    max_day = max(config.num_days, max((r["Unlock Day"] for r in rows), default=0) + 30)
+    fig = px.scatter(
+        timeline_df, x="Unlock Day", y="Hero",
+        color="Hero",
+        title="Hero Unlock Timeline",
+        labels={"Unlock Day": "Day", "Hero": ""},
+    )
+    fig.update_traces(marker=dict(size=14, symbol="diamond"))
+    fig.update_layout(
+        xaxis=dict(range=[-5, max_day + 10], dtick=60),
+        yaxis=dict(autorange="reversed"),
+        showlegend=False,
+        height=max(350, len(rows) * 28 + 80),
+        margin=dict(l=0, r=0, t=40, b=0),
+    )
+    # Year dividers
+    fig.add_vline(x=365, line_dash="dash", line_color="gray", annotation_text="Year 2")
+    st.plotly_chart(fig, use_container_width=True)
+
+    # Editable table
+    st.markdown("**Edit unlock days below** (one hero per row):")
+
+    edit_df = timeline_df[["Hero", "hero_id", "Unlock Day"]].copy()
+    edited = st.data_editor(
+        edit_df,
+        column_config={
+            "Hero": st.column_config.TextColumn("Hero", disabled=True),
+            "hero_id": st.column_config.TextColumn("ID", disabled=True),
+            "Unlock Day": st.column_config.NumberColumn(
+                "Unlock Day",
+                min_value=0,
+                max_value=730,
+                step=1,
+                help="Day when this hero becomes available (0 = start)",
+            ),
+        },
+        width="stretch",
+        hide_index=True,
+        key="vb_unlock_timeline",
+    )
+
+    # Write back to config
+    new_schedule: dict[int, list[str]] = {}
+    for _, row in edited.iterrows():
+        day = int(row["Unlock Day"])
+        hid = str(row["hero_id"])
+        new_schedule.setdefault(day, []).append(hid)
+    config.hero_unlock_schedule = new_schedule
 
 
 def _render_skill_tree_tab(config: HeroCardConfig) -> None:
