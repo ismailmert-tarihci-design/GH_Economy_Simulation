@@ -353,24 +353,24 @@ def _default_upgrade_tables() -> list[HeroUpgradeCostTable]:
     return [
         HeroUpgradeCostTable(
             rarity=HeroCardRarity.GRAY,
-            duplicate_costs=[10, 12, 13, 28, 32, 40, 48, 78, 150],
+            duplicate_costs=[10, 15, 20, 45, 50, 60, 70, 125, 150],
             coin_costs=[250, 375, 500, 625, 750, 875, 1000, 1125, 1250],
             bluestar_rewards=[50, 65, 80, 95, 110, 125, 150, 200, 250],
             xp_rewards=[10, 10, 10, 20, 20, 20, 20, 30, 30],
         ),
         HeroUpgradeCostTable(
             rarity=HeroCardRarity.BLUE,
-            duplicate_costs=[20, 24, 26, 55, 64, 80, 90, 160, 300],
+            duplicate_costs=[20, 30, 40, 75, 85, 100, 120, 205, 255],
             coin_costs=[250, 375, 500, 625, 750, 875, 1000, 1125, 1250],
             bluestar_rewards=[100, 130, 160, 190, 220, 250, 300, 400, 500],
-            xp_rewards=[20, 20, 20, 40, 40, 40, 40, 60, 60],
+            xp_rewards=[25, 25, 25, 35, 35, 35, 35, 55, 55],
         ),
         HeroUpgradeCostTable(
             rarity=HeroCardRarity.GOLD,
-            duplicate_costs=[20, 30, 36, 80, 90, 100, 120, 220, 240],
+            duplicate_costs=[20, 35, 50, 100, 115, 130, 150, 270, 335],
             coin_costs=[250, 375, 500, 625, 750, 875, 1000, 1125, 1250],
             bluestar_rewards=[150, 195, 240, 285, 330, 375, 450, 600, 750],
-            xp_rewards=[30, 30, 30, 60, 60, 60, 60, 90, 90],
+            xp_rewards=[30, 30, 35, 55, 55, 55, 55, 80, 80],
         ),
     ]
 
