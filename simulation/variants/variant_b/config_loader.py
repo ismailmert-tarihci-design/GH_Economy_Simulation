@@ -10,6 +10,8 @@ from __future__ import annotations
 import logging
 from pathlib import Path
 
+from simulation.models import UserProfile
+
 from simulation.variants.variant_b.models import (
     HeroCardConfig,
     HeroCardDef,
@@ -420,22 +422,31 @@ def _default_shared_upgrade_tables() -> list[SharedUpgradeCostTable]:
     def _make_bluestar_rewards(base: int, step_every: int, step_amount: int) -> list[int]:
         return [base + (i // step_every) * step_amount for i in range(num_levels)]
 
+    blue_gray_dupes = [15 + i * 3 for i in range(num_levels)]
+    blue_gray_bluestars = [
+        10, 10, 10, 10, 10, 15, 15, 15, 15, 15, 15, 20, 20, 20, 20, 20, 20, 25, 25, 25,
+        25, 25, 25, 30, 30, 30, 30, 30, 30, 35, 35, 35, 35, 35, 35, 40, 40, 40, 40, 40,
+        40, 45, 45, 45, 45, 45, 45, 45, 50, 50, 50, 50, 50, 50, 50, 55, 55, 55, 55, 55,
+        55, 55, 60, 60, 60, 60, 60, 60, 60, 65, 65, 65, 65, 65, 65, 65, 70, 70, 70, 70,
+        70, 70, 70, 75, 75, 75, 75, 75, 75, 75, 75, 80, 80, 80, 80, 80, 80, 80, 80,
+    ]
+
     return [
         SharedUpgradeCostTable(
             category="GRAY_SHARED",
-            duplicate_costs=_make_dupe_costs(8, 2),
-            coin_costs=_make_coin_costs(25, 25),
-            bluestar_rewards=_make_bluestar_rewards(5, 10, 5),
+            duplicate_costs=blue_gray_dupes,
+            coin_costs=_make_coin_costs(50, 50),
+            bluestar_rewards=blue_gray_bluestars,
         ),
         SharedUpgradeCostTable(
             category="BLUE_SHARED",
-            duplicate_costs=_make_dupe_costs(10, 3),
+            duplicate_costs=blue_gray_dupes,
             coin_costs=_make_coin_costs(50, 50),
-            bluestar_rewards=_make_bluestar_rewards(10, 10, 5),
+            bluestar_rewards=blue_gray_bluestars,
         ),
         SharedUpgradeCostTable(
             category="GOLD_SHARED",
-            duplicate_costs=_make_dupe_costs(10, 1),
+            duplicate_costs=[10 + i for i in range(num_levels)],
             coin_costs=_make_coin_costs(50, 50),
             bluestar_rewards=_make_bluestar_rewards(30, 5, 5),
         ),
@@ -445,39 +456,75 @@ def _default_shared_upgrade_tables() -> list[SharedUpgradeCostTable]:
 def _default_shared_duplicate_ranges() -> list[SharedDuplicateRange]:
     """Default duplicate % ranges for shared card pulls, per category.
 
-    99 entries per category (one per card level). Percentages taper as level increases.
+    99 entries per category (one per card level). Same values for all shared categories.
     """
-    num_levels = 99
-
-    def _taper(start_min: float, start_max: float, floor_min: float, floor_max: float) -> tuple[list[float], list[float]]:
-        mins, maxs = [], []
-        for i in range(num_levels):
-            t = min(1.0, i / (num_levels - 1))
-            mins.append(round(start_min + t * (floor_min - start_min), 3))
-            maxs.append(round(start_max + t * (floor_max - start_max), 3))
-        return mins, maxs
-
-    def _coins(base: int, increment: float) -> list[int]:
-        return [max(1, round(base + i * increment)) for i in range(num_levels)]
-
-    gray_min, gray_max = _taper(0.80, 0.90, 0.50, 0.60)
-    blue_min, blue_max = _taper(0.80, 0.90, 0.50, 0.60)
-    gold_min, gold_max = _taper(0.80, 0.90, 0.50, 0.60)
+    # Stepped taper matching the user-specified breakpoints
+    shared_min_pct = (
+        [0.80] * 10 + [0.70] * 19 + [0.65] * 11 + [0.60] * 9 +
+        [0.55] * 11 + [0.50] * 20 + [0.40] * 19
+    )
+    shared_max_pct = (
+        [0.90] * 10 + [0.80] * 19 + [0.75] * 11 + [0.70] * 9 +
+        [0.65] * 11 + [0.60] * 20 + [0.60] * 19
+    )
+    shared_coins = [
+        5, 8, 9, 11, 13, 14, 15, 16, 17, 18,
+        18, 19, 20, 20, 20, 21, 21, 22, 22, 22,
+        23, 23, 23, 23, 24, 24, 24, 24, 24, 24,
+        25, 25, 25, 25, 25, 25, 25, 25, 26, 26,
+        26, 26, 26, 26, 26, 26, 26, 26, 26, 27,
+        27, 27, 27, 27, 27, 27, 27, 27, 27, 27,
+        27, 27, 27, 27, 27, 27, 27, 27, 27, 28,
+        28, 28, 28, 28, 28, 28, 28, 28, 28, 28,
+        28, 28, 28, 28, 28, 28, 28, 28, 28, 28,
+        28, 28, 28, 28, 28, 28, 28, 28, 28,
+    ]
 
     return [
         SharedDuplicateRange(
             category="GRAY_SHARED",
-            min_pct=gray_min, max_pct=gray_max,
-            coins_per_dupe=_coins(3, 0.15),
+            min_pct=shared_min_pct, max_pct=shared_max_pct,
+            coins_per_dupe=shared_coins,
         ),
         SharedDuplicateRange(
             category="BLUE_SHARED",
-            min_pct=blue_min, max_pct=blue_max,
-            coins_per_dupe=_coins(5, 0.20),
+            min_pct=shared_min_pct, max_pct=shared_max_pct,
+            coins_per_dupe=shared_coins,
         ),
         SharedDuplicateRange(
             category="GOLD_SHARED",
-            min_pct=gold_min, max_pct=gold_max,
-            coins_per_dupe=_coins(5, 0.25),
+            min_pct=shared_min_pct, max_pct=shared_max_pct,
+            coins_per_dupe=shared_coins,
         ),
     ]
+
+
+# ── Variant B profile CRUD ───────────────────────────────────────────────────
+
+def _get_vb_profiles_dir() -> Path:
+    return Path(__file__).resolve().parents[3] / "data" / "profiles_variant_b"
+
+
+def list_vb_profiles() -> list[str]:
+    d = _get_vb_profiles_dir()
+    if not d.exists():
+        return []
+    return sorted(p.stem for p in d.glob("*.json"))
+
+
+def load_vb_profile(name: str) -> UserProfile:
+    path = _get_vb_profiles_dir() / f"{name}.json"
+    return UserProfile.model_validate_json(path.read_text(encoding="utf-8"))
+
+
+def save_vb_profile(profile: UserProfile) -> None:
+    d = _get_vb_profiles_dir()
+    d.mkdir(parents=True, exist_ok=True)
+    path = d / f"{profile.name}.json"
+    path.write_text(profile.model_dump_json(indent=2), encoding="utf-8")
+
+
+def delete_vb_profile(name: str) -> None:
+    path = _get_vb_profiles_dir() / f"{name}.json"
+    if path.exists():
+        path.unlink()

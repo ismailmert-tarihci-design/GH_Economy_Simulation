@@ -52,14 +52,15 @@ class TestConfigLoader:
             "GearPack",
         ]
 
-    def test_load_defaults_has_three_upgrade_tables(self):
-        """SimConfig should contain 3 upgrade table categories."""
+    def test_load_defaults_has_four_upgrade_tables(self):
+        """SimConfig should contain 4 upgrade table categories."""
         config = load_defaults()
-        assert len(config.upgrade_tables) == 3
+        assert len(config.upgrade_tables) == 4
         categories = set(config.upgrade_tables.keys())
         expected = {
             CardCategory.GOLD_SHARED,
             CardCategory.BLUE_SHARED,
+            CardCategory.GRAY_SHARED,
             CardCategory.UNIQUE,
         }
         assert categories == expected

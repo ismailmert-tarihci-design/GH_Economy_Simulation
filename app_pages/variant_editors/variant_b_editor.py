@@ -4,10 +4,16 @@ Every parameter is editable from the frontend: heroes, card pools, skill trees,
 XP tables, upgrade costs, premium packs, drop algorithm settings, joker rates.
 """
 
+import json
+
 import pandas as pd
 import streamlit as st
 
 from app_pages.bulk_edit_helpers import render_bulk_edit_bar
+from simulation.models import UserProfile
+from simulation.variants.variant_b.config_loader import (
+    list_vb_profiles, load_vb_profile, save_vb_profile, delete_vb_profile,
+)
 from simulation.variants.variant_b.models import (
     HeroCardConfig,
     HeroCardDef,
@@ -56,6 +62,7 @@ def render_variant_b_editor(config: HeroCardConfig) -> None:
         ":material/playing_cards: Hero joker",
         ":material/inventory_2: Hero packs",
         ":material/calendar_today: Pack schedule",
+        ":material/person: Profiles",
         ":material/swap_horiz: Import / export",
     ])
 
@@ -84,6 +91,8 @@ def render_variant_b_editor(config: HeroCardConfig) -> None:
     with tabs[11]:
         _render_pack_schedule_tab(config)
     with tabs[12]:
+        _render_profiles_tab(config)
+    with tabs[13]:
         _render_import_export(config)
 
 
@@ -669,7 +678,7 @@ def _render_duplicate_ranges_tab(config: HeroCardConfig) -> None:
         },
         width="stretch",
         hide_index=True,
-        num_rows="dynamic",
+        num_rows="fixed",
         key=f"vb_duperange_{sel}",
     )
     dr.min_pct = [float(row["Min %"]) / 100.0 for _, row in edited.iterrows()]
@@ -715,7 +724,7 @@ def _render_shared_dupe_ranges_tab(config: HeroCardConfig) -> None:
         },
         width="stretch",
         hide_index=True,
-        num_rows="dynamic",
+        num_rows="fixed",
         key=f"vb_shared_duperange_{sel}",
     )
     dr.min_pct = [float(row["Min %"]) / 100.0 for _, row in edited.iterrows()]
@@ -850,6 +859,45 @@ def _render_pack_schedule_tab(config: HeroCardConfig) -> None:
             {col: int(row[col]) for col in edited.columns if col != "Day"}
             for _, row in edited.iterrows()
         ]
+
+
+def _render_profiles_tab(config: HeroCardConfig) -> None:
+    st.subheader("User Profiles")
+    st.caption("Save and load full Hero Card System configurations.")
+
+    profiles = list_vb_profiles()
+    if profiles:
+        selected = st.selectbox("Select Profile", profiles, key="vb_profile_select")
+        col_load, col_del = st.columns(2)
+        with col_load:
+            if st.button("Load Profile", key="vb_load_profile", icon=":material/folder_open:"):
+                profile = load_vb_profile(selected)
+                if profile.full_config is not None:
+                    loaded = HeroCardConfig.model_validate(profile.full_config)
+                    for field in loaded.model_fields:
+                        setattr(config, field, getattr(loaded, field))
+                st.rerun()
+        with col_del:
+            if st.button("Delete Profile", key="vb_del_profile", icon=":material/delete:"):
+                delete_vb_profile(selected)
+                st.rerun()
+    else:
+        st.info("No saved profiles yet.")
+
+    st.divider()
+    new_name = st.text_input("Profile Name", key="vb_new_profile_name")
+    if st.button("Save Profile", key="vb_save_profile", icon=":material/save:"):
+        if new_name.strip():
+            config_dict = json.loads(config.model_dump_json())
+            profile = UserProfile(
+                name=new_name.strip(),
+                full_config=config_dict,
+            )
+            save_vb_profile(profile)
+            st.success(f"Saved profile '{new_name.strip()}'")
+            st.rerun()
+        else:
+            st.warning("Enter a profile name.")
 
 
 def _render_import_export(config: HeroCardConfig) -> None:
