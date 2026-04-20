@@ -138,8 +138,10 @@ def open_premium_pack(
         num_cards = (pack_def.min_cards_per_pack + pack_def.max_cards_per_pack) // 2
 
     got_gold = False
+    card_count = 0
+    draw_idx = 0
 
-    for draw_idx in range(num_cards):
+    while card_count < num_cards:
         # Check for joker
         if rng:
             is_joker = rng.random() < pack_def.joker_rate
@@ -153,12 +155,14 @@ def open_premium_pack(
                 "duplicates": 1,
                 "is_joker": True,
             })
+            card_count += 1
+            draw_idx += 1
             continue
 
         # Determine rarity for this pull
         if pack_def.pull_rarity_schedule:
             # Gold guarantee: force gold on last card if none yet
-            if pack_def.gold_guarantee and draw_idx == num_cards - 1 and not got_gold:
+            if pack_def.gold_guarantee and card_count == num_cards - 1 and not got_gold:
                 chosen_rarity = HeroCardRarity.GOLD
             elif got_gold:
                 chosen_rarity = _roll_rarity(pack_def.default_rarity_weights, rng)
@@ -174,6 +178,16 @@ def open_premium_pack(
             selected_card_id = _pick_card_by_rarity_catchup(
                 chosen_rarity, pack_def.featured_hero_ids, game_state, rng
             )
+
+            # Fallback: if no cards of chosen rarity, try other rarities
+            if not selected_card_id:
+                for fallback_rarity in HeroCardRarity:
+                    if fallback_rarity != chosen_rarity:
+                        selected_card_id = _pick_card_by_rarity_catchup(
+                            fallback_rarity, pack_def.featured_hero_ids, game_state, rng
+                        )
+                        if selected_card_id:
+                            break
         else:
             # Legacy: fall back to card_drop_rates
             card_rates = [(cr.card_id, cr.drop_rate) for cr in pack_def.card_drop_rates]
@@ -181,7 +195,8 @@ def open_premium_pack(
             selected_card_id = _pick_card_weighted(card_rates, total_weight, rng)
 
         if not selected_card_id:
-            continue
+            # No cards available at all — break to avoid infinite loop
+            break
 
         hero_id, card_level, card_rarity = _resolve_card_info(selected_card_id, game_state)
 
@@ -211,6 +226,8 @@ def open_premium_pack(
             "duplicates": dupes,
             "is_joker": False,
         })
+        card_count += 1
+        draw_idx += 1
 
     # Hero tokens (always gifted)
     if pack_def.hero_tokens_per_pack > 0:
