@@ -130,7 +130,7 @@ page = st.navigation(
 
 # ─── Sidebar: share config ────────────────────────────────────────────────────
 with st.sidebar:
-    with st.popover("Share config", icon=":material/share:", use_container_width=True):
+    with st.popover("Share config", icon=":material/share:", width="stretch"):
         try:
             from simulation.url_config import encode_config
 

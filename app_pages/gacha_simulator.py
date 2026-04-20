@@ -68,7 +68,7 @@ def render_gacha_simulator() -> None:
     total_cost = num_packs * pack.diamond_cost
     st.caption(f"**{total_pulls}** pulls — **{total_cost:,}** diamonds")
 
-    if st.button("Open packs", type="primary", use_container_width=True, key="gacha_open"):
+    if st.button("Open packs", type="primary", width="stretch", key="gacha_open"):
         rng = Random(seed if seed > 0 else None)
         results = _simulate(pack, config, num_packs, rng)
         _display(results, pack, config, num_packs)

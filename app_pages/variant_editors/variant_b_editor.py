@@ -120,7 +120,7 @@ def _render_heroes_tab(config: HeroCardConfig) -> None:
                     "XP on Upgrade": st.column_config.NumberColumn("XP on Upgrade", min_value=0, step=1),
                     "Starter": st.column_config.CheckboxColumn("Starter"),
                 },
-                use_container_width=True,
+                width="stretch",
                 hide_index=True,
                 num_rows="dynamic",
                 key=f"vb_cards_{selected_idx}",
@@ -153,7 +153,7 @@ def _render_heroes_tab(config: HeroCardConfig) -> None:
     if not schedule_rows:
         schedule_rows = [{"Day": 0, "Hero IDs": ""}]
     sched_df = pd.DataFrame(schedule_rows)
-    edited_sched = st.data_editor(sched_df, use_container_width=True, hide_index=True, num_rows="dynamic", key="vb_unlock_sched")
+    edited_sched = st.data_editor(sched_df, width="stretch", hide_index=True, num_rows="dynamic", key="vb_unlock_sched")
     config.hero_unlock_schedule = {}
     for _, row in edited_sched.iterrows():
         day = int(row["Day"])
@@ -182,7 +182,7 @@ def _render_skill_tree_tab(config: HeroCardConfig) -> None:
             }
             for n in hero.skill_tree
         ])
-        edited = st.data_editor(tree_df, use_container_width=True, hide_index=True, num_rows="dynamic", key=f"vb_tree_{idx}")
+        edited = st.data_editor(tree_df, width="stretch", hide_index=True, num_rows="dynamic", key=f"vb_tree_{idx}")
         hero.skill_tree = []
         for _, row in edited.iterrows():
             cards = [s.strip() for s in str(row["Cards Unlocked"]).split(",") if s.strip()]
@@ -216,7 +216,7 @@ def _render_xp_tab(config: HeroCardConfig) -> None:
             "Level": st.column_config.NumberColumn("Level", disabled=True),
             "XP Required": st.column_config.NumberColumn("XP Required", min_value=1, step=10),
         },
-        use_container_width=True,
+        width="stretch",
         hide_index=True,
         key=f"vb_xp_{idx}",
     )
@@ -251,7 +251,7 @@ def _render_upgrade_costs_tab(config: HeroCardConfig) -> None:
             "Bluestar Reward": st.column_config.NumberColumn(min_value=0, step=1),
             "XP Reward": st.column_config.NumberColumn(min_value=0, step=1),
         },
-        use_container_width=True,
+        width="stretch",
         hide_index=True,
         key=f"vb_upgcost_{sel}",
     )
@@ -476,7 +476,7 @@ def _render_premium_packs_tab(config: HeroCardConfig) -> None:
             "Amount": st.column_config.NumberColumn("Amount", min_value=0, step=1),
             "Probability %": st.column_config.NumberColumn("Prob %", min_value=0.0, max_value=100.0, step=1.0, format="%.1f"),
         },
-        use_container_width=True,
+        width="stretch",
         hide_index=True,
         num_rows="dynamic",
         key=f"vb_pp_rewards_{sel}",
@@ -510,7 +510,7 @@ def _render_premium_packs_tab(config: HeroCardConfig) -> None:
                 "Card ID": st.column_config.TextColumn("Card ID", disabled=True),
                 "Drop Rate": st.column_config.NumberColumn("Drop Rate", min_value=0.0, step=0.1, format="%.2f"),
             },
-            use_container_width=True,
+            width="stretch",
             hide_index=True,
             key=f"vb_pp_rates_{sel}",
         )
@@ -554,7 +554,7 @@ def _render_duplicate_ranges_tab(config: HeroCardConfig) -> None:
             "Max %": st.column_config.NumberColumn("Max %", min_value=0.0, max_value=100.0, step=1.0, format="%.1f"),
             "Coins/Dupe": st.column_config.NumberColumn("Coins/Dupe", min_value=0, step=1),
         },
-        use_container_width=True,
+        width="stretch",
         hide_index=True,
         num_rows="dynamic",
         key=f"vb_duperange_{sel}",
@@ -569,7 +569,7 @@ def _render_pack_schedule_tab(config: HeroCardConfig) -> None:
     if config.daily_pack_schedule:
         sched_df = pd.DataFrame(config.daily_pack_schedule)
         sched_df.insert(0, "Day", range(1, len(sched_df) + 1))
-        edited = st.data_editor(sched_df, use_container_width=True, hide_index=True, key="vb_daily_packs")
+        edited = st.data_editor(sched_df, width="stretch", hide_index=True, key="vb_daily_packs")
         config.daily_pack_schedule = [
             {col: float(row[col]) for col in edited.columns if col != "Day"}
             for _, row in edited.iterrows()
@@ -582,7 +582,7 @@ def _render_pack_schedule_tab(config: HeroCardConfig) -> None:
             {"Pack ID": s.pack_id, "From Day": s.available_from_day, "Until Day": s.available_until_day}
             for s in config.premium_pack_schedule
         ])
-        edited = st.data_editor(avail_df, use_container_width=True, hide_index=True, num_rows="dynamic", key="vb_pp_sched")
+        edited = st.data_editor(avail_df, width="stretch", hide_index=True, num_rows="dynamic", key="vb_pp_sched")
         config.premium_pack_schedule = [
             PremiumPackSchedule(
                 pack_id=str(row["Pack ID"]),
@@ -598,7 +598,7 @@ def _render_pack_schedule_tab(config: HeroCardConfig) -> None:
     if config.premium_pack_purchase_schedule:
         purch_df = pd.DataFrame(config.premium_pack_purchase_schedule)
         purch_df.insert(0, "Day", range(1, len(purch_df) + 1))
-        edited = st.data_editor(purch_df, use_container_width=True, hide_index=True, num_rows="dynamic", key="vb_pp_purchases")
+        edited = st.data_editor(purch_df, width="stretch", hide_index=True, num_rows="dynamic", key="vb_pp_purchases")
         config.premium_pack_purchase_schedule = [
             {col: int(row[col]) for col in edited.columns if col != "Day"}
             for _, row in edited.iterrows()
@@ -614,7 +614,7 @@ def _render_import_export(config: HeroCardConfig) -> None:
             data=config.model_dump_json(indent=2),
             file_name="hero_card_config.json",
             mime="application/json",
-            use_container_width=True,
+            width="stretch",
         )
     with col2:
         st.subheader("Import")

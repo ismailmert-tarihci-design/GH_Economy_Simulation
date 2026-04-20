@@ -73,7 +73,7 @@ def render_pack_config(config: SimConfig) -> None:
             },
         },
         hide_index=True,
-        use_container_width=True,
+        width="stretch",
         height=min(400, 35 + schedule_len * 35),
         key="daily_schedule_editor",
     )
@@ -127,7 +127,7 @@ def render_pack_config(config: SimConfig) -> None:
                     ),
                 },
                 hide_index=True,
-                use_container_width=True,
+                width="stretch",
                 num_rows="dynamic",
                 key=f"card_types_{pack.name}",
             )
@@ -188,7 +188,7 @@ def render_upgrade_tables(config: SimConfig) -> None:
             ),
         },
         hide_index=True,
-        use_container_width=True,
+        width="stretch",
         height=400,
         key=f"upgrade_table_{category.value}",
     )
@@ -256,7 +256,7 @@ def render_card_economy(config: SimConfig) -> None:
             ),
         },
         hide_index=True,
-        use_container_width=True,
+        width="stretch",
         height=300,
         key=f"dup_range_{dup_category.value}",
     )
@@ -295,7 +295,7 @@ def render_card_economy(config: SimConfig) -> None:
             ),
         },
         hide_index=True,
-        use_container_width=True,
+        width="stretch",
         height=300,
         key=f"coin_per_dup_{coin_category.value}",
     )
@@ -331,7 +331,7 @@ def render_progression_schedule(config: SimConfig) -> None:
             ),
         },
         hide_index=True,
-        use_container_width=True,
+        width="stretch",
         key="progression_mapping_editor",
     )
 
@@ -362,7 +362,7 @@ def render_progression_schedule(config: SimConfig) -> None:
             ),
         },
         hide_index=True,
-        use_container_width=True,
+        width="stretch",
         num_rows="dynamic",
         key="unique_unlock_schedule_editor",
     )
@@ -545,7 +545,7 @@ def render_pet_hero_gear(config: SimConfig) -> None:
                 ),
             },
             hide_index=True,
-            use_container_width=True,
+            width="stretch",
             num_rows="dynamic",
             key="pet_eggs_per_day",
         )
@@ -629,7 +629,7 @@ def render_pet_hero_gear(config: SimConfig) -> None:
                         },
                     },
                     hide_index=True,
-                    use_container_width=True,
+                    width="stretch",
                     key="pet_tier_editor",
                 )
                 if st.button("Apply Pet Tier Changes", key="apply_pet_tier"):
@@ -682,7 +682,7 @@ def render_pet_hero_gear(config: SimConfig) -> None:
                         ),
                     },
                     hide_index=True,
-                    use_container_width=True,
+                    width="stretch",
                     key=f"pet_level_editor_{rarity_filter}",
                 )
                 if st.button(
@@ -743,7 +743,7 @@ def render_pet_hero_gear(config: SimConfig) -> None:
                         ),
                     },
                     hide_index=True,
-                    use_container_width=True,
+                    width="stretch",
                     key=f"pet_duplicate_editor_{rarity_filter}",
                 )
                 if st.button(
@@ -803,7 +803,7 @@ def render_pet_hero_gear(config: SimConfig) -> None:
                         ),
                     },
                     hide_index=True,
-                    use_container_width=True,
+                    width="stretch",
                     key="pet_build_editor",
                 )
                 if st.button("Apply Pet Build Changes", key="apply_pet_build"):
@@ -851,7 +851,7 @@ def render_pet_hero_gear(config: SimConfig) -> None:
                 ),
             },
             hide_index=True,
-            use_container_width=True,
+            width="stretch",
             num_rows="dynamic",
             key="hero_unlock_rows",
         )
@@ -923,7 +923,7 @@ def render_pet_hero_gear(config: SimConfig) -> None:
                     ),
                 },
                 hide_index=True,
-                use_container_width=True,
+                width="stretch",
                 num_rows="dynamic",
                 key="gear_income_rows",
             )
@@ -989,7 +989,7 @@ def render_pet_hero_gear(config: SimConfig) -> None:
                         ),
                     },
                     hide_index=True,
-                    use_container_width=True,
+                    width="stretch",
                     key=f"gear_slot_editor_{selected_slot}_{level_window[0]}_{level_window[1]}",
                 )
                 if st.button(

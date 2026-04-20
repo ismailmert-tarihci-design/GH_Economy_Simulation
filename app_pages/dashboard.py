@@ -35,7 +35,7 @@ def render_dashboard() -> None:
             value=f"Sim_{mode}_{result.total_bluestars if mode == 'deterministic' else 'MC'}",
         )
         save_desc = st.text_area("Description (optional)", height=68)
-        if st.button("Save", use_container_width=True, icon=":material/save:", type="primary"):
+        if st.button("Save", width="stretch", icon=":material/save:", type="primary"):
             try:
                 from app_pages.results_manager import save_current_result
                 filename = save_current_result(save_name, save_desc)
@@ -127,7 +127,7 @@ def _render_bluestar_chart(result: Any, mode: str) -> None:
         hovermode="x unified",
         template="plotly_white",
     )
-    st.plotly_chart(fig, use_container_width=True)
+    st.plotly_chart(fig, width="stretch")
 
 
 def _render_card_progression_chart(result: Any, mode: str) -> None:
@@ -202,7 +202,7 @@ def _render_card_progression_chart(result: Any, mode: str) -> None:
         hovermode="x unified",
         template="plotly_white",
     )
-    st.plotly_chart(fig, use_container_width=True)
+    st.plotly_chart(fig, width="stretch")
 
 
 def _render_coin_flow_chart(result: Any, mode: str) -> None:
@@ -263,7 +263,7 @@ def _render_coin_flow_chart(result: Any, mode: str) -> None:
         hovermode="x unified",
         template="plotly_white",
     )
-    st.plotly_chart(fig, use_container_width=True)
+    st.plotly_chart(fig, width="stretch")
 
 
 def _render_pet_hero_gear_events(result: Any) -> None:
@@ -288,7 +288,7 @@ def _render_pet_hero_gear_events(result: Any) -> None:
                 "Gear Events": len(snapshot.gear_events),
             }
         )
-    st.dataframe(pd.DataFrame(rows), use_container_width=True, hide_index=True)
+    st.dataframe(pd.DataFrame(rows), width="stretch", hide_index=True)
 
 
 def _render_pet_hero_gear_details(result: Any) -> None:
@@ -384,8 +384,8 @@ def _render_pet_detail_dashboard(result: Any) -> None:
         barmode="group",
         template="plotly_white",
     )
-    st.plotly_chart(fig, use_container_width=True)
-    st.dataframe(pet_df, use_container_width=True, hide_index=True)
+    st.plotly_chart(fig, width="stretch")
+    st.dataframe(pet_df, width="stretch", hide_index=True)
 
 
 def _render_hero_detail_dashboard(result: Any) -> None:
@@ -446,8 +446,8 @@ def _render_hero_detail_dashboard(result: Any) -> None:
         yaxis=dict(title="Unique Cards"),
         template="plotly_white",
     )
-    st.plotly_chart(fig, use_container_width=True)
-    st.dataframe(hero_df, use_container_width=True, hide_index=True)
+    st.plotly_chart(fig, width="stretch")
+    st.dataframe(hero_df, width="stretch", hide_index=True)
 
 
 def _render_gear_detail_dashboard(result: Any) -> None:
@@ -509,7 +509,7 @@ def _render_gear_detail_dashboard(result: Any) -> None:
         yaxis2=dict(title="Average Level", overlaying="y", side="right"),
         template="plotly_white",
     )
-    st.plotly_chart(fig, use_container_width=True)
+    st.plotly_chart(fig, width="stretch")
 
     slot_fig = go.Figure()
     for slot_id in range(1, 7):
@@ -527,5 +527,5 @@ def _render_gear_detail_dashboard(result: Any) -> None:
         yaxis=dict(title="Slot Level"),
         template="plotly_white",
     )
-    st.plotly_chart(slot_fig, use_container_width=True)
-    st.dataframe(gear_df, use_container_width=True, hide_index=True)
+    st.plotly_chart(slot_fig, width="stretch")
+    st.dataframe(gear_df, width="stretch", hide_index=True)

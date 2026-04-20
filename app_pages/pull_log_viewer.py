@@ -111,7 +111,7 @@ def _render_chronological(pull_logs: list) -> None:
         )
 
     df = pd.DataFrame(rows)
-    st.dataframe(df, use_container_width=True, hide_index=True)
+    st.dataframe(df, width="stretch", hide_index=True)
     st.caption(
         f"Showing {len(filtered)} pulls from day {day_range[0]} to {day_range[1]}"
     )
@@ -181,7 +181,7 @@ def _render_card_detail(pulls: list) -> None:
                 }
             )
         st.dataframe(
-            pd.DataFrame(upgrade_rows), use_container_width=True, hide_index=True
+            pd.DataFrame(upgrade_rows), width="stretch", hide_index=True
         )
 
     _render_dupe_accumulation_chart(pulls, upgrades)
@@ -213,7 +213,7 @@ def _render_card_detail(pulls: list) -> None:
         )
 
     df = pd.DataFrame(rows)
-    st.dataframe(df, use_container_width=True, hide_index=True)
+    st.dataframe(df, width="stretch", hide_index=True)
 
 
 def _render_dupe_accumulation_chart(pulls: list, upgrades: list) -> None:
@@ -270,4 +270,4 @@ def _render_dupe_accumulation_chart(pulls: list, upgrades: list) -> None:
         template="plotly_white",
         height=300,
     )
-    st.plotly_chart(fig, use_container_width=True)
+    st.plotly_chart(fig, width="stretch")

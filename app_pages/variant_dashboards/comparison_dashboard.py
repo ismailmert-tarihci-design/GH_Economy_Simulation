@@ -98,7 +98,7 @@ def _render_bluestar_overlay(metrics: dict, mode: str) -> None:
         xaxis=dict(title="Day"), yaxis=dict(title="Total Bluestars"),
         template="plotly_white", hovermode="x unified",
     )
-    st.plotly_chart(fig, use_container_width=True)
+    st.plotly_chart(fig, width="stretch")
 
 
 def _render_coin_overlay(metrics: dict) -> None:
@@ -116,7 +116,7 @@ def _render_coin_overlay(metrics: dict) -> None:
         xaxis=dict(title="Day"), yaxis=dict(title="Coins"),
         template="plotly_white", hovermode="x unified",
     )
-    st.plotly_chart(fig, use_container_width=True)
+    st.plotly_chart(fig, width="stretch")
 
 
 def _render_category_level_overlay(metrics: dict) -> None:
@@ -152,4 +152,4 @@ def _render_category_level_overlay(metrics: dict) -> None:
         xaxis=dict(title="Day"), yaxis=dict(title="Avg Card Level"),
         template="plotly_white", hovermode="x unified",
     )
-    st.plotly_chart(fig, use_container_width=True)
+    st.plotly_chart(fig, width="stretch")

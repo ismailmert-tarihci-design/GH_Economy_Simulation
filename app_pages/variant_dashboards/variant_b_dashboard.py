@@ -123,7 +123,7 @@ def _render_bluestar_chart(snapshots: list) -> None:
         line=dict(color=_BLUE, width=2),
         fill="tozeroy", fillcolor="rgba(37, 99, 235, 0.1)",
     ))
-    st.plotly_chart(fig, use_container_width=True)
+    st.plotly_chart(fig, width="stretch")
 
 
 def _render_hero_level_chart(snapshots: list, hero_name_map: dict) -> None:
@@ -140,7 +140,7 @@ def _render_hero_level_chart(snapshots: list, hero_name_map: dict) -> None:
             x=days, y=levels, mode="lines",
             name=display_name, line=dict(color=_HERO_COLORS[i % len(_HERO_COLORS)], width=2),
         ))
-    st.plotly_chart(fig, use_container_width=True)
+    st.plotly_chart(fig, width="stretch")
 
 
 def _render_hero_card_level_chart(snapshots: list, hero_name_map: dict) -> None:
@@ -157,7 +157,7 @@ def _render_hero_card_level_chart(snapshots: list, hero_name_map: dict) -> None:
             x=days, y=avgs, mode="lines",
             name=display_name, line=dict(color=_HERO_COLORS[i % len(_HERO_COLORS)], width=2),
         ))
-    st.plotly_chart(fig, use_container_width=True)
+    st.plotly_chart(fig, width="stretch")
 
 
 def _render_xp_chart(snapshots: list, hero_name_map: dict) -> None:
@@ -175,7 +175,7 @@ def _render_xp_chart(snapshots: list, hero_name_map: dict) -> None:
             marker_color=_HERO_COLORS[i % len(_HERO_COLORS)], opacity=0.8,
         ))
     fig.update_layout(barmode="group")
-    st.plotly_chart(fig, use_container_width=True)
+    st.plotly_chart(fig, width="stretch")
 
 
 def _render_coin_chart(snapshots: list) -> None:
@@ -196,7 +196,7 @@ def _render_coin_chart(snapshots: list) -> None:
         mode="lines", name="Balance",
         line=dict(color=_AMBER, width=2),
     ))
-    st.plotly_chart(fig, use_container_width=True)
+    st.plotly_chart(fig, width="stretch")
 
 
 def _render_premium_pack_summary(result: Any, snapshots: list) -> None:
@@ -260,4 +260,4 @@ def _render_mc_bluestar_chart(result: Any) -> None:
         x=days, y=means, mode="lines", name="Mean bluestars",
         line=dict(color=_BLUE, width=2),
     ))
-    st.plotly_chart(fig, use_container_width=True)
+    st.plotly_chart(fig, width="stretch")

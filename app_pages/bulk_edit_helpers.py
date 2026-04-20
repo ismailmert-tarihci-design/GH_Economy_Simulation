@@ -47,7 +47,7 @@ def render_bulk_edit_bar(
                 data=csv_data,
                 file_name=f"{table_key}.csv",
                 mime="text/csv",
-                use_container_width=True,
+                width="stretch",
                 key=f"bulk_dl_{table_key}",
             )
 

@@ -59,7 +59,7 @@ def render_upgrades_chart(result: Any) -> None:
         template="plotly_white",
         legend=dict(x=0.01, y=0.99),
     )
-    st.plotly_chart(fig, use_container_width=True)
+    st.plotly_chart(fig, width="stretch")
 
 
 def render_unique_unlocked_chart(result: Any) -> None:
@@ -85,7 +85,7 @@ def render_unique_unlocked_chart(result: Any) -> None:
         hovermode="x unified",
         template="plotly_white",
     )
-    st.plotly_chart(fig, use_container_width=True)
+    st.plotly_chart(fig, width="stretch")
 
 
 def add_category_ci(fig: go.Figure, result: Any) -> None:
@@ -197,7 +197,7 @@ def render_pull_counts_chart(result: Any, mode: str) -> None:
         hovermode="x unified",
         template="plotly_white",
     )
-    st.plotly_chart(fig, use_container_width=True)
+    st.plotly_chart(fig, width="stretch")
 
 
 def render_pack_counts_chart(result: Any, mode: str) -> None:
@@ -235,4 +235,4 @@ def render_pack_counts_chart(result: Any, mode: str) -> None:
         hovermode="x unified",
         template="plotly_white",
     )
-    st.plotly_chart(fig, use_container_width=True)
+    st.plotly_chart(fig, width="stretch")

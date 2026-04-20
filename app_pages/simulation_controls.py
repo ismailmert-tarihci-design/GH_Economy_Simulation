@@ -98,7 +98,7 @@ def render_simulation_controls(config: Any) -> None:
     # ─── Run button ───────────────────────────────────────────────────────────
     variant_id = st.session_state.get("active_variant", "variant_a")
 
-    if st.button("Run simulation", type="primary", use_container_width=True, icon=":material/play_arrow:"):
+    if st.button("Run simulation", type="primary", width="stretch", icon=":material/play_arrow:"):
         config.num_days = num_days
         config_hash = hashlib.md5(config.model_dump_json().encode()).hexdigest()
 
@@ -142,7 +142,7 @@ def render_simulation_controls(config: Any) -> None:
         with st.expander("Compare variants", icon=":material/compare_arrows:"):
             st.caption("Run both variants with the same day count and compare side-by-side.")
 
-            if st.button("Compare all variants (deterministic)", use_container_width=True, icon=":material/compare_arrows:"):
+            if st.button("Compare all variants (deterministic)", width="stretch", icon=":material/compare_arrows:"):
                 config.num_days = num_days
                 comparison_results = {"mode": "deterministic", "variants": {}}
                 for v in variants.list_variants():
@@ -159,7 +159,7 @@ def render_simulation_controls(config: Any) -> None:
     # ─── Share config ─────────────────────────────────────────────────────────
     with st.expander("Share configuration", icon=":material/share:"):
         st.caption("Generate a URL containing your current configuration for team sharing.")
-        if st.button("Generate shareable URL", use_container_width=True, icon=":material/link:"):
+        if st.button("Generate shareable URL", width="stretch", icon=":material/link:"):
             try:
                 encoded = encode_config(config)
                 base_url = st.context.headers.get("host", "localhost:8501")

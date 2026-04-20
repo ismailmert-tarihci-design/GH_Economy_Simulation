@@ -173,7 +173,7 @@ def _render_comparison_metrics(results: List[dict]) -> None:
         )
 
     df = pd.DataFrame(metrics_data)
-    st.dataframe(df, hide_index=True, use_container_width=True)
+    st.dataframe(df, hide_index=True, width="stretch")
 
 
 def _render_comparison_charts(results: List[dict]) -> None:
@@ -241,7 +241,7 @@ def _render_comparison_charts(results: List[dict]) -> None:
         height=500,
     )
 
-    st.plotly_chart(fig, use_container_width=True)
+    st.plotly_chart(fig, width="stretch")
 
 
 def save_current_result(name: str, description: str = "") -> str:

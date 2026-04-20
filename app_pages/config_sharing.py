@@ -19,7 +19,7 @@ def render_config_sharing(config: SimConfig) -> None:
             data=config.model_dump_json(indent=2),
             file_name="bluestar_config.json",
             mime="application/json",
-            use_container_width=True,
+            width="stretch",
         )
 
     with col_import:
@@ -101,7 +101,7 @@ def _render_diff_view(config: SimConfig) -> None:
                         "Current": _format_val(current_val),
                     }
                 )
-            st.dataframe(rows, use_container_width=True, hide_index=True)
+            st.dataframe(rows, width="stretch", hide_index=True)
 
 
 def _dict_diff(d1: Any, d2: Any, prefix: str) -> Dict[str, tuple]:
