@@ -31,7 +31,8 @@ with st.sidebar:
 if "configs" not in st.session_state:
     st.session_state.configs = {}
 
-# URL-based config loading
+# URL-based config loading (one-shot: clears the param so subsequent
+# reboots use the disk-persisted config instead of re-applying a stale URL)
 if "cfg" in st.query_params:
     if "config_loaded_from_url" not in st.session_state:
         try:
@@ -44,6 +45,7 @@ if "cfg" in st.query_params:
             st.toast("Configuration loaded from shared URL")
         except ValueError as e:
             st.error(f"Invalid config URL: {e}")
+    del st.query_params["cfg"]
 
 # Ensure active variant has a config
 if active_variant not in st.session_state.configs:
