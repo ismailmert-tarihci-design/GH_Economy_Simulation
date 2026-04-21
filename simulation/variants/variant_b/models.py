@@ -9,7 +9,7 @@ from dataclasses import dataclass, field
 from enum import Enum
 from typing import Any, Dict, List, Optional
 
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, model_validator
 
 
 # ---------------------------------------------------------------------------
@@ -104,8 +104,25 @@ class HeroPackType(BaseModel):
 class PremiumPackAdditionalReward(BaseModel):
     """An additional reward that can drop from a premium pack."""
     reward_type: str = Field(description="Type of reward (e.g. 'coins', 'bluestars', 'hero_tokens')")
-    amount: int = Field(default=1, description="Amount of reward")
+    min_amount: int = Field(default=1, description="Minimum reward amount (inclusive)")
+    max_amount: int = Field(default=1, description="Maximum reward amount (inclusive)")
     probability: float = Field(default=0.10, description="Chance of this reward dropping per pack")
+
+    @model_validator(mode="before")
+    @classmethod
+    def _legacy_amount(cls, data):
+        # Backward compat: legacy `amount` field becomes both min and max.
+        if isinstance(data, dict) and "amount" in data:
+            amt = data.pop("amount")
+            data.setdefault("min_amount", amt)
+            data.setdefault("max_amount", amt)
+        return data
+
+    @model_validator(mode="after")
+    def _ensure_range(self):
+        if self.max_amount < self.min_amount:
+            self.max_amount = self.min_amount
+        return self
 
 
 class PremiumPackPullRarity(BaseModel):

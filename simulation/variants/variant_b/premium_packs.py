@@ -241,13 +241,19 @@ def open_premium_pack(
     for reward in pack_def.additional_rewards:
         roll = rng.random() if rng else 0.5
         if roll < reward.probability:
+            if reward.min_amount == reward.max_amount:
+                amount = reward.min_amount
+            elif rng:
+                amount = rng.randint(reward.min_amount, reward.max_amount)
+            else:
+                amount = reward.min_amount
             results.append({
                 "card_id": f"__reward_{reward.reward_type}__",
                 "hero_id": "",
                 "duplicates": 0,
                 "is_joker": False,
                 "reward_type": reward.reward_type,
-                "reward_amount": reward.amount,
+                "reward_amount": amount,
             })
 
     return results

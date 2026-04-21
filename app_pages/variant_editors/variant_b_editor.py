@@ -536,26 +536,29 @@ def _render_premium_packs_tab(config: HeroCardConfig) -> None:
         pack.max_cards_per_pack = st.number_input("Max Cards", min_value=pack.min_cards_per_pack, max_value=50, value=pack.max_cards_per_pack, step=1, key=f"vb_pp_maxc_{sel}")
     with c2:
         pack.diamond_cost = st.number_input("Diamond Cost", min_value=0, value=pack.diamond_cost, step=50, key=f"vb_pp_cost_{sel}")
-        pack.hero_tokens_per_pack = st.number_input("Hero Tokens per Pack", min_value=0, value=pack.hero_tokens_per_pack, step=1, key=f"vb_pp_tokens_{sel}")
     with c3:
-        joker_pct = st.number_input("Joker Rate %", min_value=0.0, max_value=30.0, value=round(pack.joker_rate * 100, 1), step=0.5, format="%.1f", key=f"vb_pp_joker_{sel}")
-        pack.joker_rate = joker_pct / 100.0
         pack.gold_guarantee = st.checkbox("Gold Guarantee", value=pack.gold_guarantee, key=f"vb_pp_gg_{sel}")
 
     # Additional rewards
-    st.markdown("**Additional Rewards** (probability-based)")
+    st.markdown("**Additional Rewards** (probability-based, amount rolled uniformly in [Min, Max])")
     if pack.additional_rewards:
         reward_df = pd.DataFrame([
-            {"Reward Type": r.reward_type, "Amount": r.amount, "Probability %": round(r.probability * 100, 1)}
+            {
+                "Reward Type": r.reward_type,
+                "Min Amount": r.min_amount,
+                "Max Amount": r.max_amount,
+                "Probability %": round(r.probability * 100, 1),
+            }
             for r in pack.additional_rewards
         ])
     else:
-        reward_df = pd.DataFrame({"Reward Type": [], "Amount": [], "Probability %": []})
+        reward_df = pd.DataFrame({"Reward Type": [], "Min Amount": [], "Max Amount": [], "Probability %": []})
     edited_rewards = st.data_editor(
         reward_df,
         column_config={
             "Reward Type": st.column_config.TextColumn("Reward Type"),
-            "Amount": st.column_config.NumberColumn("Amount", min_value=0, step=1),
+            "Min Amount": st.column_config.NumberColumn("Min Amount", min_value=0, step=1),
+            "Max Amount": st.column_config.NumberColumn("Max Amount", min_value=0, step=1),
             "Probability %": st.column_config.NumberColumn("Prob %", min_value=0.0, max_value=100.0, step=1.0, format="%.1f"),
         },
         width="stretch",
@@ -563,15 +566,23 @@ def _render_premium_packs_tab(config: HeroCardConfig) -> None:
         num_rows="dynamic",
         key=f"vb_pp_rewards_{sel}",
     )
-    pack.additional_rewards = [
-        PremiumPackAdditionalReward(
-            reward_type=str(row["Reward Type"]),
-            amount=int(row["Amount"]),
-            probability=float(row["Probability %"]) / 100.0,
+    new_rewards = []
+    for _, row in edited_rewards.iterrows():
+        if not str(row.get("Reward Type", "")).strip():
+            continue
+        mn = int(row["Min Amount"]) if pd.notna(row.get("Min Amount")) else 0
+        mx = int(row["Max Amount"]) if pd.notna(row.get("Max Amount")) else mn
+        if mx < mn:
+            mx = mn
+        new_rewards.append(
+            PremiumPackAdditionalReward(
+                reward_type=str(row["Reward Type"]),
+                min_amount=mn,
+                max_amount=mx,
+                probability=float(row["Probability %"]) / 100.0,
+            )
         )
-        for _, row in edited_rewards.iterrows()
-        if str(row.get("Reward Type", "")).strip()
-    ]
+    pack.additional_rewards = new_rewards
 
     # Per-pull rarity schedule
     st.markdown("**Per-pull rarity weights**")
