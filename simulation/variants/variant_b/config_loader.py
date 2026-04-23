@@ -95,7 +95,7 @@ def _builtin_defaults() -> HeroCardConfig:
         },
         num_gold_cards=9,
         num_blue_cards=14,
-        num_gray_cards=20,
+        num_gray_cards=6,
         hero_upgrade_tables=_default_upgrade_tables(),
         hero_duplicate_ranges=_default_duplicate_ranges(),
         shared_upgrade_tables=_default_shared_upgrade_tables(),
@@ -104,8 +104,11 @@ def _builtin_defaults() -> HeroCardConfig:
         shared_max_hero_level=30,
         joker_drop_rate_in_regular_packs=0.01,
         drop_config=HeroDropConfig(
-            hero_vs_shared_base_rate=0.50,
+            hero_vs_shared_base_rate=0.6093,
             pity_counter_threshold=10,
+            rarity_weight_gray=0.0673,
+            rarity_weight_blue=0.3894,
+            rarity_weight_gold=0.5432,
         ),
         pack_types=[
             HeroPackType(name="StandardPackT1", card_types_table={
@@ -312,12 +315,13 @@ def _create_hero_pack(hero: HeroDef) -> PremiumPackDef:
             PremiumPackAdditionalReward(reward_type="bluestars", amount=50, probability=0.10),
         ],
         pull_rarity_schedule=[
-            PremiumPackPullRarity(gray_weight=0.60, blue_weight=0.30, gold_weight=0.10),
-            PremiumPackPullRarity(gray_weight=0.15, blue_weight=0.75, gold_weight=0.10),
-            PremiumPackPullRarity(gray_weight=0.15, blue_weight=0.75, gold_weight=0.10),
-            PremiumPackPullRarity(gray_weight=0.00, blue_weight=0.00, gold_weight=1.00),
+            PremiumPackPullRarity(gray_weight=0.0, blue_weight=1.0, gold_weight=0.0),
+            PremiumPackPullRarity(gray_weight=0.0, blue_weight=1.0, gold_weight=0.0),
+            PremiumPackPullRarity(gray_weight=0.0, blue_weight=1.0, gold_weight=0.0),
+            PremiumPackPullRarity(gray_weight=0.0, blue_weight=0.0, gold_weight=1.0),
         ],
-        default_rarity_weights=PremiumPackPullRarity(gray_weight=0.60, blue_weight=0.30, gold_weight=0.10),
+        default_rarity_weights=PremiumPackPullRarity(gray_weight=0.0, blue_weight=1.0, gold_weight=0.0),
+        dupe_pct_per_rarity={"GRAY": 1.0, "BLUE": 1.0, "GOLD": 1.0},
     )
 
 
@@ -355,21 +359,21 @@ def _default_upgrade_tables() -> list[HeroUpgradeCostTable]:
             rarity=HeroCardRarity.GRAY,
             duplicate_costs=[10, 15, 20, 45, 50, 60, 70, 125, 150],
             coin_costs=[250, 375, 500, 625, 750, 875, 1000, 1125, 1250],
-            bluestar_rewards=[50, 65, 80, 95, 110, 125, 150, 200, 250],
+            bluestar_rewards=[40, 55, 70, 80, 90, 100, 120, 150, 175],
             xp_rewards=[10, 10, 10, 20, 20, 20, 20, 30, 30],
         ),
         HeroUpgradeCostTable(
             rarity=HeroCardRarity.BLUE,
             duplicate_costs=[20, 30, 40, 75, 85, 100, 120, 205, 255],
             coin_costs=[250, 375, 500, 625, 750, 875, 1000, 1125, 1250],
-            bluestar_rewards=[100, 130, 160, 190, 220, 250, 300, 400, 500],
+            bluestar_rewards=[50, 65, 80, 100, 110, 125, 140, 175, 200],
             xp_rewards=[25, 25, 25, 35, 35, 35, 35, 55, 55],
         ),
         HeroUpgradeCostTable(
             rarity=HeroCardRarity.GOLD,
             duplicate_costs=[20, 35, 50, 100, 115, 130, 150, 270, 335],
             coin_costs=[250, 375, 500, 625, 750, 875, 1000, 1125, 1250],
-            bluestar_rewards=[150, 195, 240, 285, 330, 375, 450, 600, 750],
+            bluestar_rewards=[75, 80, 100, 110, 125, 140, 175, 200, 250],
             xp_rewards=[30, 30, 35, 55, 55, 55, 55, 80, 80],
         ),
     ]
@@ -393,14 +397,14 @@ def _default_duplicate_ranges() -> list[HeroDuplicateRange]:
         ),
         HeroDuplicateRange(
             rarity=HeroCardRarity.BLUE,
-            min_pct=[0.65, 0.60, 0.55, 0.50, 0.40, 0.35, 0.30, 0.20, 0.10],
-            max_pct=[0.70, 0.65, 0.60, 0.55, 0.50, 0.45, 0.40, 0.30, 0.20],
+            min_pct=[0.60, 0.55, 0.50, 0.45, 0.40, 0.40, 0.40, 0.40, 0.40],
+            max_pct=[0.70, 0.65, 0.60, 0.55, 0.50, 0.50, 0.50, 0.50, 0.50],
             coins_per_dupe=[13, 15, 18, 11, 11, 10, 10, 7, 4],
         ),
         HeroDuplicateRange(
             rarity=HeroCardRarity.GOLD,
-            min_pct=[0.25, 0.25, 0.10, 0.10, 0.10, 0.10, 0.05, 0.05, 0.05],
-            max_pct=[0.40, 0.40, 0.15, 0.15, 0.15, 0.15, 0.15, 0.15, 0.15],
+            min_pct=[0.55, 0.50, 0.45, 0.40, 0.40, 0.40, 0.40, 0.40, 0.40],
+            max_pct=[0.65, 0.60, 0.55, 0.50, 0.50, 0.50, 0.50, 0.50, 0.50],
             coins_per_dupe=[13, 12, 13, 8, 8, 8, 8, 5, 5],
         ),
     ]
